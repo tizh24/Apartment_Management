@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+}
+
+enum RoomStatus {
+  VACANT
+  OCCUPIED
+  MAINTENANCE
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  fullName     String
+  passwordHash String
+  role         UserRole @default(STAFF)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Apartment {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  timezone  String   @default("Asia/Bangkok")
+  rooms     Room[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  id          String     @id @default(uuid())
+  apartmentId String
+  code        String
+  floor       String?
+  monthlyRent Decimal    @db.Decimal(10, 2)
+  status      RoomStatus @default(VACANT)
+  apartment   Apartment  @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([apartmentId, code])
+}

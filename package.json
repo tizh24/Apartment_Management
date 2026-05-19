@@ -1,0 +1,20 @@
+{
+  "name": "apartment-management-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.33.4",
+  "scripts": {
+    "dev": "turbo dev --parallel",
+    "dev:web": "turbo dev --filter=@apartment/web",
+    "dev:api": "turbo dev --filter=@apartment/api",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "db:generate": "pnpm --filter @apartment/api exec prisma generate",
+    "db:migrate": "pnpm --filter @apartment/api prisma migrate dev",
+    "db:seed": "pnpm --filter @apartment/api db:seed",
+    "db:studio": "pnpm --filter @apartment/api prisma studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.14"
+  }
+}
