@@ -1,8 +1,11 @@
 import { PrismaClient, RoomStatus, UserRole } from "@prisma/client";
+import argon2 from "argon2";
 
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
+  const adminPasswordHash = await argon2.hash("Admin@123456");
+
   const apartment = await prisma.apartment.upsert({
     where: { code: "APT-001" },
     update: {},
@@ -13,12 +16,19 @@ async function main(): Promise<void> {
   });
 
   await prisma.user.upsert({
-    where: { email: "admin@example.com" },
-    update: {},
-    create: {
+    where: { username: "admin" },
+    update: {
       email: "admin@example.com",
       fullName: "Admin User",
-      passwordHash: "change-me",
+      passwordHash: adminPasswordHash,
+      role: UserRole.ADMIN,
+      isActive: true,
+    },
+    create: {
+      username: "admin",
+      email: "admin@example.com",
+      fullName: "Admin User",
+      passwordHash: adminPasswordHash,
       role: UserRole.ADMIN,
     },
   });
