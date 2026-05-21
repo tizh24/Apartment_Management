@@ -3,8 +3,6 @@
 import { FormEvent, useState } from 'react';
 import { ILoginFormValues, ILoginFormErrors } from '../types';
 
-
-
 interface LoginFormProps {
     onSubmit?: (values: ILoginFormValues) => Promise<void>;
     isLoading?: boolean;
