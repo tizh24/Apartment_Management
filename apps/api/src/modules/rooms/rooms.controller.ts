@@ -38,13 +38,13 @@ export class RoomsController {
     return this.roomsService.create(dto);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.ACCOUNTANT)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @Get()
   findAll(@Query() query: QueryRoomsDto) {
     return this.roomsService.findAll(query);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.ACCOUNTANT)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @Get(":code")
   findOne(@Param("code") code: string) {
     return this.roomsService.findOne(code);
@@ -66,7 +66,7 @@ export class RoomsController {
     return this.roomsService.createMeterReading(code, dto, user);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.ACCOUNTANT)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @Get(":code/meter-readings")
   findMeterReadings(@Param("code") code: string) {
     return this.roomsService.findMeterReadings(code);

@@ -35,13 +35,13 @@ export class ApartmentsController {
     return this.apartmentsService.create(dto);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.ACCOUNTANT)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @Get()
   findAll(@Query() query: QueryApartmentsDto) {
     return this.apartmentsService.findAll(query);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.ACCOUNTANT)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @Get(":shortId")
   findOne(@Param("shortId") shortId: string) {
     return this.apartmentsService.findOne(shortId);
