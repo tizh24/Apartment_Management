@@ -9,7 +9,7 @@ import type { LoginDto } from "./dto/login.dto";
 
 type AuthenticatedUser = Pick<
   User,
-  "id" | "username" | "email" | "fullName" | "role"
+  "id" | "username" | "email" | "fullName" | "role" | "apartmentId"
 >;
 
 type LoginResponse = {
@@ -31,6 +31,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       role: user.role,
+      apartmentId: user.apartmentId,
     };
 
     await this.usersService.updateLastLoginAt(user.id);
@@ -82,6 +83,7 @@ export class AuthService {
       email: user.email,
       fullName: user.fullName,
       role: user.role,
+      apartmentId: user.apartmentId,
     };
   }
 }

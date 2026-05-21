@@ -5,6 +5,7 @@ export type JwtPayload = {
   username: string;
   email: string;
   role: UserRole;
+  apartmentId: string | null;
 };
 
 export type AuthenticatedRequestUser = {
@@ -12,6 +13,7 @@ export type AuthenticatedRequestUser = {
   username: string;
   email: string;
   role: UserRole;
+  apartmentId: string | null;
 };
 
 export type RequestWithUser = {
