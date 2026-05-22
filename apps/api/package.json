@@ -8,6 +8,8 @@
     "start": "node dist/main.js",
     "lint": "eslint \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
