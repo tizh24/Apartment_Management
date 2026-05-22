@@ -56,6 +56,9 @@ importers:
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
+      swagger-ui-dist:
+        specifier: ^5.32.6
+        version: 5.32.6
       zod:
         specifier: ^4.4.3
         version: 4.4.3

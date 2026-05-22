@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
@@ -18,5 +21,11 @@ export function setupSwagger(app: NestFastifyApplication): void {
       .build(),
   );
 
-  SwaggerModule.setup("docs", app, document);
+  const customSwaggerUiPath = join(process.cwd(), "swagger-ui");
+
+  SwaggerModule.setup("docs", app, document, {
+    customSwaggerUiPath: existsSync(customSwaggerUiPath)
+      ? customSwaggerUiPath
+      : undefined,
+  });
 }
