@@ -10,44 +10,91 @@ datasource db {
 enum UserRole {
   ADMIN
   STAFF
+  SALE
 }
 
 enum RoomStatus {
   VACANT
   OCCUPIED
+  RESERVED
+  CHECKOUT_SOON
   MAINTENANCE
+  INACTIVE
 }
 
 model User {
   id           String   @id @default(uuid())
+  username     String   @unique
   email        String   @unique
   fullName     String
   passwordHash String
   role         UserRole @default(STAFF)
+  apartmentId  String?
+  apartment    Apartment? @relation(fields: [apartmentId], references: [id], onDelete: SetNull)
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  meterReadings MeterReading[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([apartmentId])
 }
 
 model Apartment {
   id        String   @id @default(uuid())
-  code      String   @unique
+  shortId   String?  @unique
   name      String
+  address   String?
+  note      String?
   timezone  String   @default("Asia/Bangkok")
   rooms     Room[]
+  users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Room {
-  id          String     @id @default(uuid())
-  apartmentId String
-  code        String
-  floor       String?
-  monthlyRent Decimal    @db.Decimal(10, 2)
-  status      RoomStatus @default(VACANT)
-  apartment   Apartment  @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id            String         @id @default(uuid())
+  shortId       String?        @unique
+  apartmentId   String
+  code          String
+  floor         String?
+  area          Decimal?       @db.Decimal(10, 2)
+  monthlyRent   Decimal        @db.Decimal(10, 2)
+  description   String?
+  amenities     String[]       @default([])
+  imageUrls     String[]       @default([])
+  status        RoomStatus     @default(VACANT)
+  note          String?
+  apartment     Apartment      @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
+  meterReadings MeterReading[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@unique([apartmentId, code])
+}
+
+model MeterReading {
+  id                   String   @id @default(uuid())
+  roomId               String
+  periodStart          DateTime
+  periodEnd            DateTime
+  electricityStart     Decimal  @db.Decimal(10, 2)
+  electricityEnd       Decimal  @db.Decimal(10, 2)
+  electricityUsage     Decimal  @db.Decimal(10, 2)
+  electricityUnitPrice Decimal  @db.Decimal(10, 2)
+  waterStart           Decimal  @db.Decimal(10, 2)
+  waterEnd             Decimal  @db.Decimal(10, 2)
+  waterUsage           Decimal  @db.Decimal(10, 2)
+  waterUnitPrice       Decimal  @db.Decimal(10, 2)
+  totalAmount          Decimal  @db.Decimal(10, 2)
+  recordedById         String?
+  note                 String?
+  room                 Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  recordedBy           User?    @relation(fields: [recordedById], references: [id], onDelete: SetNull)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([roomId, periodStart, periodEnd])
+  @@index([roomId, periodStart])
 }

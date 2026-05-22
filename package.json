@@ -10,9 +10,9 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "db:generate": "pnpm --filter @apartment/api exec prisma generate",
-    "db:migrate": "pnpm --filter @apartment/api prisma migrate dev",
+    "db:migrate": "pnpm --filter @apartment/api exec prisma migrate dev",
     "db:seed": "pnpm --filter @apartment/api db:seed",
-    "db:studio": "pnpm --filter @apartment/api prisma studio"
+    "db:studio": "pnpm --filter @apartment/api exec prisma studio"
   },
   "devDependencies": {
     "turbo": "^2.9.14"
