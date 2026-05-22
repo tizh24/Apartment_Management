@@ -7,6 +7,7 @@ import { databaseConfig } from "./config/database.config";
 import { validateEnv } from "./config/env.validation";
 import { AuthModule } from "./modules/auth/auth.module";
 import { HealthModule } from "./modules/health/health.module";
+import { SalesModule } from "./modules/sales/sales.module";
 import { UsersModule } from "./modules/users/users.module";
 import { DatabaseModule } from "./shared/database/database.module";
 
@@ -22,6 +23,7 @@ import { DatabaseModule } from "./shared/database/database.module";
     DatabaseModule,
     UsersModule,
     AuthModule,
+    SalesModule,
     HealthModule,
   ],
 })

@@ -15,6 +15,15 @@ export function setupSwagger(app: NestFastifyApplication): void {
     new DocumentBuilder()
       .setTitle(configService.get<string>("app.name") ?? "Apartment Management API")
       .setVersion("1.0.0")
+      .addBearerAuth(
+        {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Paste access token returned by POST /api/v1/auth/login",
+        },
+        "access-token",
+      )
       .build(),
   );
 
