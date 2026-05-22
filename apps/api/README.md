@@ -1,33 +1,31 @@
 # API Structure
 
-File này giải thích cấu trúc của `apps/api`, mục đích của từng folder, vì sao chia như vậy, và khi phát triển tiếp thì mỗi chỗ nên chứa những gì.
+This folder contains the backend API built with NestJS, Prisma, and PostgreSQL.
+The structure is intentionally simple so the team can grow the project feature by feature without locking into a heavy architecture too early.
 
-## Mục tiêu của cấu trúc này
+## Goals of this structure
 
-Backend hiện tại được chia theo hướng:
+- Keep bootstrap and infrastructure code separate from business features.
+- Group code by feature so the project stays readable as it grows.
+- Keep database ownership inside the backend only.
+- Leave room to add more modules later without a big refactor.
 
-- đủ gọn để bắt đầu nhanh
-- đủ rõ để team phát triển dần mà không rối
-- tách phần hạ tầng chung ra khỏi phần nghiệp vụ
-
-Hiện tại chưa cố tình chia quá sâu theo clean architecture đầy đủ. Mục tiêu ở giai đoạn này là:
-
-- `config` riêng
-- `database` riêng
-- `module nghiệp vụ` riêng
-- các file bootstrap của NestJS riêng
-
-## Cấu trúc hiện tại
+## Current structure
 
 ```text
 apps/api/
+  docs/
+    requirement-v2-notes.md
   prisma/
+    migrations/
     schema.prisma
     seed.ts
   src/
     config/
     modules/
+      auth/
       health/
+      users/
     shared/
       database/
     app.module.ts
@@ -41,287 +39,272 @@ apps/api/
   tsconfig.build.json
 ```
 
-## Giải thích từng phần
+## Folder guide
+
+### `docs/`
+
+Short internal notes for the backend team.
+
+Use this for:
+
+- requirement alignment notes
+- architecture decisions
+- implementation order for new modules
+- known business ambiguities that should be resolved before coding
+
+Do not use this folder for source code.
 
 ### `prisma/`
 
-Đây là nơi chứa phần liên quan đến database schema và seed.
+This is the database layer entrypoint for the backend.
 
-Nên đặt ở đây:
+It should contain:
 
 - `schema.prisma`
-- migration
-- `seed.ts`
+- generated migration folders
+- seed scripts
 
-Không nên đặt ở đây:
+It should not contain:
 
-- controller
-- service nghiệp vụ
-- utility chung
+- Nest controllers
+- business services
+- request DTOs
 
-Lý do tách riêng:
+Reason:
 
-- Prisma là phần data layer
-- dễ tìm schema và migration
-- FE không nên quản lý Prisma, chỉ BE quản lý
+- the backend owns the database schema
+- migrations stay close to the schema
+- FE does not need direct database access
 
 ### `src/`
 
-Đây là source code chính của backend.
-
-Mọi code chạy thật của API nên nằm ở đây, thay vì rải ra ngoài root.
+This is the real application source.
+Anything that runs as part of the API should live here.
 
 ### `src/main.ts`
 
-Đây là entry point của app.
+Nest bootstrap file.
 
-Hiện file này làm các việc:
+It should do only application startup work, for example:
 
-- tạo Nest app
-- đăng ký CORS
-- set global prefix `/api`
-- bật versioning `/v1`
-- bật validation pipe
-- setup swagger
-- lắng nghe port
+- create the Nest app
+- register CORS
+- set global prefix
+- enable API versioning
+- register global validation
+- setup Swagger
+- start listening on the configured port
 
-Nên giữ file này tập trung vào bootstrap app, không nhét business logic vào đây.
+Do not put business logic here.
 
 ### `src/app.module.ts`
 
-Đây là root module của NestJS.
+Root Nest module.
 
-Nó có nhiệm vụ:
+It wires the application together by importing:
 
-- import `ConfigModule`
-- import `DatabaseModule`
-- import các module nghiệp vụ như `HealthModule`
+- config
+- shared infrastructure modules
+- feature modules
 
-Hiểu đơn giản, đây là nơi lắp các module lại với nhau.
-
-Không nên đặt logic xử lý request hay query DB trong file này.
+Think of this as the assembly point for the app.
 
 ### `src/swagger.ts`
 
-Đây là file setup Swagger.
+Swagger setup is separated so `main.ts` stays small.
 
-Tách riêng ra để:
+This file should contain:
 
-- `main.ts` đỡ dài
-- phần cấu hình docs có chỗ riêng
-- dễ sửa sau này nếu muốn thêm auth, title, version, tags
+- OpenAPI document metadata
+- Swagger UI setup
+- future auth documentation setup
 
 ### `src/config/`
 
-Folder này chứa phần cấu hình của app.
+Central place for application configuration and environment validation.
 
-Hiện có:
+Current files:
 
 - `app.config.ts`
+- `auth.config.ts`
 - `database.config.ts`
 - `env.validation.ts`
 
-#### `app.config.ts`
+This folder should contain:
 
-Nơi map các env chung của app như:
+- env parsing and mapping
+- config for app, auth, database, redis, mail, storage
+- validation for required environment variables
 
-- app name
-- host
-- port
-- swagger enabled
+This folder should not contain:
 
-#### `database.config.ts`
+- database queries
+- HTTP controllers
+- feature-specific business logic
 
-Nơi map env liên quan database như:
+Reason:
 
-- `DATABASE_URL`
-
-#### `env.validation.ts`
-
-Nơi validate biến môi trường bằng `zod`.
-
-Lý do nên có folder `config` riêng:
-
-- mọi thứ dùng `process.env` có chỗ tập trung
-- fail sớm nếu env sai
-- không phải đọc env rải rác khắp project
-
-Nên để ở đây:
-
-- config cho app
-- config DB
-- config JWT sau này
-- config Redis / mail / storage sau này
-
-Không nên để ở đây:
-
-- DTO request
-- service nghiệp vụ
-- query database
+- env usage stays consistent
+- config errors fail fast on startup
+- the rest of the code does not read `process.env` everywhere
 
 ### `src/shared/`
 
-Folder này chứa phần dùng chung cho nhiều module.
+Shared technical building blocks used by multiple modules.
 
-Hiện tại mới có:
+Current shared area:
 
 - `shared/database`
 
-Lý do có `shared`:
+Future shared items can include:
 
-- tránh lặp code chung giữa các module
-- gom phần infrastructure/reusable vào một chỗ
+- guards used by many modules
+- interceptors
+- filters
+- decorators
+- reusable helpers with real cross-module value
 
-Nên để ở đây sau này:
-
-- database
-- common decorators
-- guards chung
-- interceptors chung
-- exception filters chung
-- utils thật sự dùng nhiều nơi
-
-Không nên để ở đây:
-
-- logic riêng của `rooms`
-- logic riêng của `contracts`
-- code chỉ một module dùng
-
-Nếu một thứ chỉ phục vụ một module, để ngay trong module đó tốt hơn.
+Do not move feature-specific business logic here just because it feels reusable.
+If something only belongs to one feature, keep it inside that feature module.
 
 ### `src/shared/database/`
 
-Đây là nơi chứa code kết nối DB dùng chung.
+Database integration for Nest.
 
-Hiện có:
+Current files:
 
 - `database.module.ts`
 - `prisma.service.ts`
 
-#### `prisma.service.ts`
+Purpose:
 
-Nơi tạo `PrismaClient` và expose cho toàn app.
-
-Mục đích:
-
-- chỉ có một cách dùng Prisma thống nhất
-- module nào cần DB thì inject `PrismaService`
-- không tạo `new PrismaClient()` lung tung ở nhiều chỗ
-
-#### `database.module.ts`
-
-Wrap `PrismaService` thành Nest module để import/export gọn hơn.
+- expose one shared `PrismaService`
+- avoid creating `new PrismaClient()` in many places
+- give other modules a clean dependency to inject
 
 ### `src/modules/`
 
-Đây là nơi chứa các module nghiệp vụ.
+Feature modules live here.
 
-Hiện chỉ có:
+This is the main organizational layer of the backend.
+NestJS is modular, which means each feature gets its own small container for controllers, services, DTOs, and guards when needed.
 
-- `health`
+Why this layer exists:
 
-Về sau bạn sẽ thêm dần như:
-
-- `auth`
-- `users`
-- `apartments`
-- `rooms`
-- `contracts`
-- `payments`
-
-Lý do tách `modules`:
-
-- mỗi domain có chỗ riêng
-- team dễ chia việc
-- controller/service/dto của feature nào nằm gần nhau
+- the codebase is grouped by feature, not by file type only
+- each domain gets a clear boundary
+- multiple developers can work with less collision
+- the project can grow without one huge `services/` folder
 
 ### `src/modules/health/`
 
-Đây là module nhỏ nhất để check hệ thống còn sống không.
+Minimal feature used to verify the app and database are alive.
 
-Hiện có:
+Current files:
 
-- `health.controller.ts`
 - `health.module.ts`
+- `health.controller.ts`
 
-`health.controller.ts`:
+This module is intentionally tiny and is a good reference for the smallest possible Nest feature.
 
-- trả về status app
-- check DB bằng Prisma query đơn giản
+### `src/modules/users/`
 
-`health.module.ts`:
+Backend access to internal user data.
 
-- khai báo controller cho module health
+Current files:
 
-Mục đích của module này:
+- `users.module.ts`
+- `users.service.ts`
 
-- test API khởi động đúng
-- test DB kết nối được
-- làm ví dụ đơn giản nhất cho cách tạo module mới
+This module is currently small because it only supports auth lookups and login metadata updates.
+Later it can grow into internal user management for admin and staff.
 
-## Các file ở root `apps/api`
+### `src/modules/auth/`
+
+Authentication for internal system users.
+
+Current files include:
+
+- `auth.module.ts`
+- `auth.controller.ts`
+- `auth.service.ts`
+- `dto/`
+- `guards/`
+- `decorators/`
+- `auth.types.ts`
+
+This module should contain:
+
+- login flow
+- JWT creation and validation
+- current user lookup
+- role checks for internal users
+
+Important boundary:
+
+- this auth module is for `ADMIN`, `STAFF`, and `SALE`
+- the guest portal from the requirement should be implemented as a separate flow later, not mixed into internal auth too early
+
+## Root files in `apps/api`
 
 ### `.env.example`
 
-File mẫu để mọi người biết API cần env gì.
-
-Nên commit file này.
-Không commit `.env` thật.
+Template of required environment variables.
+Commit this file.
+Do not commit real secrets in `.env`.
 
 ### `package.json`
 
-Chứa dependency và scripts của API.
-
-Ví dụ:
+Contains API dependencies and scripts such as:
 
 - `dev`
 - `build`
-- `start`
 - `lint`
 - `typecheck`
+- `db:generate`
+- `db:migrate`
 - `db:seed`
 
 ### `nest-cli.json`
 
-Config cho Nest CLI.
+Nest CLI configuration.
 
 ### `eslint.config.mjs`
 
-Config lint cho API.
+Lint configuration for the API package.
 
 ### `tsconfig.json`
 
-TypeScript config dùng cho IDE và typecheck.
+TypeScript config used by the editor and type-checking.
 
 ### `tsconfig.build.json`
 
-TypeScript config dùng cho build Nest.
+TypeScript config used by Nest build.
+It is separated so the editor can still see files like `prisma/seed.ts`, while the build only compiles the runtime app in `src/`.
 
-Tách riêng file build config để:
+## What to build next
 
-- IDE vẫn thấy cả `prisma/seed.ts`
-- build chỉ compile phần cần chạy của app trong `src`
+Based on the current requirement set, the next modules should be added in this order:
 
-## Vì sao phải chia như vậy
+1. `apartments`
+2. `rooms`
+3. `customers`
+4. `contracts`
+5. `receivables`
+6. `payments`
+7. `sales`
+8. `guest`
 
-Nếu không chia:
+Reason:
 
-- env nằm rải rác
-- DB connection bị tạo lung tung
-- feature này lẫn vào feature khác
-- file bootstrap phình to
-- sau này nhiều người làm rất khó tìm code
+- `apartments`, `rooms`, `customers`, and `contracts` are the business core
+- `receivables` and `payments` sit on top of active contracts
+- `sales` depends on contract ownership and commission rules
+- `guest` depends on contracts, receivables, payment QR, and guest account rules
 
-Chia như hiện tại giúp:
+## Suggested shape of a new module
 
-- rõ nơi đặt code
-- dễ thêm feature mới
-- không over-engineer quá sớm
-- đủ kỷ luật để codebase lớn dần lên
-
-## Khi thêm module mới thì nên làm thế nào
-
-Ở giai đoạn hiện tại, giữ module đơn giản theo pattern này là đủ:
+At this stage, keep modules simple:
 
 ```text
 src/modules/rooms/
@@ -333,42 +316,12 @@ src/modules/rooms/
   rooms.module.ts
 ```
 
-Ý nghĩa:
+Meaning:
 
-- `controller`: nhận request / trả response
-- `service`: xử lý nghiệp vụ
-- `dto`: validate input
-- `module`: gom các thành phần của feature
+- `controller`: HTTP input/output
+- `service`: feature business logic
+- `dto`: request validation and shaping
+- `module`: Nest registration for the feature
 
-Đây là mức chia hợp lý để làm dần.
-
-Chưa cần tách thêm `application`, `domain`, `infrastructure` cho mọi module nếu team chưa cần đến mức đó.
-
-## Quy tắc nên giữ
-
-- `prisma/` chỉ chứa schema, migration, seed
-- `config/` chỉ chứa config và env validation
-- `shared/` chỉ chứa phần thật sự dùng chung
-- `modules/` là nơi đặt business features
-- không query DB trực tiếp trong `main.ts` hoặc `app.module.ts`
-- không để logic của nhiều feature khác nhau vào cùng một service lớn
-
-## Gợi ý mở rộng tiếp theo
-
-Nếu làm dần, thứ tự hợp lý là:
-
-1. `auth`
-2. `users`
-3. `apartments`
-4. `rooms`
-5. `customers`
-6. `contracts`
-
-Mỗi lần thêm một module, cứ bám đúng form:
-
-- `module`
-- `controller`
-- `service`
-- `dto`
-
-Làm vậy codebase sẽ lớn dần lên nhưng vẫn giữ được trật tự.
+This is enough for the team to move fast now.
+If the project becomes more complex later, each module can be split further into application, domain, and infrastructure layers.

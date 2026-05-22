@@ -19,7 +19,6 @@ enum RoomStatus {
   RESERVED
   CHECKOUT_SOON
   MAINTENANCE
-  INACTIVE
 }
 
 model User {

@@ -1,23 +1,17 @@
--- AlterEnum
--- This migration adds more than one value to an enum.
--- With PostgreSQL versions 11 and earlier, this is not possible
--- in a single migration. This can be worked around by creating
--- multiple migrations, each migration adding only one value to
--- the enum.
-
-
+-- Add the new room states introduced after the initial baseline.
 ALTER TYPE "RoomStatus" ADD VALUE 'RESERVED';
 ALTER TYPE "RoomStatus" ADD VALUE 'CHECKOUT_SOON';
-ALTER TYPE "RoomStatus" ADD VALUE 'INACTIVE';
 
--- AlterTable
-ALTER TABLE "Room" ADD COLUMN     "amenities" TEXT[] DEFAULT ARRAY[]::TEXT[],
-ADD COLUMN     "area" DECIMAL(10,2),
-ADD COLUMN     "description" TEXT,
-ADD COLUMN     "imageUrls" TEXT[] DEFAULT ARRAY[]::TEXT[],
-ADD COLUMN     "note" TEXT;
+-- Expand room details for operations and listing data.
+ALTER TABLE "Room"
+ADD COLUMN "amenities" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN "area" DECIMAL(10,2),
+ADD COLUMN "description" TEXT,
+ADD COLUMN "imageUrls" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN "note" TEXT,
+ADD COLUMN "shortId" TEXT;
 
--- CreateTable
+-- Utility readings are stored per room and billing period.
 CREATE TABLE "MeterReading" (
     "id" TEXT NOT NULL,
     "roomId" TEXT NOT NULL,
@@ -40,14 +34,16 @@ CREATE TABLE "MeterReading" (
     CONSTRAINT "MeterReading_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
 CREATE INDEX "MeterReading_roomId_periodStart_idx" ON "MeterReading"("roomId", "periodStart");
-
--- CreateIndex
 CREATE UNIQUE INDEX "MeterReading_roomId_periodStart_periodEnd_key" ON "MeterReading"("roomId", "periodStart", "periodEnd");
+CREATE UNIQUE INDEX "Room_shortId_key" ON "Room"("shortId");
 
--- AddForeignKey
-ALTER TABLE "MeterReading" ADD CONSTRAINT "MeterReading_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "MeterReading"
+ADD CONSTRAINT "MeterReading_roomId_fkey"
+FOREIGN KEY ("roomId") REFERENCES "Room"("id")
+ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "MeterReading" ADD CONSTRAINT "MeterReading_recordedById_fkey" FOREIGN KEY ("recordedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "MeterReading"
+ADD CONSTRAINT "MeterReading_recordedById_fkey"
+FOREIGN KEY ("recordedById") REFERENCES "User"("id")
+ON DELETE SET NULL ON UPDATE CASCADE;
