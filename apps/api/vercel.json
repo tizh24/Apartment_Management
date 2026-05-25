@@ -1,11 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run build",
-  "outputDirectory": "dist",
-  "framework": null,
-  "env": {
-    "DATABASE_URL": "@DATABASE_URL",
-    "JWT_ACCESS_SECRET": "@JWT_ACCESS_SECRET",
-    "NODE_ENV": "production"
-  }
+  "buildCommand": "pnpm -r --filter=api run build",
+  "outputDirectory": "api/dist",
+  "framework": null
 }
