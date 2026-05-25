@@ -5,6 +5,7 @@ import { appConfig } from "./config/app.config";
 import { authConfig } from "./config/auth.config";
 import { databaseConfig } from "./config/database.config";
 import { validateEnv } from "./config/env.validation";
+import { AppController } from "./app.controller";
 import { ApartmentsModule } from "./modules/apartments/apartments.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { HealthModule } from "./modules/health/health.module";
@@ -13,6 +14,7 @@ import { UsersModule } from "./modules/users/users.module";
 import { DatabaseModule } from "./shared/database/database.module";
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -29,4 +31,4 @@ import { DatabaseModule } from "./shared/database/database.module";
     HealthModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
