@@ -1,36 +1,7 @@
-import "reflect-metadata";
-
-import cors from "cors";
-import { ValidationPipe, VersioningType } from "@nestjs/common";
-import { NestFactory } from "@nestjs/core";
-import type { NestExpressApplication } from "@nestjs/platform-express";
-
-import { AppModule } from "./app.module";
-import { setupSwagger } from "./swagger";
+import { createConfiguredNestApp } from "./nest-app";
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule) as NestExpressApplication;
-
-  app.use(cors({
-    origin: true,
-    credentials: true,
-  }));
-
-  app.setGlobalPrefix("api");
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: "1",
-  });
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-
-  setupSwagger(app);
+  const app = await createConfiguredNestApp();
 
   const port = Number(process.env.PORT ?? 4000);
   const host = process.env.APP_HOST ?? "0.0.0.0";
@@ -39,4 +10,7 @@ async function bootstrap(): Promise<void> {
   console.log(`API is running on http://${host}:${port}/api/v1`);
 }
 
-void bootstrap();
+void bootstrap().catch((error) => {
+  console.error("[Bootstrap Error]", error);
+  process.exit(1);
+});
