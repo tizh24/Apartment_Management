@@ -1,6 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "pnpm -r --filter=api run build",
-  "outputDirectory": "api/dist",
-  "framework": null
+  "builds": [
+    {
+      "src": "api/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/index.ts"
+    }
+  ]
 }
