@@ -3,9 +3,9 @@ import { join } from "node:path";
 
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 
-export function setupSwagger(app: NestFastifyApplication): void {
+export function setupSwagger(app: NestExpressApplication): void {
   const configService = app.get(ConfigService);
   const swaggerEnabled = configService.get<boolean>("app.swaggerEnabled");
 

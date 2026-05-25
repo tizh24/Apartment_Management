@@ -1,26 +1,20 @@
 import "reflect-metadata";
 
-import cors from "@fastify/cors";
+import cors from "cors";
 import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 
 import { AppModule } from "./app.module";
 import { setupSwagger } from "./swagger";
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-  );
+  const app = await NestFactory.create(AppModule) as NestExpressApplication;
 
-  await app.register(cors, {
+  app.use(cors({
     origin: true,
     credentials: true,
-  });
+  }));
 
   app.setGlobalPrefix("api");
   app.enableVersioning({
