@@ -1,4 +1,8 @@
 import { createConfiguredNestApp } from "./nest-app";
+import { NestFactory } from "@nestjs/core";
+
+// Keep a direct Nest import in the entrypoint for Vercel NestJS detection.
+void NestFactory;
 
 async function bootstrap(): Promise<void> {
   const app = await createConfiguredNestApp();
