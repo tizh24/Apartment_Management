@@ -55,16 +55,16 @@ const quickActions = [
 ];
 
 const colorMap: Record<string, { bg: string; icon: string; border: string }> = {
-    blue:  { bg: 'bg-blue-50',  icon: 'text-blue-600',  border: 'hover:border-blue-300' },
-    slate: { bg: 'bg-slate-50', icon: 'text-slate-600', border: 'hover:border-slate-300' },
-    amber: { bg: 'bg-amber-50', icon: 'text-amber-600', border: 'hover:border-amber-300' },
-    purple:{ bg: 'bg-purple-50',icon: 'text-purple-600',border: 'hover:border-purple-300' },
+    blue: { bg: 'bg-[#f8edeb]', icon: 'text-[#a65f4f]', border: 'hover:border-[#ffb5a7]' },
+    slate: { bg: 'bg-[#f8edeb]', icon: 'text-[#6f544b]', border: 'hover:border-[#fec89a]' },
+    amber: { bg: 'bg-[#fcd5ce]', icon: 'text-[#a66754]', border: 'hover:border-[#ffb5a7]' },
+    purple: { bg: 'bg-[#f9dcc4]', icon: 'text-[#a06151]', border: 'hover:border-[#fec89a]' },
 };
 
 const statusConfig: Record<string, { icon: any; cls: string; label: string }> = {
-    'Đã thanh toán':  { icon: CheckCircle, cls: 'text-green-600 bg-green-50', label: 'Đã thanh toán' },
-    'Chưa thanh toán':{ icon: AlertCircle, cls: 'text-amber-600 bg-amber-50', label: 'Chưa thanh toán' },
-    'Quá hạn':        { icon: AlertCircle, cls: 'text-red-600 bg-red-50',     label: 'Quá hạn' },
+    'Đã thanh toán': { icon: CheckCircle, cls: 'text-[#9f5c4c] bg-[#f9dcc4]', label: 'Đã thanh toán' },
+    'Chưa thanh toán': { icon: AlertCircle, cls: 'text-[#a66754] bg-[#fcd5ce]', label: 'Chưa thanh toán' },
+    'Quá hạn': { icon: AlertCircle, cls: 'text-[#a45c4d] bg-[#fcd5ce]', label: 'Quá hạn' },
 };
 
 export default function GuestPortal() {
@@ -73,25 +73,25 @@ export default function GuestPortal() {
             <div className="p-6 space-y-6">
 
                 {/* Welcome banner — GUEST-06 */}
-                <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white shadow-md">
-                    <p className="text-sm font-medium text-blue-200">Xin chào,</p>
+                <div className="rounded-2xl bg-gradient-to-r from-[#ffb5a7] to-[#fec89a] p-6 text-white shadow-md">
+                    <p className="text-sm font-medium text-[#fff8f6]">Xin chào,</p>
                     <h1 className="mt-1 text-2xl font-bold">Hoàng Văn Khách</h1>
                     <div className="mt-4 flex flex-wrap gap-4 text-sm">
                         <div className="flex items-center gap-2">
-                            <DoorOpen className="h-4 w-4 text-blue-200" />
+                            <DoorOpen className="h-4 w-4 text-[#fff8f6]" />
                             <span>Phòng {roomInfo.roomNumber} — {roomInfo.building}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-blue-200" />
+                            <FileText className="h-4 w-4 text-[#fff8f6]" />
                             <span>{roomInfo.contractStart} → {roomInfo.contractEnd}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-blue-200" />
+                            <Clock className="h-4 w-4 text-[#fff8f6]" />
                             <span>Còn {roomInfo.daysLeft} ngày</span>
                         </div>
                     </div>
-                    <div className="mt-4 flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 w-fit">
-                        <CreditCard className="h-4 w-4 text-blue-200" />
+                    <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#fff8f6]/10 px-4 py-2 w-fit">
+                        <CreditCard className="h-4 w-4 text-[#fff8f6]" />
                         <span className="text-sm font-semibold">{roomInfo.monthlyRent} / tháng</span>
                     </div>
                 </div>
@@ -104,12 +104,12 @@ export default function GuestPortal() {
                         return (
                             <button
                                 key={i}
-                                className={`flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:shadow-md ${c.border}`}
+                                className={`flex flex-col items-center gap-3 rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-5 transition-all hover:shadow-md ${c.border}`}
                             >
                                 <div className={`h-12 w-12 flex items-center justify-center rounded-xl ${c.bg}`}>
                                     <Icon className={`h-6 w-6 ${c.icon}`} />
                                 </div>
-                                <p className="text-sm font-medium text-slate-900 text-center">{a.label}</p>
+                                <p className="text-sm font-medium text-[#3f2d28] text-center">{a.label}</p>
                             </button>
                         );
                     })}
@@ -117,16 +117,16 @@ export default function GuestPortal() {
 
                 {/* GUEST-07: Invoice list */}
                 <div className="space-y-4">
-                    <h2 className="text-sm font-semibold text-slate-900">Hóa đơn theo kỳ</h2>
+                    <h2 className="text-sm font-semibold text-[#3f2d28]">Hóa đơn theo kỳ</h2>
                     {invoices.map((inv, i) => {
                         const sc = statusConfig[inv.status] || statusConfig['Chưa thanh toán'];
                         const StatusIcon = sc.icon;
                         return (
-                            <div key={i} className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                            <div key={i} className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
+                                <div className="flex items-center justify-between px-6 py-4 border-b border-[#f9dcc4]">
                                     <div>
-                                        <h3 className="text-sm font-semibold text-slate-900">{inv.period}</h3>
-                                        <p className="text-xs text-slate-400">Hạn thanh toán: {inv.dueDate}</p>
+                                        <h3 className="text-sm font-semibold text-[#3f2d28]">{inv.period}</h3>
+                                        <p className="text-xs text-[#b89184]">Hạn thanh toán: {inv.dueDate}</p>
                                     </div>
                                     <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${sc.cls}`}>
                                         <StatusIcon className="h-3.5 w-3.5" />
@@ -136,20 +136,20 @@ export default function GuestPortal() {
                                 <div className="px-6 py-4 space-y-2">
                                     {inv.items.map((item, j) => (
                                         <div key={j} className="flex justify-between">
-                                            <span className="text-sm text-slate-600">{item.label}</span>
-                                            <span className="text-sm font-medium text-slate-900">
+                                            <span className="text-sm text-[#6f544b]">{item.label}</span>
+                                            <span className="text-sm font-medium text-[#3f2d28]">
                                                 {item.amount ? item.amount.toLocaleString('vi-VN') + ' ₫' : '—'}
                                             </span>
                                         </div>
                                     ))}
-                                    <div className="pt-3 mt-2 border-t border-slate-100 flex justify-between">
-                                        <span className="text-sm font-semibold text-slate-900">Tổng cộng</span>
-                                        <span className="text-sm font-bold text-slate-900">{inv.total}</span>
+                                    <div className="pt-3 mt-2 border-t border-[#f9dcc4] flex justify-between">
+                                        <span className="text-sm font-semibold text-[#3f2d28]">Tổng cộng</span>
+                                        <span className="text-sm font-bold text-[#3f2d28]">{inv.total}</span>
                                     </div>
                                 </div>
                                 {inv.status !== 'Đã thanh toán' && (
                                     <div className="px-6 pb-5">
-                                        <button className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors">
+                                        <button className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#ffb5a7] py-3 text-sm font-semibold text-white hover:bg-[#fec89a] transition-colors">
                                             <QrCode className="h-4 w-4" />
                                             Thanh toán bằng QR — GUEST-09
                                         </button>
@@ -164,3 +164,5 @@ export default function GuestPortal() {
         </DashboardLayout>
     );
 }
+
+

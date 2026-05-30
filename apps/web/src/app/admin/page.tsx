@@ -20,14 +20,14 @@ const stats = [
 ];
 
 const colorMap: Record<string, { bg: string; icon: string; badge: string }> = {
-    blue:    { bg: 'bg-blue-50',    icon: 'text-blue-600',    badge: 'bg-blue-100 text-blue-700' },
-    green:   { bg: 'bg-green-50',   icon: 'text-green-600',   badge: 'bg-green-100 text-green-700' },
-    slate:   { bg: 'bg-slate-50',   icon: 'text-slate-500',   badge: 'bg-slate-100 text-slate-600' },
-    amber:   { bg: 'bg-amber-50',   icon: 'text-amber-600',   badge: 'bg-amber-100 text-amber-700' },
-    orange:  { bg: 'bg-orange-50',  icon: 'text-orange-600',  badge: 'bg-orange-100 text-orange-700' },
-    purple:  { bg: 'bg-purple-50',  icon: 'text-purple-600',  badge: 'bg-purple-100 text-purple-700' },
-    emerald: { bg: 'bg-emerald-50', icon: 'text-emerald-600', badge: 'bg-emerald-100 text-emerald-700' },
-    red:     { bg: 'bg-red-50',     icon: 'text-red-600',     badge: 'bg-red-100 text-red-700' },
+    blue: { bg: 'bg-[#f8edeb]', icon: 'text-[#a65f4f]', badge: 'bg-[#fcd5ce] text-[#7d4e41]' },
+    green: { bg: 'bg-[#f9dcc4]', icon: 'text-[#9f5c4c]', badge: 'bg-[#f9dcc4] text-[#7d4e41]' },
+    slate: { bg: 'bg-[#f8edeb]', icon: 'text-[#8f6f64]', badge: 'bg-[#f9dcc4] text-[#6f544b]' },
+    amber: { bg: 'bg-[#fcd5ce]', icon: 'text-[#a66754]', badge: 'bg-[#fcd5ce] text-[#7d4e41]' },
+    orange: { bg: 'bg-[#fcd5ce]', icon: 'text-[#ab6f5b]', badge: 'bg-[#fec89a] text-[#7d4e41]' },
+    purple: { bg: 'bg-[#f9dcc4]', icon: 'text-[#a06151]', badge: 'bg-[#f9dcc4] text-[#7d4e41]' },
+    emerald: { bg: 'bg-[#f9dcc4]', icon: 'text-[#b06a58]', badge: 'bg-[#f9dcc4] text-[#7d4e41]' },
+    red: { bg: 'bg-[#fcd5ce]', icon: 'text-[#a45c4d]', badge: 'bg-[#fcd5ce] text-[#7d3e35]' },
 };
 
 // DASH-02: Occupancy by month (mock)
@@ -44,9 +44,9 @@ const revenueData = [
 
 // DASH-04: Guest trends
 const guestTrend = [
-    { label: 'Mới nhận phòng', value: 8, color: 'text-green-600' },
-    { label: 'Đang thuê', value: 134, color: 'text-blue-600' },
-    { label: 'Trả phòng tháng này', value: 5, color: 'text-amber-600' },
+    { label: 'Mới nhận phòng', value: 8, color: 'text-[#9f5c4c]' },
+    { label: 'Đang thuê', value: 134, color: 'text-[#a65f4f]' },
+    { label: 'Trả phòng tháng này', value: 5, color: 'text-[#a66754]' },
 ];
 
 // DASH-07: Overdue payments
@@ -65,10 +65,10 @@ export default function AdminDashboard() {
                 {/* Page title */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                        <p className="mt-0.5 text-sm text-slate-500">Tổng quan vận hành — Tháng 5, 2026</p>
+                        <h1 className="text-2xl font-bold text-[#3f2d28]">Dashboard</h1>
+                        <p className="mt-0.5 text-sm text-[#8f6f64]">Tổng quan vận hành — Tháng 5, 2026</p>
                     </div>
-                    <button className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                    <button className="inline-flex items-center gap-2 rounded-lg border border-[#fcd5ce] bg-[#fff8f6] px-4 py-2 text-sm font-medium text-[#5b463f] hover:bg-[#f8edeb] transition-colors">
                         <ArrowUpRight className="h-4 w-4" />
                         Xuất báo cáo
                     </button>
@@ -82,23 +82,23 @@ export default function AdminDashboard() {
                         return (
                             <button
                                 key={i}
-                                className="group rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition-all hover:shadow-md hover:border-blue-200 cursor-pointer"
+                                className="group rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-5 text-left shadow-sm transition-all hover:shadow-md hover:border-[#ffb5a7] cursor-pointer"
                                 title="DASH-08: Nhấn để xem chi tiết"
                             >
                                 <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${c.bg} mb-3`}>
                                     <Icon className={`h-5 w-5 ${c.icon}`} />
                                 </div>
-                                <p className="text-xs text-slate-500 mb-1">{s.label}</p>
-                                <p className="text-2xl font-bold text-slate-900">{s.value}</p>
+                                <p className="text-xs text-[#8f6f64] mb-1">{s.label}</p>
+                                <p className="text-2xl font-bold text-[#3f2d28]">{s.value}</p>
                                 <div className="mt-2 flex items-center gap-2">
                                     <span className={`text-xs px-1.5 py-0.5 rounded-full ${c.badge}`}>{s.sub}</span>
                                     {s.change && (
-                                        <span className={`text-xs font-medium ${s.change.startsWith('+') ? 'text-green-600' : 'text-red-500'}`}>
+                                        <span className={`text-xs font-medium ${s.change.startsWith('+') ? 'text-[#9f5c4c]' : 'text-[#b86154]'}`}>
                                             {s.change}
                                         </span>
                                     )}
                                 </div>
-                                <ChevronRight className="absolute right-4 top-4 h-4 w-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <ChevronRight className="absolute right-4 top-4 h-4 w-4 text-[#caa79a] opacity-0 group-hover:opacity-100 transition-opacity" />
                             </button>
                         );
                     })}
@@ -108,38 +108,38 @@ export default function AdminDashboard() {
                 <div className="grid gap-6 lg:grid-cols-3">
 
                     {/* DASH-02: Occupancy Rate */}
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h2 className="text-sm font-semibold text-slate-900 mb-1">Tỷ lệ lấp đầy</h2>
-                        <p className="text-xs text-slate-400 mb-4">DASH-02 · 5 tháng gần nhất</p>
+                    <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-6 shadow-sm">
+                        <h2 className="text-sm font-semibold text-[#3f2d28] mb-1">Tỷ lệ lấp đầy</h2>
+                        <p className="text-xs text-[#b89184] mb-4">DASH-02 · 5 tháng gần nhất</p>
                         <div className="flex items-end gap-3 h-28">
                             {occupancyData.map((d) => (
                                 <div key={d.month} className="flex flex-1 flex-col items-center gap-1">
-                                    <span className="text-xs font-semibold text-slate-700">{d.pct}%</span>
+                                    <span className="text-xs font-semibold text-[#5b463f]">{d.pct}%</span>
                                     <div
-                                        className="w-full rounded-t-lg bg-blue-500 transition-all"
+                                        className="w-full rounded-t-lg bg-[#ffb5a7] transition-all"
                                         style={{ height: `${d.pct}%` }}
                                     />
-                                    <span className="text-xs text-slate-400">{d.month}</span>
+                                    <span className="text-xs text-[#b89184]">{d.month}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* DASH-05: Revenue chart */}
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h2 className="text-sm font-semibold text-slate-900 mb-1">Doanh thu theo tháng</h2>
-                        <p className="text-xs text-slate-400 mb-4">DASH-05 · Đơn vị: triệu ₫</p>
+                    <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-6 shadow-sm">
+                        <h2 className="text-sm font-semibold text-[#3f2d28] mb-1">Doanh thu theo tháng</h2>
+                        <p className="text-xs text-[#b89184] mb-4">DASH-05 · Đơn vị: triệu ₫</p>
                         <div className="flex items-end gap-3 h-28">
                             {revenueData.map((d) => {
                                 const maxAmt = Math.max(...revenueData.map(r => r.amount));
                                 return (
                                     <div key={d.month} className="flex flex-1 flex-col items-center gap-1">
-                                        <span className="text-xs font-semibold text-emerald-700">{d.amount}M</span>
+                                        <span className="text-xs font-semibold text-[#7d4e41]">{d.amount}M</span>
                                         <div
-                                            className="w-full rounded-t-lg bg-emerald-500 transition-all"
+                                            className="w-full rounded-t-lg bg-[#fec89a] transition-all"
                                             style={{ height: `${(d.amount / maxAmt) * 100}%` }}
                                         />
-                                        <span className="text-xs text-slate-400">{d.month}</span>
+                                        <span className="text-xs text-[#b89184]">{d.month}</span>
                                     </div>
                                 );
                             })}
@@ -147,13 +147,13 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* DASH-04: Guest trends */}
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h2 className="text-sm font-semibold text-slate-900 mb-1">Lượng khách</h2>
-                        <p className="text-xs text-slate-400 mb-4">DASH-03/04 · Tháng hiện tại</p>
+                    <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-6 shadow-sm">
+                        <h2 className="text-sm font-semibold text-[#3f2d28] mb-1">Lượng khách</h2>
+                        <p className="text-xs text-[#b89184] mb-4">DASH-03/04 · Tháng hiện tại</p>
                         <div className="space-y-4">
                             {guestTrend.map((g) => (
                                 <div key={g.label} className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">{g.label}</span>
+                                    <span className="text-sm text-[#6f544b]">{g.label}</span>
                                     <span className={`text-lg font-bold ${g.color}`}>{g.value}</span>
                                 </div>
                             ))}
@@ -162,36 +162,36 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* DASH-07: Overdue payments */}
-                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-[#f9dcc4]">
                         <div className="flex items-center gap-2">
-                            <AlertTriangle className="h-5 w-5 text-red-500" />
-                            <h2 className="text-sm font-semibold text-slate-900">
-                                Khoản thanh toán quá hạn <span className="ml-1 text-red-500">({overdueList.length})</span>
+                            <AlertTriangle className="h-5 w-5 text-[#b86154]" />
+                            <h2 className="text-sm font-semibold text-[#3f2d28]">
+                                Khoản thanh toán quá hạn <span className="ml-1 text-[#b86154]">({overdueList.length})</span>
                             </h2>
                         </div>
-                        <button className="text-xs font-medium text-blue-600 hover:underline">
+                        <button className="text-xs font-medium text-[#a65f4f] hover:underline">
                             Xem tất cả
                         </button>
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-[#f9dcc4]">
                         {overdueList.map((item, i) => (
                             <div
                                 key={i}
-                                className="flex items-center justify-between px-6 py-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                                className="flex items-center justify-between px-6 py-3 hover:bg-[#f8edeb] cursor-pointer transition-colors"
                             >
                                 <div className="flex items-center gap-4">
-                                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-xs font-bold text-red-600">
+                                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#fcd5ce] text-xs font-bold text-[#a45c4d]">
                                         {item.room}
                                     </span>
                                     <div>
-                                        <p className="text-sm font-medium text-slate-900">{item.customer}</p>
-                                        <p className="text-xs text-slate-500">{item.type}</p>
+                                        <p className="text-sm font-medium text-[#3f2d28]">{item.customer}</p>
+                                        <p className="text-xs text-[#8f6f64]">{item.type}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-sm font-semibold text-red-600">{item.amount}</p>
-                                    <p className="text-xs text-slate-400">Quá hạn {item.overdueDays} ngày</p>
+                                    <p className="text-sm font-semibold text-[#a45c4d]">{item.amount}</p>
+                                    <p className="text-xs text-[#b89184]">Quá hạn {item.overdueDays} ngày</p>
                                 </div>
                             </div>
                         ))}
@@ -202,3 +202,5 @@ export default function AdminDashboard() {
         </DashboardLayout>
     );
 }
+
+

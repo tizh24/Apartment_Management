@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { RoleProvider } from '@/context/RoleContext';
-import { UserRole, ROLE_LABELS } from '@/types/roles';
+import { UserRole } from '@/types/roles';
 
 interface RoleLayoutProps {
   children: ReactNode;

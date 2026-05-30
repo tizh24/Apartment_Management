@@ -11,10 +11,10 @@ const stats = [
 ];
 
 const colorMap: Record<string, { bg: string; icon: string }> = {
-    blue:   { bg: 'bg-blue-50',   icon: 'text-blue-600' },
-    green:  { bg: 'bg-green-50',  icon: 'text-green-600' },
-    amber:  { bg: 'bg-amber-50',  icon: 'text-amber-600' },
-    purple: { bg: 'bg-purple-50', icon: 'text-purple-600' },
+    blue: { bg: 'bg-[#f8edeb]', icon: 'text-[#a65f4f]' },
+    green: { bg: 'bg-[#f9dcc4]', icon: 'text-[#9f5c4c]' },
+    amber: { bg: 'bg-[#fcd5ce]', icon: 'text-[#a66754]' },
+    purple: { bg: 'bg-[#f9dcc4]', icon: 'text-[#a06151]' },
 };
 
 // SALE-04: My contracts
@@ -38,8 +38,8 @@ export default function SaleDashboard() {
 
                 {/* Header */}
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Dashboard Sale</h1>
-                    <p className="mt-0.5 text-sm text-slate-500">Hợp đồng & Hoa hồng của tôi — Tháng 5, 2026</p>
+                    <h1 className="text-2xl font-bold text-[#3f2d28]">Dashboard Sale</h1>
+                    <p className="mt-0.5 text-sm text-[#8f6f64]">Hợp đồng & Hoa hồng của tôi — Tháng 5, 2026</p>
                 </div>
 
                 {/* Stats */}
@@ -48,47 +48,47 @@ export default function SaleDashboard() {
                         const c = colorMap[s.color];
                         const Icon = s.icon;
                         return (
-                            <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                            <div key={i} className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-5 shadow-sm hover:shadow-md transition-shadow">
                                 <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${c.bg} mb-3`}>
                                     <Icon className={`h-5 w-5 ${c.icon}`} />
                                 </div>
-                                <p className="text-xs text-slate-500">{s.label}</p>
-                                <p className="mt-1 text-2xl font-bold text-slate-900">{s.value}</p>
-                                <p className="mt-1 text-xs text-slate-400">{s.sub}</p>
+                                <p className="text-xs text-[#8f6f64]">{s.label}</p>
+                                <p className="mt-1 text-2xl font-bold text-[#3f2d28]">{s.value}</p>
+                                <p className="mt-1 text-xs text-[#b89184]">{s.sub}</p>
                             </div>
                         );
                     })}
                 </div>
 
                 {/* SALE-04: My contracts list */}
-                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-[#f9dcc4]">
                         <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-blue-500" />
-                            <h2 className="text-sm font-semibold text-slate-900">Hợp đồng của tôi</h2>
+                            <FileText className="h-4 w-4 text-[#a65f4f]" />
+                            <h2 className="text-sm font-semibold text-[#3f2d28]">Hợp đồng của tôi</h2>
                         </div>
-                        <span className="text-xs text-slate-400">SALE-04</span>
+                        <span className="text-xs text-[#b89184]">SALE-04</span>
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-[#f9dcc4]">
                         {myContracts.map((c, i) => (
-                            <div key={i} className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 cursor-pointer">
+                            <div key={i} className="flex items-center justify-between px-6 py-4 hover:bg-[#f8edeb] cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <span className="inline-flex h-9 w-12 items-center justify-center rounded-lg bg-blue-50 text-xs font-bold text-blue-700">
+                                    <span className="inline-flex h-9 w-12 items-center justify-center rounded-lg bg-[#f8edeb] text-xs font-bold text-[#7d4e41]">
                                         {c.room}
                                     </span>
                                     <div>
-                                        <p className="text-sm font-medium text-slate-900">{c.customer}</p>
-                                        <p className="text-xs text-slate-400">{c.startDate} → {c.endDate}</p>
+                                        <p className="text-sm font-medium text-[#3f2d28]">{c.customer}</p>
+                                        <p className="text-xs text-[#b89184]">{c.startDate} → {c.endDate}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="text-right">
-                                        <p className="text-sm font-semibold text-slate-900">{c.commission}</p>
-                                        <span className={`text-xs px-2 py-0.5 rounded-full ${c.status === 'Đã nhận' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                        <p className="text-sm font-semibold text-[#3f2d28]">{c.commission}</p>
+                                        <span className={`text-xs px-2 py-0.5 rounded-full ${c.status === 'Đã nhận' ? 'bg-[#f9dcc4] text-[#7d4e41]' : 'bg-[#fcd5ce] text-[#7d4e41]'}`}>
                                             {c.status}
                                         </span>
                                     </div>
-                                    <ChevronRight className="h-4 w-4 text-slate-300" />
+                                    <ChevronRight className="h-4 w-4 text-[#caa79a]" />
                                 </div>
                             </div>
                         ))}
@@ -96,23 +96,23 @@ export default function SaleDashboard() {
                 </div>
 
                 {/* Commission payment history — SALE-08 */}
-                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                    <div className="px-6 py-4 border-b border-slate-100">
+                <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
+                    <div className="px-6 py-4 border-b border-[#f9dcc4]">
                         <div className="flex items-center gap-2">
-                            <HandCoins className="h-4 w-4 text-purple-500" />
-                            <h2 className="text-sm font-semibold text-slate-900">Lịch sử nhận hoa hồng</h2>
+                            <HandCoins className="h-4 w-4 text-[#a06151]" />
+                            <h2 className="text-sm font-semibold text-[#3f2d28]">Lịch sử nhận hoa hồng</h2>
                         </div>
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-[#f9dcc4]">
                         {commissionHistory.map((h, i) => (
                             <div key={i} className="flex items-center justify-between px-6 py-4">
                                 <div>
-                                    <p className="text-sm font-medium text-slate-900">{h.date}</p>
-                                    <p className="text-xs text-slate-400">HĐ: {h.contracts}</p>
+                                    <p className="text-sm font-medium text-[#3f2d28]">{h.date}</p>
+                                    <p className="text-xs text-[#b89184]">HĐ: {h.contracts}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-sm font-bold text-green-600">{h.total}</p>
-                                    <p className="text-xs text-slate-400">Xác nhận: {h.confirmedBy}</p>
+                                    <p className="text-sm font-bold text-[#9f5c4c]">{h.total}</p>
+                                    <p className="text-xs text-[#b89184]">Xác nhận: {h.confirmedBy}</p>
                                 </div>
                             </div>
                         ))}
@@ -123,3 +123,5 @@ export default function SaleDashboard() {
         </DashboardLayout>
     );
 }
+
+

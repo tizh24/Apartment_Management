@@ -17,12 +17,12 @@ const todayStats = [
 ];
 
 const colorMap: Record<string, { bg: string; icon: string }> = {
-    green:  { bg: 'bg-green-50',  icon: 'text-green-600' },
-    amber:  { bg: 'bg-amber-50',  icon: 'text-amber-600' },
-    red:    { bg: 'bg-red-50',    icon: 'text-red-600' },
-    purple: { bg: 'bg-purple-50', icon: 'text-purple-600' },
-    orange: { bg: 'bg-orange-50', icon: 'text-orange-600' },
-    blue:   { bg: 'bg-blue-50',   icon: 'text-blue-600' },
+    green: { bg: 'bg-[#f9dcc4]', icon: 'text-[#9f5c4c]' },
+    amber: { bg: 'bg-[#fcd5ce]', icon: 'text-[#a66754]' },
+    red: { bg: 'bg-[#fcd5ce]', icon: 'text-[#a45c4d]' },
+    purple: { bg: 'bg-[#f9dcc4]', icon: 'text-[#a06151]' },
+    orange: { bg: 'bg-[#fcd5ce]', icon: 'text-[#ab6f5b]' },
+    blue: { bg: 'bg-[#f8edeb]', icon: 'text-[#a65f4f]' },
 };
 
 // Expiring contracts in 7/15/30 days (CON-09)
@@ -48,8 +48,8 @@ export default function StaffDashboard() {
 
                 {/* Header */}
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Công việc hôm nay</h1>
-                    <p className="mt-0.5 text-sm text-slate-500">Thứ 7, 31 tháng 5 năm 2026</p>
+                    <h1 className="text-2xl font-bold text-[#3f2d28]">Công việc hôm nay</h1>
+                    <p className="mt-0.5 text-sm text-[#8f6f64]">Thứ 7, 31 tháng 5 năm 2026</p>
                 </div>
 
                 {/* Quick stats — operational metrics */}
@@ -60,14 +60,14 @@ export default function StaffDashboard() {
                         return (
                             <div
                                 key={i}
-                                className="group relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm cursor-pointer hover:shadow-md hover:border-blue-200 transition-all"
+                                className="group relative rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-5 shadow-sm cursor-pointer hover:shadow-md hover:border-[#ffb5a7] transition-all"
                             >
                                 <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${c.bg} mb-3`}>
                                     <Icon className={`h-5 w-5 ${c.icon}`} />
                                 </div>
-                                <p className="text-xs text-slate-500">{s.label}</p>
-                                <p className="mt-1 text-3xl font-bold text-slate-900">{s.value}</p>
-                                <ChevronRight className="absolute right-4 top-1/2 h-4 w-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <p className="text-xs text-[#8f6f64]">{s.label}</p>
+                                <p className="mt-1 text-3xl font-bold text-[#3f2d28]">{s.value}</p>
+                                <ChevronRight className="absolute right-4 top-1/2 h-4 w-4 text-[#caa79a] opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                         );
                     })}
@@ -76,27 +76,27 @@ export default function StaffDashboard() {
                 <div className="grid gap-6 lg:grid-cols-2">
 
                     {/* CON-09: Expiring contracts */}
-                    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                    <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-[#f9dcc4]">
                             <div className="flex items-center gap-2">
-                                <Clock className="h-4 w-4 text-amber-500" />
-                                <h2 className="text-sm font-semibold text-slate-900">HĐ sắp hết hạn</h2>
+                                <Clock className="h-4 w-4 text-[#a66754]" />
+                                <h2 className="text-sm font-semibold text-[#3f2d28]">HĐ sắp hết hạn</h2>
                             </div>
-                            <span className="text-xs text-slate-400">Trong 30 ngày tới</span>
+                            <span className="text-xs text-[#b89184]">Trong 30 ngày tới</span>
                         </div>
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-[#f9dcc4]">
                             {expiringContracts.map((c, i) => (
-                                <div key={i} className="flex items-center justify-between px-6 py-3 hover:bg-slate-50 cursor-pointer">
+                                <div key={i} className="flex items-center justify-between px-6 py-3 hover:bg-[#f8edeb] cursor-pointer">
                                     <div className="flex items-center gap-3">
-                                        <span className="inline-flex h-8 w-12 items-center justify-center rounded-lg bg-amber-50 text-xs font-bold text-amber-700">
+                                        <span className="inline-flex h-8 w-12 items-center justify-center rounded-lg bg-[#fcd5ce] text-xs font-bold text-[#7d4e41]">
                                             {c.room}
                                         </span>
                                         <div>
-                                            <p className="text-sm font-medium text-slate-900">{c.customer}</p>
-                                            <p className="text-xs text-slate-400">Hết ngày {c.endDate}</p>
+                                            <p className="text-sm font-medium text-[#3f2d28]">{c.customer}</p>
+                                            <p className="text-xs text-[#b89184]">Hết ngày {c.endDate}</p>
                                         </div>
                                     </div>
-                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${c.daysLeft <= 7 ? 'bg-red-100 text-red-700' : c.daysLeft <= 15 ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${c.daysLeft <= 7 ? 'bg-[#fcd5ce] text-[#7d3e35]' : c.daysLeft <= 15 ? 'bg-[#fcd5ce] text-[#7d4e41]' : 'bg-[#f9dcc4] text-[#7d4e41]'}`}>
                                         {c.daysLeft} ngày
                                     </span>
                                 </div>
@@ -105,24 +105,24 @@ export default function StaffDashboard() {
                     </div>
 
                     {/* Recent activities */}
-                    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                            <h2 className="text-sm font-semibold text-slate-900">Hoạt động gần đây</h2>
-                            <button className="text-xs text-blue-600 hover:underline">Xem tất cả</button>
+                    <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-[#f9dcc4]">
+                            <h2 className="text-sm font-semibold text-[#3f2d28]">Hoạt động gần đây</h2>
+                            <button className="text-xs text-[#a65f4f] hover:underline">Xem tất cả</button>
                         </div>
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-[#f9dcc4]">
                             {recentActivities.map((a, i) => {
                                 const Icon = a.icon;
                                 return (
-                                    <div key={i} className="flex items-center gap-4 px-6 py-3 hover:bg-slate-50 cursor-pointer">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50">
-                                            <Icon className="h-4 w-4 text-blue-600" />
+                                    <div key={i} className="flex items-center gap-4 px-6 py-3 hover:bg-[#f8edeb] cursor-pointer">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f8edeb]">
+                                            <Icon className="h-4 w-4 text-[#a65f4f]" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-slate-900">{a.action}</p>
-                                            <p className="text-xs text-slate-500 truncate">{a.detail}</p>
+                                            <p className="text-sm font-medium text-[#3f2d28]">{a.action}</p>
+                                            <p className="text-xs text-[#8f6f64] truncate">{a.detail}</p>
                                         </div>
-                                        <span className="text-xs text-slate-400 whitespace-nowrap">{a.time}</span>
+                                        <span className="text-xs text-[#b89184] whitespace-nowrap">{a.time}</span>
                                     </div>
                                 );
                             })}
@@ -134,3 +134,5 @@ export default function StaffDashboard() {
         </DashboardLayout>
     );
 }
+
+
