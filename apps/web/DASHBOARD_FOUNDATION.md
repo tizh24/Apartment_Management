@@ -1,6 +1,6 @@
 # Dashboard Foundation Structure
 
-This document outlines the role-based dashboard architecture for the apartment management system.
+This document outlines the role-based dashboard architecture for the multi-apartment management platform.
 
 ## Overview
 
@@ -33,7 +33,7 @@ Each role has specific permissions controlled in `rolePermissions` object:
 Role-based navigation items are configured separately for each role:
 
 **Admin Sidebar:**
-- Dashboard, Room Management, Customer Management, Contracts, Revenue & Billing, Sales & Commission, AI Tools, System Settings
+- Dashboard, Property / Building Management, Room Management, Customer Management, Contracts, Revenue & Billing, Sales & Commission, AI Tools, System Settings
 
 **Staff Sidebar:**
 - Dashboard, Rooms, Customers, Contracts, Payments, Support Requests
@@ -186,6 +186,17 @@ src/
 - **Spacing**: Used Tailwind's full spacing scale
 - **Hover states**: Subtle shadow and color shifts
 - **Responsive**: Mobile-first with `sm:`, `lg:`, `xl:` breakpoints
+
+## Requirements Mapping (PRD Alignment)
+
+Based on the official requirements, the dashboard components must satisfy the following:
+- **DASH-01**: Display total rooms, rented rooms, vacant rooms, expiring soon, and maintenance rooms.
+- **DASH-02**: Display occupancy rate over time (day, month, quarter, custom range).
+- **DASH-03 & 04**: Display current guests renting across the platform and guest volume trends over time (new, leaving, current).
+- **DASH-05**: Display revenue over time with filtering (day, month, quarter, year, custom).
+- **DASH-06**: Display total outstanding debt (unpaid amounts: room fees, utilities, extras).
+- **DASH-07**: Show a list of overdue payments and their associated customers (Warnings/Alerts).
+- **DASH-08**: Enable drill-down functionality (clicking on a metric widget opens the detailed data list).
 
 ## Next Steps
 
