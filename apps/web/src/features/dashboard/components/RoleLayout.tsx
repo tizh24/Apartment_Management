@@ -2,20 +2,31 @@
 
 import React, { ReactNode } from 'react';
 import { RoleProvider } from '@/context/RoleContext';
-import { UserRole } from '@/types/roles';
+import { UserRole, ROLE_LABELS } from '@/types/roles';
 
 interface RoleLayoutProps {
   children: ReactNode;
   role: UserRole;
 }
 
+const MOCK_USERS: Record<UserRole, { email: string; name: string }> = {
+  [UserRole.ADMIN]: { email: 'admin@apartmgmt.com', name: 'Nguyễn Văn Admin' },
+  [UserRole.STAFF]: { email: 'nhanvien@apartmgmt.com', name: 'Trần Thị Nhân Viên' },
+  [UserRole.ACCOUNTANT]: { email: 'ketoan@apartmgmt.com', name: 'Lê Thị Kế Toán' },
+  [UserRole.SALE]: { email: 'sale@apartmgmt.com', name: 'Phạm Văn Sale' },
+  [UserRole.CUSTOMER]: { email: 'khach@apartmgmt.com', name: 'Hoàng Văn Khách' },
+};
+
 export function RoleLayout({ children, role }: RoleLayoutProps) {
+  const mockInfo = MOCK_USERS[role];
   const mockUser = {
-    id: '1',
-    email: role === UserRole.ADMIN ? 'admin@apartmgmt.com' : role === UserRole.STAFF ? 'staff@apartmgmt.com' : 'customer@apartmgmt.com',
-    name: role === UserRole.ADMIN ? 'Admin User' : role === UserRole.STAFF ? 'Staff Member' : 'Customer User',
+    id: `mock-${role}-1`,
+    email: mockInfo.email,
+    name: mockInfo.name,
     role,
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${role}`,
+    roomNumber: role === UserRole.CUSTOMER ? '305' : undefined,
+    buildingName: role === UserRole.CUSTOMER ? 'Tòa A' : undefined,
   };
 
   return (
