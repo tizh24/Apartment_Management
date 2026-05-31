@@ -2,6 +2,15 @@
 
 import { DashboardLayout } from '@/features/dashboard/components/layouts';
 import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
+import {
     CreditCard, DoorOpen, FileText, MessageSquare,
     Star, QrCode, CheckCircle, Clock, AlertCircle,
     ChevronRight,
@@ -71,6 +80,20 @@ export default function GuestPortal() {
     return (
         <DashboardLayout>
             <div className="p-6 space-y-6">
+
+                <Breadcrumb>
+                    <BreadcrumbList className="text-sm text-[#8f6f64]">
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild className="hover:text-[#5b463f]">
+                                <Link href="/guest-portal">Khách thuê</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className="font-semibold text-[#3f2d28]">Trang chủ</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
                 {/* Welcome banner — GUEST-06 */}
                 <div className="rounded-2xl bg-gradient-to-r from-[#ffb5a7] to-[#fec89a] p-6 text-white shadow-md">

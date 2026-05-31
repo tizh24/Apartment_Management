@@ -2,6 +2,15 @@
 
 import { DashboardLayout } from '@/features/dashboard/components/layouts';
 import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
+import {
     DoorOpen, Users, FileText, Wrench,
     Clock, MessageSquare, ChevronRight, CheckCircle2,
     ArrowRight,
@@ -46,11 +55,19 @@ export default function StaffDashboard() {
         <DashboardLayout>
             <div className="p-6 space-y-6">
 
-                {/* Header */}
-                <div>
-                    <h1 className="text-2xl font-bold text-[#3f2d28]">Công việc hôm nay</h1>
-                    <p className="mt-0.5 text-sm text-[#8f6f64]">Thứ 7, 31 tháng 5 năm 2026</p>
-                </div>
+                <Breadcrumb>
+                    <BreadcrumbList className="text-sm text-[#8f6f64]">
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild className="hover:text-[#5b463f]">
+                                <Link href="/staff">Nhân viên vận hành</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className="font-semibold text-[#3f2d28]">Công việc hôm nay</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
                 {/* Quick stats — operational metrics */}
                 <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">

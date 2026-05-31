@@ -2,6 +2,15 @@
 
 import { DashboardLayout } from '@/features/dashboard/components/layouts';
 import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
+import {
     DoorOpen, Users, TrendingUp, AlertTriangle,
     CheckCircle, Clock, Wrench, ArrowUpRight,
     ChevronRight, BanknoteIcon,
@@ -62,13 +71,22 @@ export default function AdminDashboard() {
         <DashboardLayout>
             <div className="p-6 space-y-6">
 
-                {/* Page title */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-[#3f2d28]">Dashboard</h1>
-                        <p className="mt-0.5 text-sm text-[#8f6f64]">Tổng quan vận hành — Tháng 5, 2026</p>
-                    </div>
-                    <button className="inline-flex items-center gap-2 rounded-lg border border-[#fcd5ce] bg-[#fff8f6] px-4 py-2 text-sm font-medium text-[#5b463f] hover:bg-[#f8edeb] transition-colors">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <Breadcrumb>
+                        <BreadcrumbList className="text-sm text-[#8f6f64]">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink asChild className="hover:text-[#5b463f]">
+                                    <Link href="/admin">Admin</Link>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="font-semibold text-[#3f2d28]">Dashboard</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+
+                    <button className="inline-flex items-center gap-2 rounded-lg border border-[#fcd5ce] bg-[#fff8f6] px-4 py-2 text-sm font-medium text-[#5b463f] hover:bg-[#f8edeb] transition-colors w-fit">
                         <ArrowUpRight className="h-4 w-4" />
                         Xuất báo cáo
                     </button>

@@ -1,6 +1,15 @@
 'use client';
 
 import { DashboardLayout } from '@/features/dashboard/components/layouts';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
 import { FileText, HandCoins, CheckCircle, Clock, ChevronRight } from 'lucide-react';
 
 const stats = [
@@ -36,11 +45,19 @@ export default function SaleDashboard() {
         <DashboardLayout>
             <div className="p-6 space-y-6">
 
-                {/* Header */}
-                <div>
-                    <h1 className="text-2xl font-bold text-[#3f2d28]">Dashboard Sale</h1>
-                    <p className="mt-0.5 text-sm text-[#8f6f64]">Hợp đồng & Hoa hồng của tôi — Tháng 5, 2026</p>
-                </div>
+                <Breadcrumb>
+                    <BreadcrumbList className="text-sm text-[#8f6f64]">
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild className="hover:text-[#5b463f]">
+                                <Link href="/sale">Sale</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className="font-semibold text-[#3f2d28]">Hợp đồng & Hoa hồng</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
