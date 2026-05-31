@@ -64,16 +64,15 @@ export default function Home() {
         <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
             {/* Background image - scaled and slightly saturated for a vivid look */}
             <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                className="fixed inset-0 bg-cover bg-center bg-no-repeat"
                 style={{
                     backgroundImage: `url(${pageImage.src})`,
-                    transform: 'scale(1.06)',
                     filter: 'saturate(1.16) contrast(1.05)'
                 }}
             />
 
             {/* Lightweight overlay for contrast (no blur) */}
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,16,32,0.06)_0%,rgba(15,16,32,0.18)_40%,rgba(15,16,32,0.06)_100%)]" />
+            <div className="fixed inset-0 bg-[linear-gradient(90deg,rgba(15,16,32,0.06)_0%,rgba(15,16,32,0.18)_40%,rgba(15,16,32,0.06)_100%)]" />
 
             {/* Top-left brand (bigger + clearer) */}
             <header className="absolute left-8 top-6 z-30">
