@@ -521,11 +521,16 @@ function SidebarMenuButton({
     return button
   }
 
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
-  }
+  const tooltipProps =
+    typeof tooltip === "string"
+      ? { children: tooltip }
+      : tooltip
+
+  const {
+    className: tooltipClassName,
+    sideOffset: tooltipSideOffset,
+    ...tooltipContentProps
+  } = tooltipProps
 
   return (
     <Tooltip>
@@ -533,8 +538,14 @@ function SidebarMenuButton({
       <TooltipContent
         side="right"
         align="center"
+        withArrow={false}
+        sideOffset={tooltipSideOffset ?? 10}
+        className={cn(
+          "rounded-xl border border-[#fcd5ce] bg-[#fff8f6]/95 px-3 py-2 text-sm font-semibold text-[#5b463f] shadow-[0_10px_24px_rgba(63,45,40,0.18)] backdrop-blur-sm",
+          tooltipClassName
+        )}
         hidden={state !== "collapsed" || isMobile}
-        {...tooltip}
+        {...tooltipContentProps}
       />
     </Tooltip>
   )

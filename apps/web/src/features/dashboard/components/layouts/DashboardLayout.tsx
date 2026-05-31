@@ -70,7 +70,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 } as React.CSSProperties
             }
         >
-            <Sidebar variant="inset" collapsible="icon" className="border-r border-[#fcd5ce]">
+            <Sidebar variant="sidebar" collapsible="icon" className="border-r border-[#fcd5ce]">
                 <SidebarHeader className="border-b border-[#fcd5ce] px-3 py-4">
                     <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffb5a7] text-[#3f2d28]">
