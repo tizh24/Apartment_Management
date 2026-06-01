@@ -415,13 +415,15 @@ providers/
 ```
 constants/
  ├── routes.ts                   # Route paths (type-safe)
- ├── roles.ts                    # ADMIN | STAFF | ACCOUNTANT | SALE | GUEST
+ ├── roles.ts                    # ADMIN | STAFF | SALE | GUEST
  ├── permissions.ts              # Permission map theo role
  ├── room-status.ts              # VACANT | OCCUPIED | RESERVED | MAINTENANCE
  ├── invoice-status.ts           # UNPAID | PARTIAL | PAID | OVERDUE | CANCELLED
  ├── contract-status.ts          # ACTIVE | EXPIRED | CANCELLED | EXTENDED
  └── qr.ts                       # QR_EXPIRY_SECONDS = 300
 ```
+
+`STAFF` is the full operational role for the MVP core flow: rooms, customers, contracts, receivables, payments, and reports. `ADMIN` keeps the same operational scope plus platform/system configuration.
 
 ---
 

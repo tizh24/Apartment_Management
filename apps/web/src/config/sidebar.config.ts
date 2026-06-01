@@ -1,6 +1,6 @@
 /**
  * Sidebar navigation configuration by role
- * 5 roles: Admin, Staff, Accountant, Sale, Customer
+ * 4 roles: Admin, Staff, Sale, Customer
  */
 
 import { UserRole } from '@/types/roles';
@@ -66,26 +66,14 @@ const staffSidebar: SidebarConfig = {
         { id: 'rooms', label: 'Phòng', href: '/staff/rooms', icon: DoorOpen },
         { id: 'customers', label: 'Khách hàng', href: '/staff/customers', icon: Users },
         { id: 'contracts', label: 'Hợp đồng', href: '/staff/contracts', icon: FileText },
+        { id: 'invoices', label: 'Khoản phải thu', href: '/staff/invoices', icon: Receipt },
         { id: 'payments', label: 'Thanh toán', href: '/staff/payments', icon: CreditCard },
+        { id: 'revenue', label: 'Doanh thu & Báo cáo', href: '/staff/revenue', icon: TrendingUp },
+        { id: 'reports', label: 'Báo cáo chi tiết', href: '/staff/reports', icon: FileBarChart },
         { id: 'support', label: 'Yêu cầu hỗ trợ', href: '/staff/support', icon: AlertCircle },
     ],
     bottom: [
         { id: 'profile', label: 'Hồ sơ cá nhân', href: '/staff/profile', icon: User },
-        { id: 'logout', label: 'Đăng xuất', href: '/auth/logout', icon: LogOut },
-    ],
-};
-
-// ─── ACCOUNTANT (Kế toán / Thu ngân) ─────────────────────────────────────────
-const accountantSidebar: SidebarConfig = {
-    main: [
-        { id: 'dashboard', label: 'Dashboard', href: '/accountant', icon: LayoutDashboard },
-        { id: 'revenue', label: 'Doanh thu', href: '/accountant/revenue', icon: TrendingUp },
-        { id: 'invoices', label: 'Khoản phải thu', href: '/accountant/invoices', icon: Receipt },
-        { id: 'pending', label: 'Chờ xác nhận', href: '/accountant/pending', icon: Banknote },
-        { id: 'reports', label: 'Báo cáo', href: '/accountant/reports', icon: FileBarChart },
-    ],
-    bottom: [
-        { id: 'profile', label: 'Hồ sơ cá nhân', href: '/accountant/profile', icon: User },
         { id: 'logout', label: 'Đăng xuất', href: '/auth/logout', icon: LogOut },
     ],
 };
@@ -122,7 +110,6 @@ const customerSidebar: SidebarConfig = {
 export const sidebarByRole: Record<UserRole, SidebarConfig> = {
     [UserRole.ADMIN]: adminSidebar,
     [UserRole.STAFF]: staffSidebar,
-    [UserRole.ACCOUNTANT]: accountantSidebar,
     [UserRole.SALE]: saleSidebar,
     [UserRole.CUSTOMER]: customerSidebar,
 };

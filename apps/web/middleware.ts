@@ -4,7 +4,6 @@ import type { NextRequest } from 'next/server';
 const ROLE_HOME_PATH: Record<string, string> = {
     admin: '/admin',
     staff: '/staff',
-    accountant: '/accountant',
     sale: '/sale',
     customer: '/guest-portal',
 };
@@ -12,7 +11,6 @@ const ROLE_HOME_PATH: Record<string, string> = {
 const ROLE_PREFIX: Record<string, string> = {
     admin: '/admin',
     staff: '/staff',
-    accountant: '/accountant',
     sale: '/sale',
     customer: '/guest-portal',
 };
@@ -20,7 +18,6 @@ const ROLE_PREFIX: Record<string, string> = {
 function getRequiredRole(pathname: string): string | null {
     if (pathname.startsWith('/admin')) return 'admin';
     if (pathname.startsWith('/staff')) return 'staff';
-    if (pathname.startsWith('/accountant')) return 'accountant';
     if (pathname.startsWith('/sale')) return 'sale';
     if (pathname.startsWith('/guest-portal')) return 'customer';
     return null;

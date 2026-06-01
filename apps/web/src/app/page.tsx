@@ -10,7 +10,6 @@ import { UserRole } from '@/types/roles';
 const ROLE_HOME_PATH: Record<UserRole, string> = {
     [UserRole.ADMIN]: '/admin',
     [UserRole.STAFF]: '/staff',
-    [UserRole.ACCOUNTANT]: '/accountant',
     [UserRole.SALE]: '/sale',
     [UserRole.CUSTOMER]: '/guest-portal',
 };
@@ -18,7 +17,6 @@ const ROLE_HOME_PATH: Record<UserRole, string> = {
 const DEMO_ACCOUNTS: Record<string, { password: string; role: UserRole }> = {
     'admin@apartmgmt.com': { password: '123456', role: UserRole.ADMIN },
     'nhanvien@apartmgmt.com': { password: '123456', role: UserRole.STAFF },
-    'ketoan@apartmgmt.com': { password: '123456', role: UserRole.ACCOUNTANT },
     'sale@apartmgmt.com': { password: '123456', role: UserRole.SALE },
     'khach@apartmgmt.com': { password: '123456', role: UserRole.CUSTOMER },
 };

@@ -34,9 +34,13 @@ Tài liệu này mô tả các yêu cầu chức năng và phi chức năng cho 
 | Vai trò | Mô tả | Quyền chính |
 | ------- | ----- | ----------- |
 | **Admin/Chủ apartment** | Người quản lý cao nhất của hệ thống. | Quản lý toàn bộ dữ liệu, cấu hình hệ thống, xem dashboard, doanh thu, công nợ. Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán. Theo dõi doanh thu, khoản chưa trả, xác nhận giao dịch, xuất báo cáo. |
-| **Nhân viên vận hành** | Người phụ trách quản lý phòng, khách và hợp đồng. | Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán. Theo dõi doanh thu, khoản chưa trả, xác nhận giao dịch, xuất báo cáo. |
+| **Nhân viên vận hành** | Người phụ trách toàn bộ nghiệp vụ vận hành hằng ngày. | Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán, xác nhận giao dịch và xuất báo cáo. |
 | **Sale/Cộng tác viên** | Người giới thiệu hoặc kiếm hợp đồng thuê. | Xem các hợp đồng do mình kiếm được, hoa hồng tương ứng và trạng thái thanh toán hoa hồng. |
 | **Khách thuê** | Người đang thuê hoặc từng thuê phòng. | Đăng nhập cổng khách hàng, xem thông tin phòng, khoản phải trả, thanh toán, gửi khiếu nại và đánh giá dịch vụ. |
+
+---
+
+> Requirement mới chỉ áp dụng 4 vai trò: Admin/Chủ apartment, Nhân viên vận hành, Sale/Cộng tác viên và Khách thuê. Không có vai trò kế toán riêng. `Nhân viên vận hành` được xem là vai trò vận hành đầy đủ cho các chức năng core của MVP.
 
 ---
 

@@ -1,18 +1,17 @@
 /**
  * Role types and enums for the apartment management system
- * 5 roles per PRD: Admin, Staff (Nhân viên vận hành), Accountant (Kế toán),
+ * 4 roles per PRD: Admin, Staff (Nhân viên vận hành),
  * Sale (Cộng tác viên), Customer (Khách thuê)
  */
 
 export enum UserRole {
     ADMIN = 'admin',
     STAFF = 'staff',
-    ACCOUNTANT = 'accountant',
     SALE = 'sale',
     CUSTOMER = 'customer',
 }
 
-export type RoleType = UserRole | 'admin' | 'staff' | 'accountant' | 'sale' | 'customer';
+export type RoleType = UserRole | 'admin' | 'staff' | 'sale' | 'customer';
 
 export interface RolePermissions {
     // Analytics & reporting
@@ -68,11 +67,11 @@ export const rolePermissions: Record<UserRole, RolePermissions> = {
         canSubmitReviews: false,
     },
     [UserRole.STAFF]: {
-        // Nhân viên vận hành: quản lý phòng, khách, hợp đồng, điện nước
-        canViewAnalytics: false,
-        canViewRevenue: false,
+        // Nhân viên vận hành: quản lý phòng, khách, hợp đồng, điện nước + báo cáo, doanh thu, phân tích
+        canViewAnalytics: true,
+        canViewRevenue: true,
         canConfirmPayments: true,
-        canExportReports: false,
+        canExportReports: true,
         canManageRooms: true,
         canInputUtility: true,
         canManageCustomers: true,
@@ -87,28 +86,6 @@ export const rolePermissions: Record<UserRole, RolePermissions> = {
         canViewOwnData: false,
         canMakePayments: true,
         canCreateSupportTickets: true,
-        canSubmitReviews: false,
-    },
-    [UserRole.ACCOUNTANT]: {
-        // Kế toán/Thu ngân: doanh thu, xác nhận thanh toán, xuất báo cáo
-        canViewAnalytics: true,
-        canViewRevenue: true,
-        canConfirmPayments: true,
-        canExportReports: true,
-        canManageRooms: false,
-        canInputUtility: false,
-        canManageCustomers: false,
-        canManageContracts: false,
-        canManageBilling: true,
-        canManageSales: false,
-        canViewOwnContracts: false,
-        canViewOwnCommissions: false,
-        canAccessAITools: false,
-        canAccessSystemSettings: false,
-        canViewAllCustomers: true,
-        canViewOwnData: false,
-        canMakePayments: false,
-        canCreateSupportTickets: false,
         canSubmitReviews: false,
     },
     [UserRole.SALE]: {
@@ -171,7 +148,6 @@ export interface User {
 export const ROLE_LABELS: Record<UserRole, string> = {
     [UserRole.ADMIN]: 'Admin',
     [UserRole.STAFF]: 'Nhân viên vận hành',
-    [UserRole.ACCOUNTANT]: 'Kế toán',
     [UserRole.SALE]: 'Sale / Cộng tác viên',
     [UserRole.CUSTOMER]: 'Khách thuê',
 };

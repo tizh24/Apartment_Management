@@ -12,7 +12,6 @@ interface RoleLayoutProps {
 const MOCK_USERS: Record<UserRole, { email: string; name: string }> = {
   [UserRole.ADMIN]: { email: 'admin@apartmgmt.com', name: 'Nguyễn Văn Admin' },
   [UserRole.STAFF]: { email: 'nhanvien@apartmgmt.com', name: 'Trần Thị Nhân Viên' },
-  [UserRole.ACCOUNTANT]: { email: 'ketoan@apartmgmt.com', name: 'Lê Thị Kế Toán' },
   [UserRole.SALE]: { email: 'sale@apartmgmt.com', name: 'Phạm Văn Sale' },
   [UserRole.CUSTOMER]: { email: 'khach@apartmgmt.com', name: 'Hoàng Văn Khách' },
 };
