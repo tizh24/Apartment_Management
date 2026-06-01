@@ -1,21 +1,16 @@
-
-# Tổng quan dự án — Hệ thống quản lý Apartment
-
----
-
-## Bối cảnh & mục tiêu
-
-Hệ thống thay thế quy trình quản lý thủ công bằng Excel và nhắn tin kiểm tra thanh toán qua WhatsApp. Mục tiêu số hóa toàn bộ vòng đời vận hành:
-
-```
-Đặt phòng → Hợp đồng → Nhận phòng → Thanh toán định kỳ → Phát sinh công nợ → Khiếu nại → Trả phòng → Đánh giá
-```
-
-**Đối tượng sử dụng:** Doanh nghiệp/cá nhân vận hành một hoặc nhiều apartment.
+# Tổng quan dự án — Nền tảng quản lý Multi-Apartment
 
 ---
 
-## Tech stack
+## 1. Bối cảnh & Mục tiêu
+
+Tài liệu này mô tả các yêu cầu chức năng và phi chức năng cho hệ thống quản lý apartment, nhằm thay thế quy trình quản lý thủ công bằng Excel và nhắn tin kiểm tra thanh toán qua WhatsApp. Hệ thống tập trung vào việc số hóa toàn bộ quy trình vận hành từ lúc khách đặt phòng, tạo hợp đồng, nhận phòng, thanh toán định kỳ, phát sinh công nợ, xử lý khiếu nại đến khi khách trả phòng và đánh giá dịch vụ.
+
+**Phạm vi áp dụng:** Hệ thống phù hợp cho doanh nghiệp/cá nhân đang vận hành nền tảng chuỗi nhiều tòa nhà, apartment (multi-apartment), có nhu cầu quản lý phòng, khách thuê, sale, khoản phải thu, khoản chưa thanh toán và trải nghiệm khách thuê thông qua giao diện riêng.
+
+---
+
+## 2. Tech Stack
 
 | Layer         | Công nghệ                         | Lý do chọn                                |
 | ------------- | ----------------------------------- | ------------------------------------------- |
@@ -28,194 +23,93 @@ Hệ thống thay thế quy trình quản lý thủ công bằng Excel và nhắ
 | Database      | PostgreSQL                          | Relational, phù hợp dữ liệu tài chính |
 | Auth          | NextAuth.js                         | Session management, role-based              |
 | File upload   | AWS S3 / Cloudflare R2              | Lưu giấy tờ, hình ảnh phòng           |
-| QR            | `qrcode`npm package               | Sinh QR thanh toán                         |
-| Export        | `exceljs`+`@react-pdf/renderer` | Xuất báo cáo Excel/PDF                   |
+| QR            | `qrcode` npm package                | Sinh QR thanh toán                         |
+| Export        | `exceljs`+`@react-pdf/renderer`       | Xuất báo cáo Excel/PDF                   |
 | AI/OCR        | Google Vision API / AWS Textract    | Quét hộ chiếu, CCCD (phase 6)            |
 
 ---
 
-## Vai trò người dùng
+## 3. Vai trò người dùng
 
 | Vai trò                         | Mô tả                     | Quyền chính                                       |
 | -------------------------------- | --------------------------- | --------------------------------------------------- |
-| **Admin**                  | Chủ apartment              | Toàn quyền — config, báo cáo, doanh thu        |
-| **Nhân viên vận hành** | Staff quản lý hàng ngày | Phòng, khách, hợp đồng, điện nước          |
-| **Kế toán**              | Thu ngân, đối soát      | Khoản phải thu, xác nhận thanh toán, báo cáo |
-| **Sale**                   | Cộng tác viên            | Xem HĐ + hoa hồng của mình                      |
-| **Khách thuê**           | Tenant                      | Cổng khách: xem phòng, thanh toán, khiếu nại  |
+| **Admin/Chủ apartment**          | Người quản lý cao nhất của hệ thống. | Quản lý toàn bộ dữ liệu, cấu hình hệ thống, xem dashboard, doanh thu, công nợ và báo cáo. |
+| **Nhân viên vận hành**           | Người phụ trách quản lý phòng, khách và hợp đồng. | Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán. |
+| **Kế toán/Thu ngân**             | Người phụ trách khoản phải thu và xác nhận thanh toán. | Theo dõi doanh thu, khoản chưa trả, xác nhận giao dịch, xuất báo cáo. |
+| **Sale/Cộng tác viên**           | Người giới thiệu hoặc kiếm hợp đồng thuê. | Xem các hợp đồng do mình kiếm được, hoa hồng tương ứng và trạng thái thanh toán hoa hồng. |
+| **Khách thuê**                   | Người đang thuê hoặc từng thuê phòng. | Đăng nhập cổng khách hàng, xem thông tin phòng, khoản phải trả, thanh toán, gửi khiếu nại và đánh giá dịch vụ. |
 
 ---
 
-## Modules & độ ưu tiên MVP
+## 4. Danh sách chức năng chính & Các tính năng
 
-### 🔴 Ưu tiên cao — Phase 1–4
-
-#### DASH — Dashboard
-
-Tổng quan vận hành theo thời gian thực.
-
-* Tổng phòng / đang thuê / trống / sắp hết HĐ / bảo trì
-* Tỷ lệ lấp đầy theo ngày, tháng, quý
-* Doanh thu theo thời gian
-* Tổng công nợ chưa trả
-* Danh sách quá hạn cần xử lý
-* Drill-down: nhấn vào chỉ số → xem danh sách chi tiết
-
-#### ROOM — Quản lý phòng
-
-* CRUD phòng: số phòng, tầng, diện tích, giá, tiện ích, hình ảnh
-* 6 trạng thái: `Trống` `Đang thuê` `Đã đặt trước` `Sắp trả` `Bảo trì` `Ngừng sử dụng`
-* Nhập chỉ số điện nước đầu/cuối kỳ → tự động tính chi phí
-* Cảnh báo chỉ số bất hợp lệ (cuối kỳ < đầu kỳ)
-* Xem lịch sử khách từng thuê phòng
-* Auto cập nhật trạng thái khi tạo hợp đồng
-
-#### CUS — Quản lý khách hàng
-
-* Hồ sơ: họ tên, ngày sinh, SĐT, email, quốc tịch, CCCD/hộ chiếu/visa
-* Upload & lưu giấy tờ (phân quyền chặt)
-* 4 trạng thái: `Đang thuê` `Hết HĐ` `Đã hủy` `Tiềm năng`
-* Lịch sử hợp đồng + khoản phải trả
-* Tìm kiếm theo tên, SĐT, CCCD, số phòng
-
-#### CON — Quản lý hợp đồng
-
-* Tạo HĐ: phòng + khách + ngày đến/đi + giá + cọc + điều khoản + sale
-* Kiểm tra xung đột lịch trước khi tạo
-* Sau khi tạo: auto cập nhật trạng thái phòng + khách + hoa hồng sale
-* Gia hạn / kết thúc sớm / hủy HĐ
-* Audit log mọi thay đổi (ai, lúc nào, thay đổi gì)
-* Cảnh báo HĐ sắp hết hạn: 7 / 15 / 30 ngày (configurable)
-
-#### PAY — Payment engine
-
-* Sinh QR thanh toán: đúng số tiền + đúng tài khoản + nội dung CK duy nhất
-* QR có hiệu lực **5 phút**
-* Auto xác minh giao dịch qua bank webhook/API đối soát
-* Nếu timeout → thông báo thất bại, yêu cầu thử lại
-* Dùng bởi: `revenue/`, `sale/`, `guest-portal/`
-
-#### REV — Doanh thu & khoản phải thu
-
-* Tạo hóa đơn theo kỳ (tiền phòng + điện + nước + phí phát sinh)
-* 5 trạng thái: `Chưa trả` `Thanh toán một phần` `Đã trả` `Quá hạn` `Đã hủy`
-* Ghi nhận nhiều lần thanh toán (partial payment)
-* Lưu bằng chứng: ảnh chuyển khoản, mã giao dịch
-* Lọc theo thời gian / phòng / khách / trạng thái / loại khoản
-* Xuất báo cáo Excel/PDF
-
-#### GUEST — Cổng khách hàng
-
-* Đăng nhập: số phòng + mật khẩu mặc định `ddmm` (ngày sinh)
-* Bắt buộc đổi mật khẩu sau lần đăng nhập đầu tiên
-* Xem thông tin phòng + HĐ + hóa đơn theo kỳ
-* Thanh toán bằng QR (5 phút timeout)
-* Gửi khiếu nại / yêu cầu hỗ trợ
-* Đánh giá dịch vụ khi thanh toán khoản cuối cùng trước khi hết HĐ
+| Mã module | Tên chức năng | Mục tiêu |
+| --------- | ------------- | -------- |
+| **DASH** | Dashboard | Cung cấp tổng quan số phòng, lượng khách, doanh thu, khoản chưa trả và tình hình vận hành theo thời gian. |
+| **ROOM** | Quản lý phòng | Quản lý tình trạng phòng, giá, diện tích, khách đang thuê, thời gian thuê, điện nước và khoản thanh toán theo kỳ. |
+| **CUS** | Quản lý khách hàng | Lưu thông tin khách, giấy tờ, tình trạng thuê, lịch sử hợp đồng và khoản phải trả. |
+| **CON** | Quản lý hợp đồng thuê | Tạo và quản lý hợp đồng thuê, ngày đến, ngày đi, thời hạn thuê và điều khoản. |
+| **SALE** | Quản lý sale | Theo dõi sale, hợp đồng kiếm được, hoa hồng, thanh toán hoa hồng và mã QR thanh toán. |
+| **REV** | Quản lý doanh thu | Theo dõi các khoản phải thu, tiền phòng, chi phí phát sinh, trạng thái đã thanh toán/chưa thanh toán. |
+| **GUEST** | Cổng khách hàng | Cho phép khách xem phòng, thanh toán, gửi yêu cầu trợ giúp/khiếu nại và đánh giá dịch vụ. |
+| **AI** | Chức năng AI phụ trợ | Phân tích đánh giá khách hàng, chatbot trả lời cơ bản và quét giấy tờ khi tạo hợp đồng. |
 
 ---
 
-### 🟡 Ưu tiên trung bình — Phase 5
+## 5. Luồng xử lý nghiệp vụ chính
 
-#### SALE — Quản lý sale & hoa hồng
+### 5.1. Luồng tạo hợp đồng khi khách đặt phòng
+1. Chọn phòng
+2. Tạo / chọn hồ sơ khách
+3. Nhập thông tin HĐ (ngày đến, ngày đi, giá, cọc, sale nếu có)
+4. Kiểm tra xung đột lịch
+5. Tạo hợp đồng (nếu hợp lệ)
+6. Auto cập nhật trạng thái phòng + trạng thái khách + hoa hồng sale
 
-* Hồ sơ sale: tên, SĐT, số tài khoản, ngân hàng
-* Gắn sale vào từng HĐ khi tạo
-* Tính hoa hồng theo công thức/số tiền được cấu hình
-* Tick chọn nhiều HĐ → tính tổng hoa hồng → sinh QR chuyển khoản
-* Lịch sử thanh toán hoa hồng, chống trả trùng
+### 5.2. Luồng khách nhận phòng và truy cập cổng khách hàng
+1. Nhận phòng -> Xác nhận trên hệ thống
+2. Hệ thống sinh QR truy cập cổng khách
+3. Khách quét QR → đăng nhập (số phòng + mật khẩu ddmm)
+4. [Lần đầu] Yêu cầu đổi mật khẩu
+5. Khách xem phòng, HĐ, hóa đơn
 
----
+### 5.3. Luồng thanh toán bằng QR (khách)
+1. Khách chọn khoản cần trả trên giao diện khách hàng.
+2. Hệ thống sinh QR đúng số tiền và số tài khoản nhận tiền (hiệu lực 5 phút).
+3. Khách chuyển khoản.
+4. Hệ thống kiểm tra xác minh giao dịch trong vòng 5 phút (polling / webhook).
+5. [Thành công] Cập nhật Đã trả. [Timeout/Thất bại] Thông báo chưa thành công để khách kiểm tra lại.
 
-### 🟢 Ưu tiên thấp — Phase 6
-
-#### AI — Chức năng AI phụ trợ
-
-* **OCR:** Quét hộ chiếu/CCCD/visa khi tạo khách — nhân viên xác nhận trước khi lưu
-* **Review analyzer:** Phân tích đánh giá khách theo nhóm vấn đề (vệ sinh, tiếng ồn, bảo trì, WiFi...)
-* **Chatbot:** Trả lời câu hỏi cơ bản cho khách (phòng, thanh toán, nội quy); không xử lý được → tạo ticket
-
-> ⚠️ AI chỉ hỗ trợ, **không tự động lưu** dữ liệu quan trọng. Luôn cần nhân viên xác nhận.
-
----
-
-## Luồng nghiệp vụ chính
-
-### 1. Đặt phòng & tạo hợp đồng
-
-```
-Chọn phòng
-    ↓
-Tạo / chọn hồ sơ khách
-    ↓
-Nhập thông tin HĐ (ngày đến, ngày đi, giá, cọc, sale nếu có)
-    ↓
-Kiểm tra xung đột lịch
-    ↓ [hợp lệ]
-Tạo hợp đồng
-    ↓
-Auto cập nhật: trạng thái phòng + trạng thái khách + hoa hồng sale
-```
-
-### 2. Nhận phòng & truy cập cổng khách
-
-```
-Nhân viên xác nhận nhận phòng
-    ↓
-Hệ thống sinh QR truy cập cổng khách
-    ↓
-Khách quét QR → đăng nhập (số phòng + mật khẩu ddmm)
-    ↓
-[Lần đầu] Yêu cầu đổi mật khẩu
-    ↓
-Khách xem phòng, HĐ, hóa đơn
-```
-
-### 3. Thanh toán bằng QR (khách)
-
-```
-Khách chọn khoản cần trả
-    ↓
-Hệ thống sinh QR (số tiền + tài khoản + nội dung duy nhất)
-    ↓
-QR hiệu lực 5 phút
-    ↓
-Khách chuyển khoản
-    ↓
-Hệ thống auto xác minh (polling / webhook) trong 5 phút
-    ↓ [thành công]           ↓ [timeout]
-Cập nhật: Đã trả       Thông báo thất bại
-                        Yêu cầu thử lại
-```
-
-### 4. Thanh toán hoa hồng sale
-
-```
-Admin vào màn hình sale
-    ↓
-Lọc HĐ theo sale + khoảng thời gian
-    ↓
-Tick chọn các HĐ cần trả hoa hồng
-    ↓
-Hệ thống tính tổng + sinh QR (tài khoản của sale)
-    ↓
-Admin chuyển khoản
-    ↓
-Xác nhận → Lưu lịch sử → Đánh dấu đã trả (chống trả trùng)
-```
+### 5.4. Luồng thanh toán hoa hồng sale
+1. Quản lý lọc HĐ theo sale + khoảng thời gian
+2. Tick chọn các HĐ cần thanh toán hoa hồng
+3. Hệ thống tính tổng tiền + sinh QR vào số tài khoản sale
+4. Quản lý chuyển khoản
+5. Xác nhận → Lưu lịch sử thanh toán → Đánh dấu đã trả (chống trùng)
 
 ---
 
-## Mô hình dữ liệu
+## 6. Mô hình dữ liệu & Yêu cầu dữ liệu chính
+
+| Nhóm dữ liệu | Thông tin cần lưu |
+| ------------ | ----------------- |
+| **Phòng** | Số phòng, tầng/khu vực, diện tích, giá thuê, trạng thái, tiện ích, hình ảnh, lịch sử khách thuê, chỉ số điện nước, khoản thanh toán |
+| **Khách hàng** | Họ tên, ngày sinh, SĐT, email, quốc tịch, hộ chiếu/CCCD, visa, tình trạng thuê, lịch sử hợp đồng, khoản phải trả |
+| **Hợp đồng thuê** | Phòng, khách, ngày đến, ngày đi, thời gian thuê, giá thuê, tiền cọc, điều khoản, sale liên quan, trạng thái hợp đồng |
+| **Sale** | Tên, số điện thoại, số tài khoản, ngân hàng, hợp đồng kiếm được, hoa hồng, trạng thái thanh toán hoa hồng |
+| **Doanh thu** | Loại khoản thu, số tiền, hạn thanh toán, trạng thái thanh toán, bằng chứng thanh toán |
+| **Khiếu nại/Hỗ trợ** | Khách gửi, phòng, nội dung, hình ảnh, trạng thái xử lý, người phụ trách |
+| **Đánh giá dịch vụ** | Khách đánh giá, hợp đồng liên quan, điểm đánh giá, nội dung phản hồi, nhóm vấn đề do AI phân tích |
 
 ```
-Apartment
- └── Room (1-n)
-      └── Contract (1-n)
-           ├── Customer (n-1)
-           ├── Sale (n-1, optional)
-           └── Invoice (1-n)
-                └── PaymentRecord (1-n)
+Platform / Organization
+ └── Apartment / Building (1-n)
+      └── Room (1-n)
+           └── Contract (1-n)
+                ├── Customer (n-1)
+                ├── Sale (n-1, optional)
+                └── Invoice (1-n)
+                     └── PaymentRecord (1-n)
 
 Customer
  └── Document (1-n)       # CCCD, hộ chiếu, visa
@@ -233,45 +127,47 @@ Customer
 
 ---
 
-## Yêu cầu phi chức năng
+## 7. Yêu cầu phi chức năng
 
-| Nhóm                 | Yêu cầu                                                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Bảo mật**   | Mã hóa mật khẩu (bcrypt). Phân quyền chặt cho giấy tờ nhạy cảm. Khách chỉ xem dữ liệu của mình. QR hết hạn sau 5 phút |
-| **Hiệu năng** | Danh sách phải có filter + sort + phân trang. Không load all records                                                                 |
-| **Responsive**  | Hoạt động tốt trên desktop và mobile — đặc biệt guest portal                                                                    |
-| **Audit log**   | Lưu lịch sử mọi thao tác quan trọng: tạo HĐ, sửa khoản thu, xác nhận thanh toán                                              |
-| **Backup**      | Sao lưu dữ liệu định kỳ                                                                                                             |
-| **Scalability** | Thiết kế hỗ trợ nhiều apartment / chi nhánh trong tương lai                                                                       |
+| Mã yêu cầu | Nhóm | Yêu cầu |
+| ---------- | ---- | ------- |
+| **NFR-01** | Bảo mật | Hệ thống phải mã hóa mật khẩu người dùng và không lưu mật khẩu dạng văn bản thuần. |
+| **NFR-02** | Bảo mật | Thông tin hộ chiếu, visa, CCCD, hợp đồng và dữ liệu thanh toán phải được phân quyền truy cập chặt chẽ. |
+| **NFR-03** | Bảo mật | Khách hàng chỉ được xem dữ liệu của phòng/hợp đồng thuộc về mình. |
+| **NFR-04** | Bảo mật | Mã QR thanh toán của khách phải có thời hạn hiệu lực 5 phút để hạn chế thanh toán sai/dùng lại. |
+| **NFR-05** | Hiệu năng | Các màn hình danh sách phải hỗ trợ tìm kiếm, lọc và phân trang (không load all). |
+| **NFR-06** | Dễ sử dụng | Giao diện cần đơn giản, dễ thao tác, phù hợp với người quen dùng Excel. |
+| **NFR-07** | Tương thích | Hoạt động tốt trên desktop và mobile, đặc biệt là giao diện khách hàng. |
+| **NFR-08** | Audit log | Lưu lịch sử các thao tác quan trọng: tạo hợp đồng, sửa khoản thu, xác nhận/thanh toán hoa hồng. |
+| **NFR-09** | Backup | Dữ liệu hệ thống nên được sao lưu định kỳ. |
+| **NFR-10** | Mở rộng | Kiến trúc đa cơ sở (Multi-tenant) hỗ trợ mạnh mẽ việc duy trì/mở rộng nhiều tòa nhà (apartment). |
+
+---
+
+## 8. MVP – Phạm vi ưu tiên phát triển
+
+| Khu vực | Ưu tiên | Chức năng (Mã chức năng) |
+| ------- | ------- | ------------------------ |
+| **DASH** | **Cao** | Tổng quan số phòng, lấp đầy, doanh thu, nợ chưa thu theo thời gian |
+| **ROOM** | **Cao** | Quản lý & trạng thái phòng (Trống, Đang thuê...) |
+| **CUS** | **Cao** | Quản lý hồ sơ, giấy tờ khách hàng cơ bản |
+| **CON** | **Cao** | Khởi tạo, theo dõi và quản lý hợp đồng thuê |
+| **REV / PAY** | **Cao** | Quản lý khoản phải thu, công nợ, tạo QR thanh toán và đối soát |
+| **GUEST** | **Cao** | Cổng khách hàng (login số phòng & mật khẩu ddmm đổi lần đầu) |
+| **SALE** | Trung bình | Quản lý sale và hoa hồng sale |
+| **ROOM** | Trung bình | Ghi nhận/tính toán điện nước |
+| **GUEST** | Trung bình | Giao diện gửi khiếu nại trợ giúp từ khách hàng |
+| **AI** | Thấp | AI review analyzer (nhận diện phàn nàn) |
+| **AI** | Thấp | AI Chatbot trả lời câu hỏi cơ bản |
+| **AI** | Thấp | OCR tự động điền giấy tờ hộ chiếu, CCCD (cần con người verify) |
 
 ---
 
 ## Ghi chú kỹ thuật quan trọng
 
-**QR Payment**
-Mỗi QR phải có nội dung chuyển khoản duy nhất (ví dụ: `HDAPT-{contractId}-{invoiceId}-{timestamp}`) để hệ thống đối soát chính xác. Không dùng chung 1 QR cho nhiều giao dịch.
-
-**Xác minh thanh toán tự động**
-Phụ thuộc vào ngân hàng/cổng thanh toán tích hợp. Cần chọn sớm: VietQR + webhook từ MB Bank / VPBank / Vietcombank, hoặc dùng trung gian như SePay / PayOS.
-
-**Mật khẩu khách thuê**
-Mật khẩu `ddmm` chỉ dùng lần đầu. Bắt buộc đổi mật khẩu ngay sau đăng nhập đầu tiên. Không gửi mật khẩu qua tin nhắn/email dạng plain text.
-
-**Giấy tờ cá nhân**
-CCCD, hộ chiếu, visa là dữ liệu nhạy cảm. Giới hạn quyền xem + download. Nên encrypt file trước khi upload lên S3.
-
-**AI/OCR**
-Data trích xuất từ AI không được tự động lưu. Luôn hiển thị để nhân viên review và xác nhận trước khi commit vào database.
-
----
-
-## Kế hoạch phát triển
-
-| Phase | Nội dung                               | Ước tính |
-| ----- | --------------------------------------- | ----------- |
-| 1     | Setup project + Auth + Dashboard + Room | 2–3 tuần  |
-| 2     | Customer + Contract                     | 2–3 tuần  |
-| 3     | Payment engine + Revenue                | 2–3 tuần  |
-| 4     | Guest portal                            | 1–2 tuần  |
-| 5     | Sale & hoa hồng                        | 1–2 tuần  |
-| 6     | AI/OCR + Review analyzer + Chatbot      | 2–4 tuần  |
+- **Mật khẩu & Mã QR:** 
+  - Mật khẩu `ddmm` chỉ giới hạn cho đăng nhập lần đầu. Yêu cầu đổi!
+  - Mã QR thanh toán cần sinh riêng cho từng giao dịch (ID duy nhất), timeout cực kỹ <= 5 phút.
+- **Xác minh thanh toán:** Phụ thuộc vào NH hoặc cổng trung gian. Cần webhook đối soát trong 5 phút.
+- **Giấy tờ cá nhân:** Cần phân quyền xem/tải xuống nghiêm ngặt, khuyến khích mã hóa.
+- **Dữ liệu AI:** Toàn bộ text xuất ra từ AI hay OCR **không được tự động lưu trực tiếp** vào database. Luôn cần giao diện confirm hiển thị để nhân viên xác nhận.
