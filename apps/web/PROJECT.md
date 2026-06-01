@@ -321,7 +321,7 @@ features/sale/
       └── sale.type.ts          # Sale, Commission, CommissionStatus
 ```
 
-### `features/guest-portal/` [REQ: GUEST-01 -> GUEST-15]
+### `features/guest-portal/` [REQ: GUEST-01 -> GUEST-16]
 
 > Micro-app cho khách thuê — audience khác, flow login riêng, mobile-first.
 

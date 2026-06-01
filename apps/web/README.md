@@ -31,13 +31,12 @@ Tài liệu này mô tả các yêu cầu chức năng và phi chức năng cho 
 
 ## 3. Vai trò người dùng
 
-| Vai trò                         | Mô tả                     | Quyền chính                                       |
-| -------------------------------- | --------------------------- | --------------------------------------------------- |
-| **Admin/Chủ apartment**          | Người quản lý cao nhất của hệ thống. | Quản lý toàn bộ dữ liệu, cấu hình hệ thống, xem dashboard, doanh thu, công nợ và báo cáo. |
-| **Nhân viên vận hành**           | Người phụ trách quản lý phòng, khách và hợp đồng. | Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán. |
-| **Kế toán/Thu ngân**             | Người phụ trách khoản phải thu và xác nhận thanh toán. | Theo dõi doanh thu, khoản chưa trả, xác nhận giao dịch, xuất báo cáo. |
-| **Sale/Cộng tác viên**           | Người giới thiệu hoặc kiếm hợp đồng thuê. | Xem các hợp đồng do mình kiếm được, hoa hồng tương ứng và trạng thái thanh toán hoa hồng. |
-| **Khách thuê**                   | Người đang thuê hoặc từng thuê phòng. | Đăng nhập cổng khách hàng, xem thông tin phòng, khoản phải trả, thanh toán, gửi khiếu nại và đánh giá dịch vụ. |
+| Vai trò | Mô tả | Quyền chính |
+| ------- | ----- | ----------- |
+| **Admin/Chủ apartment** | Người quản lý cao nhất của hệ thống. | Quản lý toàn bộ dữ liệu, cấu hình hệ thống, xem dashboard, doanh thu, công nợ. Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán. Theo dõi doanh thu, khoản chưa trả, xác nhận giao dịch, xuất báo cáo. |
+| **Nhân viên vận hành** | Người phụ trách quản lý phòng, khách và hợp đồng. | Tạo/cập nhật phòng, khách hàng, hợp đồng thuê, nhập điện nước, theo dõi thanh toán. Theo dõi doanh thu, khoản chưa trả, xác nhận giao dịch, xuất báo cáo. |
+| **Sale/Cộng tác viên** | Người giới thiệu hoặc kiếm hợp đồng thuê. | Xem các hợp đồng do mình kiếm được, hoa hồng tương ứng và trạng thái thanh toán hoa hồng. |
+| **Khách thuê** | Người đang thuê hoặc từng thuê phòng. | Đăng nhập cổng khách hàng, xem thông tin phòng, khoản phải trả, thanh toán, gửi khiếu nại và đánh giá dịch vụ. |
 
 ---
 
