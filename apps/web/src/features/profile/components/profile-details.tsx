@@ -4,7 +4,6 @@ import { ROLE_LABELS, UserRole } from '@/types/roles';
 import { 
     User, Mail, Phone, Lock, Save, KeyRound, CheckCircle2, AlertCircle, RefreshCw 
 } from 'lucide-react';
-import Image from 'next/image';
 
 export function ProfileDetails() {
     const { user, setUser } = useRole();
@@ -119,12 +118,10 @@ export function ProfileDetails() {
                         
                         {/* Avatar Image Container */}
                         <div className="relative h-28 w-28 rounded-3xl bg-[#fff8f6] border border-[#fcd5ce] flex items-center justify-center p-3 shadow-inner group overflow-hidden">
-                            <Image
+                            <img
                                 src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
                                 alt="User Avatar"
-                                fill
-                                className="object-contain p-2"
-                                priority
+                                className="h-full w-full object-contain p-2"
                             />
                         </div>
 
