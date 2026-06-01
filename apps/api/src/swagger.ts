@@ -15,6 +15,15 @@ export function setupSwagger(app: NestExpressApplication): void {
     new DocumentBuilder()
       .setTitle(configService.get<string>("app.name") ?? "Apartment Management API")
       .setVersion("1.0.0")
+      .addBearerAuth(
+        {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Paste access token here. Swagger will send it as Authorization: Bearer <token>.",
+        },
+        "bearer",
+      )
       .build(),
   );
 
@@ -57,6 +66,7 @@ function buildSwaggerHtml(title: string): string {
           url: "/docs-json",
           dom_id: "#swagger-ui",
           deepLinking: true,
+          persistAuthorization: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
           layout: "StandaloneLayout",
         });

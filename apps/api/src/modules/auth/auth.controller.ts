@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 import type { AuthenticatedRequestUser } from "./auth.types";
 import { AuthService } from "./auth.service";
@@ -21,6 +21,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get("me")
   me(@CurrentUser() user: AuthenticatedRequestUser) {
     return this.authService.getCurrentUser(user.id);
