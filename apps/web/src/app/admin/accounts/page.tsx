@@ -198,134 +198,142 @@ export default function AdminAccountsPage() {
                     </button>
                 </div>
 
-                {/* Filter and Search Bar */}
-                <div className="bg-white rounded-2xl p-4 border border-[#fcd5ce]/60 flex flex-col md:flex-row gap-4 justify-between items-center shadow-sm">
-                    <div className="relative w-full md:w-80">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#caa79a]" />
+                {/* Filter and Search Bar (Google Drive style: flat, borderless) */}
+                <div className="py-3 flex flex-col md:flex-row gap-4 justify-between items-center">
+                    
+                    {/* Role Filter on the Left */}
+                    <div className="flex items-center gap-2 w-full md:w-auto justify-start">
+                        <div className="flex items-center gap-1 bg-white border border-[#fcd5ce] rounded-xl px-3 py-1.5 text-xs text-[#3f2d28] font-medium shadow-sm">
+                            <Filter className="h-3.5 w-3.5 text-[#ff385c]" />
+                            <select 
+                                value={roleFilter}
+                                onChange={(e) => setRoleFilter(e.target.value)}
+                                className="bg-transparent border-none outline-none text-[#3f2d28] cursor-pointer"
+                            >
+                                <option value="all">Tất cả tài khoản</option>
+                                <option value="admin">Chủ apartment (Admin)</option>
+                                <option value="staff">Nhân viên vận hành</option>
+                                <option value="sale">Cộng tác viên (Sale)</option>
+                                <option value="customer">Khách thuê</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Search Input on the Right */}
+                    <div className="relative w-full md:w-80 flex items-center bg-[#fff8f6] border border-[#fcd5ce]/40 rounded-xl px-3 py-1.5 focus-within:bg-white focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
+                        <Search className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
                         <input 
                             type="text" 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Tìm theo tên, email, điện thoại..."
-                            className="w-full text-xs border border-[#fcd5ce] rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-[#ff385c] transition-all bg-[#fff8f6]/35"
+                            className="w-full bg-transparent text-xs text-[#3f2d28] placeholder-[#b89184] outline-none"
                         />
+                        {searchQuery && (
+                            <button onClick={() => setSearchQuery('')} className="text-[#caa79a] hover:text-[#ff385c]">
+                                <X className="h-3.5 w-3.5" />
+                            </button>
+                        )}
                     </div>
 
-                    <div className="flex items-center gap-2 w-full md:w-auto">
-                        <Filter className="h-4 w-4 text-[#ff385c] shrink-0" />
-                        <span className="text-xs font-bold text-[#5b463f]">Lọc vai trò:</span>
-                        <select 
-                            value={roleFilter}
-                            onChange={(e) => setRoleFilter(e.target.value)}
-                            className="text-xs border border-[#fcd5ce] rounded-xl px-3 py-2 outline-none focus:border-[#ff385c] transition-all bg-white font-medium cursor-pointer"
-                        >
-                            <option value="all">Tất cả tài khoản</option>
-                            <option value="admin">Chủ apartment (Admin)</option>
-                            <option value="staff">Nhân viên vận hành</option>
-                            <option value="sale">Cộng tác viên (Sale)</option>
-                            <option value="customer">Khách thuê</option>
-                        </select>
-                    </div>
                 </div>
 
-                {/* Accounts Table List */}
-                <div className="bg-white rounded-2xl border border-[#fcd5ce]/60 overflow-hidden shadow-sm">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr className="bg-gradient-to-r from-[#fff8f6] to-[#f9dcc4]/20 border-b border-[#fcd5ce]/40 text-[#5b463f] font-black uppercase tracking-wider text-[10px]">
-                                    <th className="py-3.5 px-5">Tên người dùng</th>
-                                    <th className="py-3.5 px-4">Thông tin liên hệ</th>
-                                    <th className="py-3.5 px-4">Vai trò hệ thống</th>
-                                    <th className="py-3.5 px-4">Ngày cấp</th>
-                                    <th className="py-3.5 px-4">Trạng thái</th>
-                                    <th className="py-3.5 px-5 text-right">Thao tác nhanh</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#fcd5ce]/30">
-                                {filteredAccounts.length > 0 ? (
-                                    filteredAccounts.map((acc) => (
-                                        <tr key={acc.id} className="hover:bg-[#fff8f6]/30 transition-colors group">
-                                            <td className="py-4 px-5">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fec89a] text-xs font-black text-[#ff385c] border border-[#fcd5ce]">
-                                                        {acc.name.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-black text-[#3f2d28] text-xs group-hover:text-[#ff385c] transition-colors">{acc.name}</p>
-                                                        <p className="text-[10px] text-[#caa79a] mt-0.5">ID: {acc.id}</p>
-                                                    </div>
+                {/* Accounts Table List (Google Drive style) */}
+                <div className="w-full overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-xs">
+                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                            <tr>
+                                <th className="py-3.5 px-5">Tên người dùng</th>
+                                <th className="py-3.5 px-4">Thông tin liên hệ</th>
+                                <th className="py-3.5 px-4">Vai trò hệ thống</th>
+                                <th className="py-3.5 px-4">Ngày cấp</th>
+                                <th className="py-3.5 px-4">Trạng thái</th>
+                                <th className="py-3.5 px-5 text-right">Thao tác nhanh</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-[#3f2d28]">
+                            {filteredAccounts.length > 0 ? (
+                                filteredAccounts.map((acc) => (
+                                    <tr key={acc.id} className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200 group">
+                                        <td className="py-4 px-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fec89a] text-xs font-black text-[#ff385c] border border-[#fcd5ce]">
+                                                    {acc.name.charAt(0)}
                                                 </div>
-                                            </td>
-                                            <td className="py-4 px-4 space-y-0.5 text-[#5b463f]">
-                                                <p className="font-medium">{acc.email}</p>
-                                                <p className="text-[10px] text-[#8f6f64]">{acc.phone}</p>
-                                            </td>
-                                            <td className="py-4 px-4">
-                                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${ROLE_LABELS[acc.role].badge}`}>
-                                                    {ROLE_LABELS[acc.role].label}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-4 font-medium text-[#8f6f64]">
-                                                {acc.createdAt}
-                                            </td>
-                                            <td className="py-4 px-4">
-                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                                                    acc.status === 'active' 
-                                                        ? 'bg-green-50 text-green-700 border border-green-200' 
-                                                        : 'bg-red-50 text-red-700 border border-red-200'
-                                                }`}>
-                                                    <span className={`h-1.5 w-1.5 rounded-full ${
-                                                        acc.status === 'active' ? 'bg-green-500' : 'bg-red-500'
-                                                    }`} />
-                                                    {acc.status === 'active' ? 'Đang hoạt động' : 'Tạm khóa'}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-5 text-right">
-                                                <div className="flex justify-end items-center gap-2.5">
-                                                    <button
-                                                        onClick={() => handleResetPassword(acc.name)}
-                                                        className="h-8 w-8 rounded-full bg-[#fff8f6] hover:bg-[#fcd5ce]/30 text-[#caa79a] hover:text-[#ff385c] flex items-center justify-center border border-[#fcd5ce]/20 transition-all cursor-pointer"
-                                                        title="Đặt lại mật khẩu"
-                                                    >
-                                                        <Key className="h-3.5 w-3.5" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleToggleStatus(acc.id, acc.status, acc.name)}
-                                                        className={`h-8 w-8 rounded-full flex items-center justify-center border border-[#fcd5ce]/20 transition-all cursor-pointer ${
-                                                            acc.status === 'active' 
-                                                                ? 'bg-[#fff8f6] text-green-600 hover:bg-green-50' 
-                                                                : 'bg-[#ff385c]/10 text-[#ff385c] hover:bg-[#ff385c]/25'
-                                                        }`}
-                                                        title={acc.status === 'active' ? 'Tạm khóa tài khoản' : 'Mở khóa tài khoản'}
-                                                    >
-                                                        {acc.status === 'active' ? <ToggleRight className="h-4.5 w-4.5" /> : <ToggleLeft className="h-4.5 w-4.5" />}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteAccount(acc.id, acc.name)}
-                                                        disabled={acc.role === 'admin'}
-                                                        className={`h-8 w-8 rounded-full flex items-center justify-center border border-[#fcd5ce]/20 transition-all cursor-pointer bg-[#fff8f6] text-[#caa79a] hover:text-red-600 hover:bg-red-50 disabled:opacity-30 disabled:pointer-events-none`}
-                                                        title="Xóa tài khoản"
-                                                    >
-                                                        <Trash2 className="h-3.5 w-3.5" />
-                                                    </button>
+                                                <div>
+                                                    <p className="font-black text-[#3f2d28] text-xs group-hover:text-[#ff385c] transition-colors">{acc.name}</p>
+                                                    <p className="text-[10px] text-[#caa79a] mt-0.5">ID: {acc.id}</p>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={6} className="py-8 text-center text-[#caa79a] font-bold">
-                                            <div className="flex flex-col items-center gap-2 justify-center">
-                                                <AlertCircle className="h-6 w-6 text-[#caa79a]" />
-                                                <p>Không tìm thấy tài khoản nào khớp với bộ lọc.</p>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-4 space-y-0.5 text-[#5b463f]">
+                                            <p className="font-medium">{acc.email}</p>
+                                            <p className="text-[10px] text-[#8f6f64]">{acc.phone}</p>
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${ROLE_LABELS[acc.role].badge}`}>
+                                                {ROLE_LABELS[acc.role].label}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-4 font-medium text-[#8f6f64]">
+                                            {acc.createdAt}
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                                acc.status === 'active' 
+                                                    ? 'bg-green-50 text-green-700 border border-green-200' 
+                                                    : 'bg-red-50 text-red-700 border border-red-200'
+                                            }`}>
+                                                <span className={`h-1.5 w-1.5 rounded-full ${
+                                                    acc.status === 'active' ? 'bg-green-500' : 'bg-red-500'
+                                                }`} />
+                                                {acc.status === 'active' ? 'Đang hoạt động' : 'Tạm khóa'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-5 text-right" onClick={(e) => e.stopPropagation()}>
+                                            <div className="flex justify-end items-center gap-2.5">
+                                                <button
+                                                    onClick={() => handleResetPassword(acc.name)}
+                                                    className="h-8 w-8 rounded-full bg-[#fff8f6] hover:bg-[#fcd5ce]/30 text-[#caa79a] hover:text-[#ff385c] flex items-center justify-center border border-[#fcd5ce]/20 transition-all cursor-pointer"
+                                                    title="Đặt lại mật khẩu"
+                                                >
+                                                    <Key className="h-3.5 w-3.5" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleToggleStatus(acc.id, acc.status, acc.name)}
+                                                    className={`h-8 w-8 rounded-full flex items-center justify-center border border-[#fcd5ce]/20 transition-all cursor-pointer ${
+                                                        acc.status === 'active' 
+                                                            ? 'bg-[#fff8f6] text-green-600 hover:bg-green-50' 
+                                                            : 'bg-[#ff385c]/10 text-[#ff385c] hover:bg-[#ff385c]/25'
+                                                    }`}
+                                                    title={acc.status === 'active' ? 'Tạm khóa tài khoản' : 'Mở khóa tài khoản'}
+                                                >
+                                                    {acc.status === 'active' ? <ToggleRight className="h-4.5 w-4.5" /> : <ToggleLeft className="h-4.5 w-4.5" />}
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteAccount(acc.id, acc.name)}
+                                                    disabled={acc.role === 'admin'}
+                                                    className={`h-8 w-8 rounded-full flex items-center justify-center border border-[#fcd5ce]/20 transition-all cursor-pointer bg-[#fff8f6] text-[#caa79a] hover:text-red-600 hover:bg-red-50 disabled:opacity-30 disabled:pointer-events-none`}
+                                                    title="Xóa tài khoản"
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="py-8 text-center text-[#caa79a] font-bold">
+                                        <div className="flex flex-col items-center gap-2 justify-center">
+                                            <AlertCircle className="h-6 w-6 text-[#caa79a]" />
+                                            <p>Không tìm thấy tài khoản nào khớp với bộ lọc.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
                 {/* Create Modal Dialog */}

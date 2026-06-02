@@ -118,8 +118,8 @@ export function SaleList() {
 
             </div>
 
-            {/* Filter Toolbar */}
-            <div className="rounded-2xl border-none bg-[#fff8f6] p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+            {/* Filter Toolbar (Google Drive style: flat, borderless) */}
+            <div className="py-3 flex flex-col md:flex-row items-center justify-between gap-4">
                 
                 {/* Filters */}
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-start">
@@ -144,7 +144,7 @@ export function SaleList() {
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
                     
                     {/* Search Input */}
-                    <div className="relative w-full md:w-80 flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 shadow-inner focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
+                    <div className="relative w-full md:w-80 flex items-center bg-[#fff8f6] border border-[#fcd5ce]/40 rounded-xl px-3 py-1.5 focus-within:bg-white focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
                         <Search className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
                         <input
                             type="text"
@@ -205,67 +205,65 @@ export function SaleList() {
                     </button>
                 </div>
             ) : viewMode === 'list' ? (
-                /* Table view */
-                <div className="rounded-3xl border-none bg-white overflow-hidden shadow-sm">
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse text-left text-xs">
-                            <thead className="bg-[#fff8f6] text-[#5b463f] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                                <tr>
-                                    <th className="px-6 py-4">Tên cộng tác viên</th>
-                                    <th className="px-6 py-4">Liên hệ</th>
-                                    <th className="px-6 py-4">Ngày tham gia</th>
-                                    <th className="px-6 py-4">Hợp đồng mang về</th>
-                                    <th className="px-6 py-4">Tổng hoa hồng</th>
-                                    <th className="px-6 py-4">Đã quyết toán</th>
-                                    <th className="px-6 py-4">Chưa quyết toán</th>
-                                    <th className="px-6 py-4">Trạng thái</th>
+                /* Table view (Google Drive style) */
+                <div className="w-full overflow-x-auto">
+                    <table className="w-full border-collapse text-left text-xs">
+                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                            <tr>
+                                <th className="px-6 py-4">Tên cộng tác viên</th>
+                                <th className="px-6 py-4">Liên hệ</th>
+                                <th className="px-6 py-4">Ngày tham gia</th>
+                                <th className="px-6 py-4">Hợp đồng mang về</th>
+                                <th className="px-6 py-4">Tổng hoa hồng</th>
+                                <th className="px-6 py-4">Đã quyết toán</th>
+                                <th className="px-6 py-4">Chưa quyết toán</th>
+                                <th className="px-6 py-4">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-[#3f2d28]">
+                            {filteredSales.map((sale) => (
+                                <tr
+                                    key={sale.id}
+                                    onClick={() => router.push('/admin/sales/' + sale.id)}
+                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                >
+                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c] hover:underline">
+                                        {sale.name}
+                                    </td>
+                                    <td className="px-6 py-4 space-y-0.5">
+                                        <div className="flex items-center gap-1 text-[#5b463f] font-medium">
+                                            <Phone className="h-3 w-3 text-[#caa79a]" />
+                                            <span>{sale.phone}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-[#caa79a] text-[10px]">
+                                            <Mail className="h-3 w-3 text-[#caa79a]" />
+                                            <span>{sale.email}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-[#caa79a]">
+                                        {formatDate(sale.joinedDate)}
+                                    </td>
+                                    <td className="px-6 py-4 font-bold text-center sm:text-left pl-10">
+                                        <span className="bg-[#fff8f6] border border-[#fcd5ce] px-2 py-0.5 rounded-lg text-xs text-[#3f2d28] font-bold">
+                                            {sale.totalContracts}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 font-bold">{formatCurrency(sale.totalCommission)}</td>
+                                    <td className="px-6 py-4 text-emerald-700 font-semibold">{formatCurrency(sale.paidCommission)}</td>
+                                    <td className="px-6 py-4 text-red-600 font-extrabold">{formatCurrency(sale.unpaidCommission)}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase border ${
+                                            sale.status === 'active' 
+                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+                                                : 'bg-slate-50 border-slate-200 text-slate-500'
+                                        }`}>
+                                            {sale.status === 'active' ? 'Hoạt động' : 'Tạm khóa'}
+                                        </span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#fcd5ce]/40 text-[#3f2d28]">
-                                {filteredSales.map((sale) => (
-                                    <tr
-                                        key={sale.id}
-                                        onClick={() => router.push('/admin/sales/' + sale.id)}
-                                        className="hover:bg-[#fff8f6]/50 cursor-pointer transition-colors"
-                                    >
-                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c] hover:underline">
-                                            {sale.name}
-                                        </td>
-                                        <td className="px-6 py-4 space-y-0.5">
-                                            <div className="flex items-center gap-1 text-[#5b463f] font-medium">
-                                                <Phone className="h-3 w-3 text-[#caa79a]" />
-                                                <span>{sale.phone}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 text-[#caa79a] text-[10px]">
-                                                <Mail className="h-3 w-3 text-[#caa79a]" />
-                                                <span>{sale.email}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 font-medium text-[#caa79a]">
-                                            {formatDate(sale.joinedDate)}
-                                        </td>
-                                        <td className="px-6 py-4 font-bold text-center sm:text-left pl-10">
-                                            <span className="bg-[#fff8f6] border border-[#fcd5ce] px-2 py-0.5 rounded-lg text-xs text-[#3f2d28] font-bold">
-                                                {sale.totalContracts}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 font-bold">{formatCurrency(sale.totalCommission)}</td>
-                                        <td className="px-6 py-4 text-emerald-700 font-semibold">{formatCurrency(sale.paidCommission)}</td>
-                                        <td className="px-6 py-4 text-red-600 font-extrabold">{formatCurrency(sale.unpaidCommission)}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase border ${
-                                                sale.status === 'active' 
-                                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
-                                                    : 'bg-slate-50 border-slate-200 text-slate-500'
-                                            }`}>
-                                                {sale.status === 'active' ? 'Hoạt động' : 'Tạm khóa'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             ) : (
                 /* Grid view cards */

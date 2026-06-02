@@ -179,37 +179,39 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* DASH-07: Overdue payments */}
-                <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] shadow-sm overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-[#f9dcc4]">
+                {/* DASH-07: Overdue payments (Google Drive style: flat, borderless) */}
+                <div className="w-full">
+                    <div className="flex items-center justify-between py-4 border-b border-[#fcd5ce]">
                         <div className="flex items-center gap-2">
-                            <AlertTriangle className="h-5 w-5 text-[#b86154]" />
-                            <h2 className="text-sm font-semibold text-[#3f2d28]">
-                                Khoản thanh toán quá hạn <span className="ml-1 text-[#b86154]">({overdueList.length})</span>
+                            <AlertTriangle className="h-5 w-5 text-[#ff385c]" />
+                            <h2 className="text-sm font-bold text-[#3f2d28]">
+                                Khoản thanh toán quá hạn <span className="ml-1 text-[#ff385c]">({overdueList.length})</span>
                             </h2>
                         </div>
-                        <button className="text-xs font-medium text-[#a65f4f] hover:underline">
+                        <button className="text-xs font-bold text-[#ff385c] hover:underline">
                             Xem tất cả
                         </button>
                     </div>
-                    <div className="divide-y divide-[#f9dcc4]">
+                    <div className="text-xs text-[#3f2d28]">
                         {overdueList.map((item, i) => (
                             <div
                                 key={i}
-                                className="flex items-center justify-between px-6 py-3 hover:bg-[#f8edeb] cursor-pointer transition-colors"
+                                className="flex items-center justify-between py-3.5 border-b border-[#fcd5ce]/30 hover:bg-[#fff8f6]/70 cursor-pointer transition-all duration-200"
                             >
                                 <div className="flex items-center gap-4">
-                                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#fcd5ce] text-xs font-bold text-[#a45c4d]">
+                                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#fff8f6] border border-[#fcd5ce]/40 text-xs font-bold text-[#ff385c]">
                                         {item.room}
                                     </span>
                                     <div>
-                                        <p className="text-sm font-medium text-[#3f2d28]">{item.customer}</p>
+                                        <p className="text-sm font-bold text-[#3f2d28]">{item.customer}</p>
                                         <p className="text-xs text-[#8f6f64]">{item.type}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-sm font-semibold text-[#a45c4d]">{item.amount}</p>
-                                    <p className="text-xs text-[#b89184]">Quá hạn {item.overdueDays} ngày</p>
+                                    <p className="text-sm font-extrabold text-[#ff385c]">{item.amount}</p>
+                                    <p className="text-[10px] text-red-600 font-semibold bg-red-50 border border-red-200/50 rounded-full px-2 py-0.5 inline-block mt-0.5">
+                                        Quá hạn {item.overdueDays} ngày
+                                    </p>
                                 </div>
                             </div>
                         ))}

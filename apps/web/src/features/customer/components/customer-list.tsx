@@ -115,8 +115,8 @@ export function CustomerList() {
 
             </div>
 
-            {/* Filter Toolbar */}
-            <div className="rounded-2xl border-none bg-[#fff8f6] p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+            {/* Filter Toolbar (Google Drive style: flat, borderless) */}
+            <div className="py-3 flex flex-col md:flex-row items-center justify-between gap-4">
                 
                 {/* Filters */}
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-start">
@@ -142,7 +142,7 @@ export function CustomerList() {
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
                     
                     {/* Search Input */}
-                    <div className="relative w-full md:w-80 flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 shadow-inner focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
+                    <div className="relative w-full md:w-80 flex items-center bg-[#fff8f6] border border-[#fcd5ce]/40 rounded-xl px-3 py-1.5 focus-within:bg-white focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
                         <Search className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
                         <input
                             type="text"
@@ -266,65 +266,63 @@ export function CustomerList() {
                     ))}
                 </div>
             ) : (
-                /* List view: Detailed admin table */
-                <div className="rounded-3xl border-none bg-white overflow-hidden shadow-sm">
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse text-left text-xs">
-                            <thead className="bg-[#fff8f6] text-[#5b463f] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                                <tr>
-                                    <th className="px-6 py-4">Họ và tên</th>
-                                    <th className="px-6 py-4">Quốc tịch</th>
-                                    <th className="px-6 py-4">Số điện thoại</th>
-                                    <th className="px-6 py-4">Email</th>
-                                    <th className="px-6 py-4">Trạng thái</th>
-                                    <th className="px-6 py-4">Căn hộ thuê</th>
-                                    <th className="px-6 py-4">Nợ chưa thu</th>
-                                    <th className="px-6 py-4">Tài liệu đính kèm</th>
+                /* List view: Detailed admin table (Google Drive style) */
+                <div className="w-full overflow-x-auto">
+                    <table className="w-full border-collapse text-left text-xs">
+                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                            <tr>
+                                <th className="px-6 py-4">Họ và tên</th>
+                                <th className="px-6 py-4">Quốc tịch</th>
+                                <th className="px-6 py-4">Số điện thoại</th>
+                                <th className="px-6 py-4">Email</th>
+                                <th className="px-6 py-4">Trạng thái</th>
+                                <th className="px-6 py-4">Căn hộ thuê</th>
+                                <th className="px-6 py-4">Nợ chưa thu</th>
+                                <th className="px-6 py-4">Tài liệu đính kèm</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-[#3f2d28]">
+                            {filteredCustomers.map((c) => (
+                                <tr
+                                    key={c.id}
+                                    onClick={() => router.push('/admin/customers/' + c.id)}
+                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                >
+                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{c.name}</td>
+                                    <td className="px-6 py-4">{c.nationality}</td>
+                                    <td className="px-6 py-4 font-medium">{c.phone}</td>
+                                    <td className="px-6 py-4">{c.email}</td>
+                                    <td className="px-6 py-4">
+                                        <CustomerStatusBadge status={c.status} />
+                                    </td>
+                                    <td className="px-6 py-4 font-medium">
+                                        {c.status === 'active' && c.currentRoomNumber ? (
+                                            <span className="font-bold text-[#3f2d28]">P.{c.currentRoomNumber} ({c.currentBuilding})</span>
+                                        ) : (
+                                            <span className="text-[#caa79a] italic">--</span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 font-extrabold text-xs">
+                                        {c.totalUnpaid > 0 ? (
+                                            <span className="text-red-600">{formatCurrency(c.totalUnpaid)}</span>
+                                        ) : (
+                                            <span className="text-emerald-700">0 ₫</span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-[#8f6f64] font-medium">
+                                        {c.documents.length > 0 ? (
+                                            <span className="inline-flex items-center gap-1 rounded bg-[#fff8f6] px-2 py-0.5 border border-[#fcd5ce] text-[10px] font-bold text-[#ff385c]">
+                                                <FileCheck className="h-3 w-3" />
+                                                {c.documents.length} Giấy tờ
+                                            </span>
+                                        ) : (
+                                            <span className="text-[#caa79a] italic">Không có</span>
+                                        )}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#fcd5ce]/40 text-[#3f2d28]">
-                                {filteredCustomers.map((c) => (
-                                    <tr
-                                        key={c.id}
-                                        onClick={() => router.push('/admin/customers/' + c.id)}
-                                        className="hover:bg-[#fff8f6]/50 cursor-pointer transition-colors"
-                                    >
-                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{c.name}</td>
-                                        <td className="px-6 py-4">{c.nationality}</td>
-                                        <td className="px-6 py-4 font-medium">{c.phone}</td>
-                                        <td className="px-6 py-4">{c.email}</td>
-                                        <td className="px-6 py-4">
-                                            <CustomerStatusBadge status={c.status} />
-                                        </td>
-                                        <td className="px-6 py-4 font-medium">
-                                            {c.status === 'active' && c.currentRoomNumber ? (
-                                                <span className="font-bold text-[#3f2d28]">P.{c.currentRoomNumber} ({c.currentBuilding})</span>
-                                            ) : (
-                                                <span className="text-[#caa79a] italic">--</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 font-extrabold text-xs">
-                                            {c.totalUnpaid > 0 ? (
-                                                <span className="text-red-600">{formatCurrency(c.totalUnpaid)}</span>
-                                            ) : (
-                                                <span className="text-emerald-700">0 ₫</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-[#8f6f64] font-medium">
-                                            {c.documents.length > 0 ? (
-                                                <span className="inline-flex items-center gap-1 rounded bg-[#fff8f6] px-2 py-0.5 border border-[#fcd5ce] text-[10px] font-bold text-[#ff385c]">
-                                                    <FileCheck className="h-3 w-3" />
-                                                    {c.documents.length} Giấy tờ
-                                                </span>
-                                            ) : (
-                                                <span className="text-[#caa79a] italic">Không có</span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
 
