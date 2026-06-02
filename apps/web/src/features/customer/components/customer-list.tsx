@@ -116,27 +116,10 @@ export function CustomerList() {
             </div>
 
             {/* Filter Toolbar */}
-            <div className="rounded-2xl border border-[#fcd5ce] bg-[#fff8f6] p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+            <div className="rounded-2xl border-none bg-[#fff8f6] p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
                 
-                {/* Search Input */}
-                <div className="relative w-full md:w-80 flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 shadow-inner focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
-                    <Search className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Tên khách, SĐT, Email, Số phòng..."
-                        className="w-full bg-transparent text-xs text-[#3f2d28] placeholder-[#b89184] outline-none"
-                    />
-                    {searchQuery && (
-                        <button onClick={() => setSearchQuery('')} className="text-[#caa79a] hover:text-[#ff385c]">
-                            <X className="h-3.5 w-3.5" />
-                        </button>
-                    )}
-                </div>
-
                 {/* Filters */}
-                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-start">
                     
                     {/* Trạng thái Dropdown */}
                     <div className="flex items-center gap-1 bg-white border border-[#fcd5ce] rounded-xl px-3 py-1.5 text-xs text-[#3f2d28] font-medium shadow-sm">
@@ -153,7 +136,29 @@ export function CustomerList() {
                         </select>
                     </div>
 
-                    {/* View mode toggle */}
+                </div>
+
+                {/* Search Bar & Switcher Toggle */}
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                    
+                    {/* Search Input */}
+                    <div className="relative w-full md:w-80 flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 shadow-inner focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
+                        <Search className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Tên khách, SĐT, Email, Số phòng..."
+                            className="w-full bg-transparent text-xs text-[#3f2d28] placeholder-[#b89184] outline-none"
+                        />
+                        {searchQuery && (
+                            <button onClick={() => setSearchQuery('')} className="text-[#caa79a] hover:text-[#ff385c]">
+                                <X className="h-3.5 w-3.5" />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* View Switchers */}
                     <div className="flex items-center border border-[#fcd5ce] rounded-xl overflow-hidden bg-white shadow-sm shrink-0">
                         <button
                             onClick={() => setViewMode('grid')}
@@ -181,7 +186,7 @@ export function CustomerList() {
 
             {/* List / Grid Content */}
             {filteredCustomers.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-3xl border border-[#fcd5ce] p-6">
+                <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-3xl border-none p-6">
                     <Users className="h-14 w-14 text-[#caa79a] mb-3" />
                     <p className="text-base font-bold text-[#3f2d28]">Không tìm thấy khách hàng nào</p>
                     <p className="text-xs text-[#8f6f64] max-w-sm mt-1 mb-4">
@@ -262,7 +267,7 @@ export function CustomerList() {
                 </div>
             ) : (
                 /* List view: Detailed admin table */
-                <div className="rounded-3xl border border-[#fcd5ce] bg-white overflow-hidden shadow-sm">
+                <div className="rounded-3xl border-none bg-white overflow-hidden shadow-sm">
                     <div className="overflow-x-auto">
                         <table className="w-full border-collapse text-left text-xs">
                             <thead className="bg-[#fff8f6] text-[#5b463f] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
