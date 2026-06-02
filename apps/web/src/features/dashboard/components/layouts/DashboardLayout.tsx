@@ -77,10 +77,10 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                         asChild 
                         isActive={active} 
                         tooltip={item.label}
-                        className={`rounded-full transition-all duration-200 px-4 py-2 flex items-center gap-3 ${
+                        className={`rounded-full transition-all duration-200 px-4 !h-10 flex items-center gap-3 ${
                             active
                                 ? '!bg-[#ffb5a7] !text-[#ff385c] font-black shadow-sm'
-                                : 'text-[#5b463f] hover:!bg-[#fcd5ce]/40 hover:!text-[#ff385c]'
+                                : 'text-[#5b463f] hover:!bg-[#fcd5ce]/40 hover:!text-[#ff385c] hover:shadow-sm'
                         }`}
                     >
                         <Link href={item.href}>
