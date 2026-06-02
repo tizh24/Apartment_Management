@@ -4,11 +4,10 @@ import { ROLE_LABELS, UserRole } from '@/types/roles';
 import { 
     User, Mail, Phone, Lock, Save, KeyRound, CheckCircle2, AlertCircle, RefreshCw 
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function ProfileDetails() {
     const { user, setUser } = useRole();
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
 
     // Personal info states
     const [name, setName] = useState(user?.name || '');
@@ -31,22 +30,11 @@ export function ProfileDetails() {
         );
     }
 
-    const triggerToast = (msg: string) => {
-        setSuccessMessage(msg);
-        setTimeout(() => setSuccessMessage(''), 3000);
-    };
-
-    const triggerError = (msg: string) => {
-        setErrorMessage(msg);
-        setTimeout(() => setErrorMessage(''), 3000);
-    };
-
     const handleSaveInfo = (e: React.FormEvent) => {
         e.preventDefault();
-        setErrorMessage('');
 
         if (!name.trim()) {
-            triggerError('Họ và tên không được để trống.');
+            toast.error('Họ và tên không được để trống.');
             return;
         }
 
@@ -59,25 +47,24 @@ export function ProfileDetails() {
         };
 
         setUser(updatedUser);
-        triggerToast('Cập nhật thông tin cá nhân thành công.');
+        toast.success('Cập nhật thông tin cá nhân thành công.');
     };
 
     const handleChangePassword = (e: React.FormEvent) => {
         e.preventDefault();
-        setErrorMessage('');
 
         if (!currentPassword) {
-            triggerError('Vui lòng nhập mật khẩu hiện tại.');
+            toast.error('Vui lòng nhập mật khẩu hiện tại.');
             return;
         }
 
         if (newPassword.length < 6) {
-            triggerError('Mật khẩu mới phải có tối thiểu 6 ký tự.');
+            toast.error('Mật khẩu mới phải có tối thiểu 6 ký tự.');
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            triggerError('Xác nhận mật khẩu mới không khớp.');
+            toast.error('Xác nhận mật khẩu mới không khớp.');
             return;
         }
 
@@ -85,7 +72,7 @@ export function ProfileDetails() {
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
-        triggerToast('Thay đổi mật khẩu tài khoản thành công.');
+        toast.success('Thay đổi mật khẩu tài khoản thành công.');
     };
 
     const randomizeAvatar = () => {
@@ -95,20 +82,6 @@ export function ProfileDetails() {
 
     return (
         <div className="space-y-6">
-            
-            {/* Success / Error notification */}
-            {successMessage && (
-                <div className="flex items-center gap-2 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-2xl shadow-sm animate-in fade-in slide-in-from-top duration-200">
-                    <CheckCircle2 className="h-4.5 w-4.5 shrink-0" />
-                    <span>{successMessage}</span>
-                </div>
-            )}
-            {errorMessage && (
-                <div className="flex items-center gap-2 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl shadow-sm animate-in fade-in slide-in-from-top duration-200">
-                    <AlertCircle className="h-4.5 w-4.5 shrink-0" />
-                    <span>{errorMessage}</span>
-                </div>
-            )}
 
             <div className="max-w-3xl mx-auto space-y-6">
                 

@@ -4,6 +4,7 @@ import {
     Settings, Coins, FileText, Landmark, Save, ShieldAlert, CheckCircle2,
     ToggleLeft, ToggleRight, Info, AlertTriangle
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function SettingsPanel() {
     const { 
@@ -15,7 +16,6 @@ export function SettingsPanel() {
     } = useSettingsStore();
 
     const [activeTab, setActiveTab] = useState<'general' | 'pricing' | 'contract' | 'bank'>('general');
-    const [successMessage, setSuccessMessage] = useState('');
 
     // General tab state
     const [systemName, setSystemName] = useState(settings.general.systemName);
@@ -43,15 +43,10 @@ export function SettingsPanel() {
     const [accountName, setAccountName] = useState(settings.bank.accountName);
     const [autoReconciliation, setAutoReconciliation] = useState(settings.bank.autoReconciliation);
 
-    const triggerToast = (msg: string) => {
-        setSuccessMessage(msg);
-        setTimeout(() => setSuccessMessage(''), 3000);
-    };
-
     const handleSaveGeneral = (e: React.FormEvent) => {
         e.preventDefault();
         updateGeneralSettings({ systemName, companyName, hotline, address, email });
-        triggerToast('Đã lưu cài đặt thông tin hệ thống thành công.');
+        toast.success('Đã lưu cài đặt thông tin hệ thống thành công.');
     };
 
     const handleSavePricing = (e: React.FormEvent) => {
@@ -63,7 +58,7 @@ export function SettingsPanel() {
             serviceFee: Number(serviceFee), 
             trashFee: Number(trashFee) 
         });
-        triggerToast('Đã cập nhật biểu phí dịch vụ và năng lượng mới.');
+        toast.success('Đã cập nhật biểu phí dịch vụ và năng lượng mới.');
     };
 
     const handleSaveContract = (e: React.FormEvent) => {
@@ -74,13 +69,13 @@ export function SettingsPanel() {
             expiryWarningDays: Number(expiryWarningDays), 
             lateFeePercentage: Number(lateFeePercentage) 
         });
-        triggerToast('Đã cập nhật chính sách hợp đồng và phạt quá hạn.');
+        toast.success('Đã cập nhật chính sách hợp đồng và phạt quá hạn.');
     };
 
     const handleSaveBank = (e: React.FormEvent) => {
         e.preventDefault();
         updateBankSettings({ bankName, accountNumber, accountName, autoReconciliation });
-        triggerToast('Đã lưu cấu hình tài khoản ngân hàng thụ hưởng.');
+        toast.success('Đã lưu cấu hình tài khoản ngân hàng thụ hưởng.');
     };
 
     return (
@@ -145,14 +140,6 @@ export function SettingsPanel() {
 
             {/* Sub-form Panels */}
             <div className="md:col-span-3 space-y-4">
-                
-                {/* Success Toast banner */}
-                {successMessage && (
-                    <div className="flex items-center gap-2 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-2xl shadow-sm animate-in fade-in slide-in-from-top duration-200">
-                        <CheckCircle2 className="h-4.5 w-4.5 shrink-0" />
-                        <span>{successMessage}</span>
-                    </div>
-                )}
 
                 <div className="bg-white border border-[#fcd5ce] rounded-3xl p-6 shadow-sm">
                     

@@ -14,11 +14,11 @@ import Link from 'next/link';
 import { Building2, Plus, MapPin, Layers, DoorOpen, Trash2, ShieldAlert, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 
 import { useApartmentStore } from '@/features/apartment/store/apartment-store';
+import { toast } from 'sonner';
 
 export default function AdminApartmentsPage() {
     const { apartments, addApartment, deleteApartment } = useApartmentStore();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     // Form states
     const [name, setName] = useState('');
@@ -28,15 +28,10 @@ export default function AdminApartmentsPage() {
     const [status, setStatus] = useState<'active' | 'maintenance'>('active');
     const [description, setDescription] = useState('');
 
-    const triggerToast = (msg: string) => {
-        setToastMessage(msg);
-        setTimeout(() => setToastMessage(null), 3000);
-    };
-
     const handleCreateApartment = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !address) {
-            triggerToast('Vui lòng điền đầy đủ tên và địa chỉ tòa nhà.');
+            toast.error('Vui lòng điền đầy đủ tên và địa chỉ tòa nhà.');
             return;
         }
 
@@ -50,7 +45,7 @@ export default function AdminApartmentsPage() {
         });
         
         setIsCreateOpen(false);
-        triggerToast(`Đã thêm thành công tòa nhà "${name}" vào hệ thống.`);
+        toast.success(`Đã thêm thành công tòa nhà "${name}" vào hệ thống.`);
         
         // Reset form
         setName('');
@@ -64,21 +59,13 @@ export default function AdminApartmentsPage() {
     const handleDeleteApartment = (id: string, aptName: string) => {
         if (confirm(`Bạn có chắc chắn muốn xóa tòa nhà "${aptName}" khỏi hệ thống?`)) {
             deleteApartment(id);
-            triggerToast(`Đã xóa tòa nhà "${aptName}".`);
+            toast.error(`Đã xóa tòa nhà "${aptName}".`);
         }
     };
 
     return (
         <DashboardLayout>
             <div className="p-6 space-y-6 relative">
-                
-                {/* Toast Notification */}
-                {toastMessage && (
-                    <div className="fixed top-4 right-4 z-50 animate-in fade-in slide-in-from-top-4 duration-300 bg-[#3f2d28] text-white text-xs font-bold px-4 py-3 rounded-full shadow-xl flex items-center gap-2 border border-[#fcd5ce]/20">
-                        <CheckCircle2 className="h-4 w-4 text-[#ff385c]" />
-                        <span>{toastMessage}</span>
-                    </div>
-                )}
 
                 {/* Header Section */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

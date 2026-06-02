@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { useApartmentStore } from '@/features/apartment/store/apartment-store';
 import { useRoomStore } from '@/features/room/store/room-store';
+import { toast } from 'sonner';
 import { 
     Building2, MapPin, Layers, DoorOpen, ArrowLeft, Edit3, Trash2, 
     Calendar, CheckCircle, Clock, AlertTriangle, ShieldCheck, Users, 
@@ -30,7 +31,6 @@ export default function ApartmentDetailPage({ params }: { params: Promise<{ id: 
     const { apartments, updateApartment, deleteApartment } = useApartmentStore();
     const { rooms } = useRoomStore();
     const [isEditOpen, setIsEditOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     const apartment = apartments.find((a) => a.id === id);
 
@@ -76,15 +76,10 @@ export default function ApartmentDetailPage({ params }: { params: Promise<{ id: 
         ? Math.round((occupiedCount / associatedRooms.length) * 100) 
         : 85; // fallback mock rate for initial pre-loaded apartments
 
-    const triggerToast = (msg: string) => {
-        setToastMessage(msg);
-        setTimeout(() => setToastMessage(null), 3000);
-    };
-
     const handleUpdateApartment = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !address) {
-            triggerToast('Vui lòng nhập đầy đủ thông tin bắt buộc.');
+            toast.error('Vui lòng nhập đầy đủ thông tin bắt buộc.');
             return;
         }
 
@@ -98,31 +93,23 @@ export default function ApartmentDetailPage({ params }: { params: Promise<{ id: 
         });
 
         setIsEditOpen(false);
-        triggerToast('Đã lưu các thay đổi cho tòa nhà.');
+        toast.success('Đã lưu các thay đổi cho tòa nhà.');
     };
 
     const handleToggleMaintenance = () => {
         const nextStatus = apartment.status === 'active' ? 'maintenance' : 'active';
         updateApartment(apartment.id, { status: nextStatus });
-        triggerToast(
-            nextStatus === 'maintenance' 
-                ? 'Đã chuyển trạng thái tòa nhà sang Bảo trì.' 
-                : 'Đã chuyển trạng thái tòa nhà sang Hoạt động.'
-        );
+        if (nextStatus === 'maintenance') {
+            toast.warning('Đã chuyển trạng thái tòa nhà sang Bảo trì.');
+        } else {
+            toast.success('Đã chuyển trạng thái tòa nhà sang Hoạt động.');
+        }
     };
 
     return (
         <DashboardLayout>
             <div className="p-6 space-y-6 relative">
                 
-                {/* Toast Notification */}
-                {toastMessage && (
-                    <div className="fixed top-4 right-4 z-50 animate-in fade-in slide-in-from-top-4 duration-300 bg-[#3f2d28] text-white text-xs font-bold px-4 py-3 rounded-full shadow-xl flex items-center gap-2 border border-[#fcd5ce]/20">
-                        <CheckCircle2 className="h-4 w-4 text-[#ff385c]" />
-                        <span>{toastMessage}</span>
-                    </div>
-                )}
-
                 {/* Breadcrumbs & Actions */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2.5">

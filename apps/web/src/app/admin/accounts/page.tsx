@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { UserCheck, Plus, Search, Filter, Shield, ToggleLeft, ToggleRight, Trash2, Key, X, CheckCircle2, UserCheck2, AlertCircle } from 'lucide-react';
 import { Pagination } from '@/components/ui/pagination';
 import { CustomSelect } from '@/components/ui/custom-select';
+import { toast } from 'sonner';
 
 const ROLE_OPTIONS = [
     { value: 'all', label: 'Tất cả tài khoản' },
@@ -93,7 +94,6 @@ export default function AdminAccountsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [roleFilter, setRoleFilter] = useState<string>('all');
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     // Form states
     const [name, setName] = useState('');
@@ -102,15 +102,10 @@ export default function AdminAccountsPage() {
     const [role, setRole] = useState<'admin' | 'staff' | 'sale' | 'customer'>('staff');
     const [password, setPassword] = useState('');
 
-    const triggerToast = (msg: string) => {
-        setToastMessage(msg);
-        setTimeout(() => setToastMessage(null), 3000);
-    };
-
     const handleCreateAccount = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !email || !phone) {
-            triggerToast('Vui lòng điền đầy đủ thông tin bắt buộc.');
+            toast.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
             return;
         }
 
@@ -126,7 +121,7 @@ export default function AdminAccountsPage() {
 
         setAccounts([newAccount, ...accounts]);
         setIsCreateOpen(false);
-        triggerToast(`Đã cấp tài khoản thành công cho "${name}".`);
+        toast.success(`Đã cấp tài khoản thành công cho "${name}".`);
         
         // Reset form
         setName('');
@@ -139,22 +134,22 @@ export default function AdminAccountsPage() {
     const handleToggleStatus = (id: string, currentStatus: 'active' | 'locked', accountName: string) => {
         const nextStatus = currentStatus === 'active' ? 'locked' : 'active';
         setAccounts(accounts.map(acc => acc.id === id ? { ...acc, status: nextStatus } : acc));
-        triggerToast(
-            nextStatus === 'locked' 
-                ? `Đã khóa tài khoản của "${accountName}".` 
-                : `Đã mở khóa tài khoản của "${accountName}".`
-        );
+        if (nextStatus === 'locked') {
+            toast.warning(`Đã khóa tài khoản của "${accountName}".`);
+        } else {
+            toast.success(`Đã mở khóa tài khoản của "${accountName}".`);
+        }
     };
 
     const handleDeleteAccount = (id: string, accountName: string) => {
         if (confirm(`Bạn có chắc muốn xóa tài khoản của "${accountName}"? Hành động này không thể hoàn tác.`)) {
             setAccounts(accounts.filter(acc => acc.id !== id));
-            triggerToast(`Đã xóa tài khoản "${accountName}".`);
+            toast.error(`Đã xóa tài khoản "${accountName}".`);
         }
     };
 
     const handleResetPassword = (accountName: string) => {
-        triggerToast(`Đã gửi liên kết đặt lại mật khẩu tới email của "${accountName}".`);
+        toast.info(`Đã gửi liên kết đặt lại mật khẩu tới email của "${accountName}".`);
     };
 
     // Filter accounts
@@ -184,14 +179,6 @@ export default function AdminAccountsPage() {
     return (
         <DashboardLayout>
             <div className="p-6 space-y-6 relative">
-                
-                {/* Toast Notification */}
-                {toastMessage && (
-                    <div className="fixed top-4 right-4 z-50 animate-in fade-in slide-in-from-top-4 duration-300 bg-[#3f2d28] text-white text-xs font-bold px-4 py-3 rounded-full shadow-xl flex items-center gap-2 border border-[#fcd5ce]/20">
-                        <CheckCircle2 className="h-4 w-4 text-[#ff385c]" />
-                        <span>{toastMessage}</span>
-                    </div>
-                )}
 
                 {/* Header Section */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
