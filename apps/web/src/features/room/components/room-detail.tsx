@@ -97,10 +97,10 @@ export function RoomDetail({
             <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]">
                 <button
                     onClick={onBack}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5b463f] hover:text-[#ff385c] bg-white border border-[#fcd5ce] px-3 py-1.5 rounded-xl hover:shadow-sm transition-all"
+                    className="inline-flex items-center justify-center h-8 w-8 text-[#5b463f] hover:text-[#ff385c] bg-white border border-[#fcd5ce] rounded-xl hover:shadow-sm transition-all cursor-pointer hover:bg-[#fff8f6]"
+                    title="Quay lại danh sách"
                 >
                     <ArrowLeft className="h-4 w-4" />
-                    Quay lại danh sách
                 </button>
 
                 <div className="flex items-center gap-2">
