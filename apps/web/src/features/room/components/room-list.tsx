@@ -48,7 +48,7 @@ export function RoomList() {
     } = useRoomStore();
 
     // View states
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 

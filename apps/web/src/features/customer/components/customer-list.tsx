@@ -30,7 +30,7 @@ export function CustomerList() {
         deleteCustomer
     } = useCustomerStore();
 
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
 
     // Compute Summary Stats
     const totalCustomers = customers.length;
