@@ -180,13 +180,18 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                                 </SidebarMenuItem>
                             ) : (
                                 <SidebarMenuItem className="px-1.5 py-0.5 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center mb-1">
-                                    <Link 
-                                        href={profileItem.href}
-                                        title="Hồ sơ cá nhân"
-                                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fec89a] text-xs font-black text-[#ff385c] border border-[#fcd5ce] hover:shadow-md hover:scale-105 transition-all cursor-pointer"
+                                    <SidebarMenuButton
+                                        asChild
+                                        tooltip="Hồ sơ cá nhân"
+                                        className="!h-8 !w-8 !p-0 !border-none !bg-transparent hover:!bg-transparent hover:!shadow-none !rounded-full shrink-0 flex items-center justify-center group-data-[collapsible=icon]:!px-0 group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:!gap-0"
                                     >
-                                        {user?.name?.charAt(0) || 'U'}
-                                    </Link>
+                                        <Link 
+                                            href={profileItem.href}
+                                            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fec89a] text-xs font-black text-[#ff385c] border border-[#fcd5ce] hover:shadow-md hover:scale-105 transition-all cursor-pointer"
+                                        >
+                                            {user?.name?.charAt(0) || 'U'}
+                                        </Link>
+                                    </SidebarMenuButton>
                                 </SidebarMenuItem>
                             )
                         )}

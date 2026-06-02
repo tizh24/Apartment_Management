@@ -25,6 +25,8 @@ import {
     FileBarChart,
     HandCoins,
     MessageSquare,
+    Building2,
+    UserCheck,
 } from 'lucide-react';
 
 export interface SidebarItem {
@@ -45,12 +47,13 @@ export interface SidebarConfig {
 const adminSidebar: SidebarConfig = {
     main: [
         { id: 'dashboard', label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+        { id: 'apartments', label: 'Quản lý apartments', href: '/admin/apartments', icon: Building2 },
         { id: 'rooms', label: 'Quản lý phòng', href: '/admin/rooms', icon: DoorOpen },
         { id: 'customers', label: 'Quản lý khách hàng', href: '/admin/customers', icon: Users },
         { id: 'contracts', label: 'Hợp đồng thuê', href: '/admin/contracts', icon: FileText },
         { id: 'revenue', label: 'Doanh thu & Khoản thu', href: '/admin/revenue', icon: CreditCard },
         { id: 'sales', label: 'Sale & Hoa hồng', href: '/admin/sales', icon: BarChart3 },
-        { id: 'ai-tools', label: 'AI Tools', href: '/admin/ai-assistant', icon: Sparkles },
+        { id: 'accounts', label: 'Quản lý tài khoản', href: '/admin/accounts', icon: UserCheck },
         { id: 'settings', label: 'Cài đặt hệ thống', href: '/admin/settings', icon: Settings },
     ],
     bottom: [
