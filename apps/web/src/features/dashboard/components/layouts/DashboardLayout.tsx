@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bell, Building2, CalendarDays, Search, Sparkles } from 'lucide-react';
+import { Bell, Building2, CalendarDays, Search, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useUserRole, useUser } from '@/context/RoleContext';
 import { UserRole, ROLE_LABELS } from '@/types/roles';
 import { getSidebarConfig, SidebarItem } from '@/config/sidebar.config';
@@ -52,7 +52,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 }
 
 function DashboardLayoutInner({ children }: DashboardLayoutProps) {
-    const { state, isMobile } = useSidebar();
+    const { state, isMobile, toggleSidebar } = useSidebar();
     const pathname = usePathname();
     const role = useUserRole() || UserRole.ADMIN;
     const user = useUser();
@@ -140,7 +140,16 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
 
                     {/* Edge-positioned Sidebar Trigger: Floating half-inside, half-outside */}
                     <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-50">
-                        <SidebarTrigger className="!h-7 !w-7 !p-0 !border-none !bg-transparent hover:!bg-transparent text-[#7d5f55] hover:text-[#ff385c] !rounded-full shrink-0 cursor-pointer !shadow-none hover:!shadow-none flex items-center justify-center transition-all duration-200 hover:scale-110" />
+                        <button
+                            type="button"
+                            onClick={toggleSidebar}
+                            className="!h-7 !w-7 !p-0 !border-none !bg-transparent text-[#7d5f55]/70 hover:text-[#ff385c] hover:bg-[#fcd5ce]/30 !rounded-full shrink-0 cursor-pointer !shadow-none hover:!shadow-none flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-115 active:scale-95 hover:ring-4 hover:ring-[#fcd5ce]/20"
+                            title={state === 'expanded' ? "Thu nhỏ Sidebar" : "Mở rộng Sidebar"}
+                        >
+                            <ChevronLeft className={`h-4.5 w-4.5 transition-transform duration-300 ease-in-out ${
+                                state === 'collapsed' ? 'rotate-180 text-[#ff385c]' : ''
+                            }`} />
+                        </button>
                     </div>
                 </SidebarHeader>
 
@@ -152,12 +161,10 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                 {/* Bottom Navigation Links & Collapsible Profile Card */}
                 <SidebarFooter className="py-2 px-2 group-data-[collapsible=icon]:px-0">
                     <SidebarMenu>
-                        {renderMenuItems(bottomMenuItems)}
-                        
                         {/* Custom Personal Profile Link (Flat, borderless, no card wrapper) */}
                         {profileItem && (
                             state === 'expanded' ? (
-                                <SidebarMenuItem className="mt-2 px-1.5">
+                                <SidebarMenuItem className="px-1.5 mb-1">
                                     <Link 
                                         href={profileItem.href}
                                         className="flex items-center gap-2.5 rounded-full px-3 py-2 text-[#5b463f] hover:bg-[#fcd5ce]/40 hover:text-[#ff385c] transition-all duration-200 cursor-pointer min-w-0"
@@ -172,7 +179,7 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                                     </Link>
                                 </SidebarMenuItem>
                             ) : (
-                                <SidebarMenuItem className="flex justify-center mt-2">
+                                <SidebarMenuItem className="px-1.5 py-0.5 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center mb-1">
                                     <Link 
                                         href={profileItem.href}
                                         title="Hồ sơ cá nhân"
@@ -183,6 +190,8 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                                 </SidebarMenuItem>
                             )
                         )}
+
+                        {renderMenuItems(bottomMenuItems)}
                     </SidebarMenu>
                 </SidebarFooter>
 
