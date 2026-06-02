@@ -86,62 +86,32 @@ export function RoomList() {
 
                 {/* Tổng số phòng */}
                 <div className="rounded-2xl border border-[#fcd5ce] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Tổng số phòng</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#fff8f6] text-[#caa79a] flex items-center justify-center border border-[#fcd5ce]/30">
-                            <DoorOpen className="h-4 w-4 text-[#8f6f64]" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Tổng số phòng</span>
                     <p className="text-2xl font-black text-[#3f2d28]">{totalRooms}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Hiệu suất: {occupancyRate}%</p>
                 </div>
 
                 {/* Đang thuê */}
                 <div className="rounded-2xl border border-[#ffcdd2] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Đang thuê</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#ffebee] text-[#ff385c] flex items-center justify-center border border-[#ffcdd2]/30">
-                            <CheckCircle className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Đang thuê</span>
                     <p className="text-2xl font-black text-[#ff385c]">{occupiedRooms}</p>
-                    <p className="text-[10px] text-[#b89184] mt-0.5">Đã lấp đầy</p>
                 </div>
 
                 {/* Phòng trống */}
                 <div className="rounded-2xl border border-[#c8e6c9] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Phòng trống</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#e8f5e9] text-[#2e7d32] flex items-center justify-center border border-[#c8e6c9]/30">
-                            <DoorOpen className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Phòng trống</span>
                     <p className="text-2xl font-black text-[#2e7d32]">{vacantRooms}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Sẵn sàng đón khách</p>
                 </div>
 
                 {/* Đã giữ chỗ */}
                 <div className="rounded-2xl border border-[#bbdefb] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Đã giữ chỗ</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#e3f2fd] text-[#1565c0] flex items-center justify-center border border-[#bbdefb]/30">
-                            <CalendarRange className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Đã giữ chỗ</span>
                     <p className="text-2xl font-black text-[#1565c0]">{reservedRooms}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Khách đã cọc trước</p>
                 </div>
 
                 {/* Đang bảo trì */}
                 <div className="rounded-2xl border border-[#ffe0b2] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Bảo trì</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#fff3e0] text-[#ef6c00] flex items-center justify-center border border-[#ffe0b2]/30">
-                            <Wrench className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Bảo trì</span>
                     <p className="text-2xl font-black text-[#ef6c00]">{maintenanceRooms}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Cần sửa chữa sửa soạn</p>
                 </div>
 
             </div>

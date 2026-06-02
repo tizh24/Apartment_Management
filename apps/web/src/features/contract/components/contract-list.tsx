@@ -81,62 +81,32 @@ export function ContractList() {
                 
                 {/* Tổng hợp đồng */}
                 <div className="rounded-2xl border border-[#fcd5ce] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Tổng hợp đồng</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#fff8f6] flex items-center justify-center border border-[#fcd5ce]/30">
-                            <FileText className="h-4 w-4 text-[#8f6f64]" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Tổng hợp đồng</span>
                     <p className="text-2xl font-black text-[#3f2d28]">{totalContracts}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Hồ sơ lưu trữ</p>
                 </div>
 
                 {/* Hoạt động */}
                 <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Đang hoạt động</span>
-                        <div className="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200/30">
-                            <CheckCircle2 className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Đang hoạt động</span>
                     <p className="text-2xl font-black text-emerald-700">{activeContracts}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Khách đang ở</p>
                 </div>
 
                 {/* Sắp hết hạn */}
                 <div className="rounded-2xl border border-amber-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Sắp hết hạn</span>
-                        <div className="h-7 w-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/30 animate-pulse">
-                            <Clock className="h-4 w-4 text-amber-600" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Sắp hết hạn</span>
                     <p className="text-2xl font-black text-amber-700">{expiringSoonContracts}</p>
-                    <p className="text-[10px] text-[#b89184] mt-0.5">Trong vòng 30 ngày</p>
                 </div>
 
                 {/* Hết hạn */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Đã hết hạn</span>
-                        <div className="h-7 w-7 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center border border-slate-200/30">
-                            <XCircle className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Đã hết hạn</span>
                     <p className="text-2xl font-black text-slate-700">{expiredContracts}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Cần bàn giao cọc</p>
                 </div>
 
                 {/* Đã thanh lý */}
                 <div className="rounded-2xl border border-orange-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Đã thanh lý</span>
-                        <div className="h-7 w-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-200/30">
-                            <Ban className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Đã thanh lý</span>
                     <p className="text-2xl font-black text-orange-700">{terminatedContracts}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Lưu trữ thanh lý</p>
                 </div>
 
             </div>

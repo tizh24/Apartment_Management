@@ -84,62 +84,32 @@ export function InvoiceList() {
                 
                 {/* Doanh thu đã xuất */}
                 <div className="rounded-2xl border border-[#fcd5ce] bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Doanh thu đã xuất</span>
-                        <div className="h-7 w-7 rounded-lg bg-[#fff8f6] flex items-center justify-center border border-[#fcd5ce]/30">
-                            <Coins className="h-4 w-4 text-[#ff385c]" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Doanh thu đã xuất</span>
                     <p className="text-xl font-black text-[#3f2d28]">{formatCurrency(totalIssued)}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Tổng giá trị hóa đơn</p>
                 </div>
 
                 {/* Đã thu */}
                 <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Đã thu (Paid)</span>
-                        <div className="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200/30">
-                            <CheckCircle2 className="h-4 w-4" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Đã thu (Paid)</span>
                     <p className="text-xl font-black text-emerald-700">{formatCurrency(totalPaid)}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Tiền mặt + Chuyển khoản</p>
                 </div>
 
                 {/* Tổng công nợ nợ */}
                 <div className="rounded-2xl border border-red-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Còn nợ (Outstanding)</span>
-                        <div className="h-7 w-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center border border-red-200/30">
-                            <AlertCircle className="h-4 w-4 animate-bounce" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Còn nợ (Outstanding)</span>
                     <p className="text-xl font-black text-red-600">{formatCurrency(totalOutstanding)}</p>
-                    <p className="text-[10px] text-[#b89184] mt-0.5">Công nợ cần thu hồi</p>
                 </div>
 
                 {/* Quá hạn */}
                 <div className="rounded-2xl border border-rose-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Phiếu quá hạn</span>
-                        <div className="h-7 w-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200/30">
-                            <AlertTriangle className="h-4 w-4 text-rose-600" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Phiếu quá hạn</span>
                     <p className="text-2xl font-black text-rose-700">{overdueCount}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Hóa đơn nợ đọng</p>
                 </div>
 
                 {/* Chờ đối soát */}
                 <div className="rounded-2xl border border-amber-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider">Chờ đối soát</span>
-                        <div className="h-7 w-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/30">
-                            <Clock className="h-4 w-4 text-amber-600" />
-                        </div>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#8f6f64] uppercase tracking-wider block mb-1">Chờ đối soát</span>
                     <p className="text-2xl font-black text-amber-700">{pendingConfirmationCount}</p>
-                    <p className="text-[10px] text-[#caa79a] mt-0.5">Khách báo đã chuyển</p>
                 </div>
 
             </div>

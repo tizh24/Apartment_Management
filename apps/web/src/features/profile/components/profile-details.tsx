@@ -110,47 +110,48 @@ export function ProfileDetails() {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="max-w-3xl mx-auto space-y-6">
                 
-                {/* Left Side: Avatar Card */}
-                <div className="lg:col-span-1 rounded-3xl border border-[#fcd5ce] bg-white p-6 shadow-sm flex flex-col items-center justify-between gap-6 text-center">
-                    <div className="space-y-4 w-full flex flex-col items-center">
+                {/* General Information Form (with integrated avatar header) */}
+                <div className="rounded-3xl border border-[#fcd5ce] bg-white p-6 shadow-sm space-y-6">
+                    
+                    {/* Elegant Profile Header */}
+                    <div className="flex flex-col sm:flex-row items-center gap-5 pb-5 border-b border-[#fcd5ce]/30">
                         
                         {/* Avatar Image Container */}
-                        <div className="relative h-28 w-28 rounded-3xl bg-[#fff8f6] border border-[#fcd5ce] flex items-center justify-center p-3 shadow-inner group overflow-hidden">
+                        <div className="relative h-20 w-20 rounded-2xl bg-[#fff8f6] border border-[#fcd5ce] flex items-center justify-center p-2 shadow-inner overflow-hidden shrink-0">
                             <img
                                 src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
                                 alt="User Avatar"
-                                className="h-full w-full object-contain p-2"
+                                className="h-full w-full object-contain"
                             />
                         </div>
 
-                        {/* Random Seed Button */}
-                        <button
-                            type="button"
-                            onClick={randomizeAvatar}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#fcd5ce] text-[10px] font-bold text-[#8f6f64] hover:text-[#ff385c] hover:bg-[#fff8f6] rounded-xl transition-all cursor-pointer shadow-sm hover:shadow-md"
-                        >
-                            <RefreshCw className="h-3 w-3" />
-                            Đổi ảnh đại diện ngẫu nhiên
-                        </button>
+                        {/* Name, Role & Randomizer button */}
+                        <div className="space-y-1.5 text-center sm:text-left flex-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <h2 className="text-lg font-black text-[#3f2d28]">{user.name}</h2>
+                                <span className="inline-flex w-fit mx-auto sm:mx-0 rounded-full bg-[#fff8f6] border border-[#fcd5ce] px-2.5 py-0.5 text-[10px] text-[#ff385c] font-black uppercase">
+                                    {ROLE_LABELS[user.role] || user.role}
+                                </span>
+                            </div>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                <span className="text-[10px] text-[#caa79a]">ID Tài khoản: {user.id}</span>
+                                <button
+                                    type="button"
+                                    onClick={randomizeAvatar}
+                                    className="inline-flex items-center justify-center gap-1 px-2.5 py-1 border border-[#fcd5ce] text-[9px] font-bold text-[#8f6f64] hover:text-[#ff385c] hover:bg-[#fff8f6] rounded-lg transition-all cursor-pointer shadow-sm"
+                                >
+                                    <RefreshCw className="h-2.5 w-2.5" />
+                                    Đổi avatar ngẫu nhiên
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="space-y-1 w-full border-t border-[#fcd5ce]/30 pt-4">
-                        <h2 className="text-base font-black text-[#3f2d28]">{user.name}</h2>
-                        <span className="inline-flex rounded-full bg-[#fff8f6] border border-[#fcd5ce] px-3 py-0.5 text-xs text-[#ff385c] font-bold">
-                            {ROLE_LABELS[user.role] || user.role}
-                        </span>
-                        <p className="text-[10px] text-[#caa79a] pt-1">ID Tài khoản: {user.id}</p>
-                    </div>
-                </div>
-
-                {/* Right Side: Information Sub-forms */}
-                <div className="lg:col-span-2 space-y-6">
-                    
-                    {/* General Information Form */}
-                    <div className="rounded-3xl border border-[#fcd5ce] bg-white p-6 shadow-sm space-y-4">
-                        <div className="pb-3 border-b border-[#fcd5ce]/30">
+                    {/* General Info Fields */}
+                    <div className="space-y-4">
+                        <div className="pb-1">
                             <h3 className="text-sm font-bold text-[#3f2d28] flex items-center gap-1.5">
                                 <User className="h-4.5 w-4.5 text-[#ff385c]" />
                                 Thông tin cá nhân
@@ -163,7 +164,7 @@ export function ProfileDetails() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-[#5b463f] block">Họ và tên *</label>
                                     <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
-                                        <User className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
+                                        <User className="h-4.5 w-4.5 text-[#caa79a] mr-2 shrink-0" />
                                         <input
                                             type="text"
                                             value={name}
@@ -176,7 +177,7 @@ export function ProfileDetails() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-[#5b463f] block">Số điện thoại *</label>
                                     <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
-                                        <Phone className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
+                                        <Phone className="h-4.5 w-4.5 text-[#caa79a] mr-2 shrink-0" />
                                         <input
                                             type="text"
                                             value={phone}
@@ -212,77 +213,76 @@ export function ProfileDetails() {
                             </div>
                         </form>
                     </div>
+                </div>
 
-                    {/* Change Password Form */}
-                    <div className="rounded-3xl border border-[#fcd5ce] bg-white p-6 shadow-sm space-y-4">
-                        <div className="pb-3 border-b border-[#fcd5ce]/30">
-                            <h3 className="text-sm font-bold text-[#3f2d28] flex items-center gap-1.5">
-                                <KeyRound className="h-4.5 w-4.5 text-[#ff385c]" />
-                                Bảo mật & Đổi mật khẩu
-                            </h3>
-                            <p className="text-[10px] text-[#caa79a]">Cập nhật mật khẩu tài khoản thường xuyên để nâng cao bảo mật hệ thống.</p>
-                        </div>
+                {/* Change Password Form */}
+                <div className="rounded-3xl border border-[#fcd5ce] bg-white p-6 shadow-sm space-y-4">
+                    <div className="pb-3 border-b border-[#fcd5ce]/30">
+                        <h3 className="text-sm font-bold text-[#3f2d28] flex items-center gap-1.5">
+                            <KeyRound className="h-4.5 w-4.5 text-[#ff385c]" />
+                            Bảo mật & Đổi mật khẩu
+                        </h3>
+                        <p className="text-[10px] text-[#caa79a]">Cập nhật mật khẩu tài khoản thường xuyên để nâng cao bảo mật hệ thống.</p>
+                    </div>
 
-                        <form onSubmit={handleChangePassword} className="space-y-4">
-                            <div className="space-y-4">
+                    <form onSubmit={handleChangePassword} className="space-y-4">
+                        <div className="space-y-4">
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-[#5b463f] block">Mật khẩu hiện tại *</label>
+                                <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
+                                    <Lock className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
+                                    <input
+                                        type="password"
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        className="w-full bg-transparent outline-none text-[#3f2d28]"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-bold text-[#5b463f] block">Mật khẩu hiện tại *</label>
+                                    <label className="text-xs font-bold text-[#5b463f] block">Mật khẩu mới *</label>
                                     <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
                                         <Lock className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
                                         <input
                                             type="password"
-                                            value={currentPassword}
-                                            onChange={(e) => setCurrentPassword(e.target.value)}
-                                            placeholder="••••••••"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            placeholder="Tối thiểu 6 ký tự"
                                             className="w-full bg-transparent outline-none text-[#3f2d28]"
                                             required
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-[#5b463f] block">Mật khẩu mới *</label>
-                                        <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
-                                            <Lock className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
-                                            <input
-                                                type="password"
-                                                value={newPassword}
-                                                onChange={(e) => setNewPassword(e.target.value)}
-                                                placeholder="Tối thiểu 6 ký tự"
-                                                className="w-full bg-transparent outline-none text-[#3f2d28]"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-[#5b463f] block">Xác nhận mật khẩu mới *</label>
-                                        <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
-                                            <Lock className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
-                                            <input
-                                                type="password"
-                                                value={confirmPassword}
-                                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                                placeholder="Nhập lại mật khẩu mới"
-                                                className="w-full bg-transparent outline-none text-[#3f2d28]"
-                                                required
-                                            />
-                                        </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-[#5b463f] block">Xác nhận mật khẩu mới *</label>
+                                    <div className="relative flex items-center bg-white border border-[#fcd5ce] rounded-xl px-3 py-2 text-xs focus-within:border-[#ff385c] focus-within:ring-1 focus-within:ring-[#ff385c] transition-all">
+                                        <Lock className="h-4 w-4 text-[#caa79a] mr-2 shrink-0" />
+                                        <input
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            placeholder="Nhập lại mật khẩu mới"
+                                            className="w-full bg-transparent outline-none text-[#3f2d28]"
+                                            required
+                                        />
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="pt-4 border-t border-[#fcd5ce]/30 flex justify-end">
-                                <button
-                                    type="submit"
-                                    className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-bold rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer"
-                                >
-                                    <KeyRound className="h-4 w-4" />
-                                    Cập nhật mật khẩu mới
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
+                        <div className="pt-4 border-t border-[#fcd5ce]/30 flex justify-end">
+                            <button
+                                type="submit"
+                                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#ff385c] hover:bg-[#e00b41] text-white text-xs font-bold rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer"
+                            >
+                                <KeyRound className="h-4 w-4" />
+                                Cập nhật mật khẩu mới
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
             </div>
