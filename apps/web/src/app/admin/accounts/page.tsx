@@ -13,6 +13,15 @@ import {
 import Link from 'next/link';
 import { UserCheck, Plus, Search, Filter, Shield, ToggleLeft, ToggleRight, Trash2, Key, X, CheckCircle2, UserCheck2, AlertCircle } from 'lucide-react';
 import { Pagination } from '@/components/ui/pagination';
+import { CustomSelect } from '@/components/ui/custom-select';
+
+const ROLE_OPTIONS = [
+    { value: 'all', label: 'Tất cả tài khoản' },
+    { value: 'admin', label: 'Chủ apartment (Admin)' },
+    { value: 'staff', label: 'Nhân viên vận hành' },
+    { value: 'sale', label: 'Cộng tác viên (Sale)' },
+    { value: 'customer', label: 'Khách thuê' },
+];
 
 interface Account {
     id: string;
@@ -216,20 +225,12 @@ export default function AdminAccountsPage() {
                     
                     {/* Role Filter on the Left */}
                     <div className="flex items-center gap-2 w-full md:w-auto justify-start">
-                        <div className="flex items-center gap-1 bg-white border border-[#fcd5ce] rounded-xl px-3 py-1.5 text-xs text-[#3f2d28] font-medium shadow-sm">
-                            <Filter className="h-3.5 w-3.5 text-[#ff385c]" />
-                            <select 
-                                value={roleFilter}
-                                onChange={(e) => setRoleFilter(e.target.value)}
-                                className="bg-transparent border-none outline-none text-[#3f2d28] cursor-pointer"
-                            >
-                                <option value="all">Tất cả tài khoản</option>
-                                <option value="admin">Chủ apartment (Admin)</option>
-                                <option value="staff">Nhân viên vận hành</option>
-                                <option value="sale">Cộng tác viên (Sale)</option>
-                                <option value="customer">Khách thuê</option>
-                            </select>
-                        </div>
+                        <CustomSelect
+                            value={roleFilter}
+                            onChange={setRoleFilter}
+                            options={ROLE_OPTIONS}
+                            icon={Filter}
+                        />
                     </div>
 
                     {/* Search Input on the Right */}

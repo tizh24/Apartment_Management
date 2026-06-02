@@ -10,6 +10,21 @@ import {
     Wrench, CalendarRange, Filter, X, Grid, List, Sparkles, Building
 } from 'lucide-react';
 import { Pagination } from '@/components/ui/pagination';
+import { CustomSelect } from '@/components/ui/custom-select';
+
+const BUILDING_OPTIONS = [
+    { value: 'all', label: 'Tất cả Tòa nhà' },
+    { value: 'Tòa nhà A', label: 'Tòa nhà A' },
+    { value: 'Tòa nhà B', label: 'Tòa nhà B' },
+];
+
+const STATUS_OPTIONS = [
+    { value: 'all', label: 'Tất cả trạng thái' },
+    { value: 'vacant', label: 'Trống' },
+    { value: 'occupied', label: 'Đang thuê' },
+    { value: 'reserved', label: 'Đã giữ chỗ' },
+    { value: 'maintenance', label: 'Bảo trì' },
+];
 
 export function RoomList() {
     const router = useRouter();
@@ -136,34 +151,20 @@ export function RoomList() {
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-start">
 
                     {/* Tòa nhà Filter */}
-                    <div className="flex items-center gap-1 bg-white border border-[#fcd5ce] rounded-xl px-3 py-1.5 text-xs text-[#3f2d28] font-medium shadow-sm">
-                        <Building className="h-3.5 w-3.5 text-[#ff385c]" />
-                        <select
-                            value={buildingFilter}
-                            onChange={(e) => setBuildingFilter(e.target.value)}
-                            className="bg-transparent border-none outline-none text-[#3f2d28] cursor-pointer"
-                        >
-                            <option value="all">Tất cả Tòa nhà</option>
-                            <option value="Tòa nhà A">Tòa nhà A</option>
-                            <option value="Tòa nhà B">Tòa nhà B</option>
-                        </select>
-                    </div>
+                    <CustomSelect
+                        value={buildingFilter}
+                        onChange={setBuildingFilter}
+                        options={BUILDING_OPTIONS}
+                        icon={Building}
+                    />
 
                     {/* Trạng thái Filter */}
-                    <div className="flex items-center gap-1 bg-white border border-[#fcd5ce] rounded-xl px-3 py-1.5 text-xs text-[#3f2d28] font-medium shadow-sm">
-                        <Filter className="h-3.5 w-3.5 text-[#ff385c]" />
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="bg-transparent border-none outline-none text-[#3f2d28] cursor-pointer"
-                        >
-                            <option value="all">Tất cả trạng thái</option>
-                            <option value="vacant">Trống</option>
-                            <option value="occupied">Đang thuê</option>
-                            <option value="reserved">Đã giữ chỗ</option>
-                            <option value="maintenance">Bảo trì</option>
-                        </select>
-                    </div>
+                    <CustomSelect
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        options={STATUS_OPTIONS}
+                        icon={Filter}
+                    />
 
                 </div>
 

@@ -8,6 +8,14 @@ import {
     XCircle, ShieldAlert, Filter, X, Grid, List, Sparkles, Phone, Mail, FileCheck, Layers
 } from 'lucide-react';
 import { Pagination } from '@/components/ui/pagination';
+import { CustomSelect } from '@/components/ui/custom-select';
+
+const STATUS_OPTIONS = [
+    { value: 'all', label: 'Tất cả trạng thái' },
+    { value: 'active', label: 'Đang thuê' },
+    { value: 'potential', label: 'Khách tiềm năng' },
+    { value: 'inactive', label: 'Đã thanh lý' },
+];
 
 export function CustomerList() {
     const router = useRouter();
@@ -105,19 +113,12 @@ export function CustomerList() {
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-start">
                     
                     {/* Trạng thái Dropdown */}
-                    <div className="flex items-center gap-1 bg-white border border-[#fcd5ce] rounded-xl px-3 py-1.5 text-xs text-[#3f2d28] font-medium shadow-sm">
-                        <Filter className="h-3.5 w-3.5 text-[#ff385c]" />
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="bg-transparent border-none outline-none text-[#3f2d28] cursor-pointer"
-                        >
-                            <option value="all">Tất cả trạng thái</option>
-                            <option value="active">Đang thuê</option>
-                            <option value="potential">Khách tiềm năng</option>
-                            <option value="inactive">Đã thanh lý</option>
-                        </select>
-                    </div>
+                    <CustomSelect
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        options={STATUS_OPTIONS}
+                        icon={Filter}
+                    />
 
                 </div>
 

@@ -70,7 +70,7 @@ export default function ApartmentDetailPage({ params }: { params: Promise<{ id: 
     );
 
     const occupiedCount = associatedRooms.filter((r) => r.status === 'occupied').length;
-    const emptyCount = associatedRooms.filter((r) => r.status === 'empty').length;
+    const emptyCount = associatedRooms.filter((r) => r.status === 'vacant').length;
     const maintenanceCount = associatedRooms.filter((r) => r.status === 'maintenance').length;
     const occupancyRate = associatedRooms.length > 0 
         ? Math.round((occupiedCount / associatedRooms.length) * 100) 
@@ -329,14 +329,14 @@ export default function ApartmentDetailPage({ params }: { params: Promise<{ id: 
                                                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                                                         room.status === 'occupied' 
                                                             ? 'bg-green-50 text-green-700 border border-green-200' 
-                                                            : room.status === 'empty'
+                                                            : room.status === 'vacant'
                                                             ? 'bg-blue-50 text-blue-700 border border-blue-200'
                                                             : 'bg-red-50 text-red-700 border border-red-200'
                                                     }`}>
                                                         <span className={`h-1.5 w-1.5 rounded-full ${
-                                                            room.status === 'occupied' ? 'bg-green-500' : room.status === 'empty' ? 'bg-blue-500' : 'bg-red-500'
+                                                            room.status === 'occupied' ? 'bg-green-500' : room.status === 'vacant' ? 'bg-blue-500' : 'bg-red-500'
                                                         }`} />
-                                                        {room.status === 'occupied' ? 'Đang thuê' : room.status === 'empty' ? 'Trống' : 'Bảo trì'}
+                                                        {room.status === 'occupied' ? 'Đang thuê' : room.status === 'vacant' ? 'Trống' : 'Bảo trì'}
                                                     </span>
                                                 </td>
                                                 <td className="py-4 px-5 text-right font-black text-[#ff385c]">
