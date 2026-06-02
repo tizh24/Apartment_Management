@@ -6,6 +6,7 @@ import {
     Users, Search, Coins, CheckCircle2, Clock, 
     Filter, X, Grid, List, Phone, Mail, Calendar, Sparkles 
 } from 'lucide-react';
+import { Pagination } from '@/components/ui/pagination';
 
 export function SaleList() {
     const router = useRouter();
@@ -37,6 +38,18 @@ export function SaleList() {
         
         return matchesSearch && matchesStatus;
     });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Reset pagination on search or filter change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter]);
+
+    // Paginated items
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedSales = filteredSales.slice(startIndex, startIndex + itemsPerPage);
 
     const formatCurrency = (val: number) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
@@ -176,117 +189,135 @@ export function SaleList() {
                 </div>
             ) : viewMode === 'list' ? (
                 /* Table view (Google Drive style) */
-                <div className="w-full overflow-x-auto">
-                    <table className="w-full border-collapse text-left text-xs">
-                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                            <tr>
-                                <th className="px-6 py-4">Tên cộng tác viên</th>
-                                <th className="px-6 py-4">Liên hệ</th>
-                                <th className="px-6 py-4">Ngày tham gia</th>
-                                <th className="px-6 py-4">Hợp đồng mang về</th>
-                                <th className="px-6 py-4">Tổng hoa hồng</th>
-                                <th className="px-6 py-4">Đã quyết toán</th>
-                                <th className="px-6 py-4">Chưa quyết toán</th>
-                                <th className="px-6 py-4">Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-[#3f2d28]">
-                            {filteredSales.map((sale) => (
-                                <tr
-                                    key={sale.id}
-                                    onClick={() => router.push('/admin/sales/' + sale.id)}
-                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
-                                >
-                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c] hover:underline">
-                                        {sale.name}
-                                    </td>
-                                    <td className="px-6 py-4 space-y-0.5">
-                                        <div className="flex items-center gap-1 text-[#5b463f] font-medium">
-                                            <Phone className="h-3 w-3 text-[#caa79a]" />
-                                            <span>{sale.phone}</span>
+                <div className="space-y-4">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-xs">
+                            <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th className="px-6 py-4">Tên cộng tác viên</th>
+                                    <th className="px-6 py-4">Liên hệ</th>
+                                    <th className="px-6 py-4">Ngày tham gia</th>
+                                    <th className="px-6 py-4">Hợp đồng mang về</th>
+                                    <th className="px-6 py-4">Tổng hoa hồng</th>
+                                    <th className="px-6 py-4">Đã quyết toán</th>
+                                    <th className="px-6 py-4">Chưa quyết toán</th>
+                                    <th className="px-6 py-4">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-[#3f2d28]">
+                                {paginatedSales.map((sale) => (
+                                    <tr
+                                        key={sale.id}
+                                        onClick={() => router.push('/admin/sales/' + sale.id)}
+                                        className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                    >
+                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c] hover:underline">
+                                            {sale.name}
+                                        </td>
+                                        <td className="px-6 py-4 space-y-0.5">
+                                            <div className="flex items-center gap-1 text-[#5b463f] font-medium">
+                                                <Phone className="h-3 w-3 text-[#caa79a]" />
+                                                <span>{sale.phone}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-[#caa79a] text-[10px]">
+                                                <Mail className="h-3 w-3 text-[#caa79a]" />
+                                                <span>{sale.email}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-[#caa79a]">
+                                            {formatDate(sale.joinedDate)}
+                                        </td>
+                                        <td className="px-6 py-4 font-bold text-center sm:text-left pl-10">
+                                            <span className="bg-[#fff8f6] border border-[#fcd5ce] px-2 py-0.5 rounded-lg text-xs text-[#3f2d28] font-bold">
+                                                {sale.totalContracts}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 font-bold">{formatCurrency(sale.totalCommission)}</td>
+                                        <td className="px-6 py-4 text-emerald-700 font-semibold">{formatCurrency(sale.paidCommission)}</td>
+                                        <td className="px-6 py-4 text-red-600 font-extrabold">{formatCurrency(sale.unpaidCommission)}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase border ${
+                                                sale.status === 'active' 
+                                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+                                                    : 'bg-slate-50 border-slate-200 text-slate-500'
+                                            }`}>
+                                                {sale.status === 'active' ? 'Hoạt động' : 'Tạm khóa'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Pagination
+                        totalItems={filteredSales.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
+                </div>
+            ) : (
+                /* Grid view cards */
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        {paginatedSales.map((sale) => (
+                            <div
+                                key={sale.id}
+                                onClick={() => router.push('/admin/sales/' + sale.id)}
+                                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
+                            >
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
+                                        <div className="flex items-center gap-2">
+                                            <Users className="h-4.5 w-4.5 text-[#ff385c]" />
+                                            <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{sale.name}</h3>
                                         </div>
-                                        <div className="flex items-center gap-1 text-[#caa79a] text-[10px]">
-                                            <Mail className="h-3 w-3 text-[#caa79a]" />
-                                            <span>{sale.email}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 font-medium text-[#caa79a]">
-                                        {formatDate(sale.joinedDate)}
-                                    </td>
-                                    <td className="px-6 py-4 font-bold text-center sm:text-left pl-10">
-                                        <span className="bg-[#fff8f6] border border-[#fcd5ce] px-2 py-0.5 rounded-lg text-xs text-[#3f2d28] font-bold">
-                                            {sale.totalContracts}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 font-bold">{formatCurrency(sale.totalCommission)}</td>
-                                    <td className="px-6 py-4 text-emerald-700 font-semibold">{formatCurrency(sale.paidCommission)}</td>
-                                    <td className="px-6 py-4 text-red-600 font-extrabold">{formatCurrency(sale.unpaidCommission)}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase border ${
+                                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase border ${
                                             sale.status === 'active' 
                                                 ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
                                                 : 'bg-slate-50 border-slate-200 text-slate-500'
                                         }`}>
-                                            {sale.status === 'active' ? 'Hoạt động' : 'Tạm khóa'}
+                                            {sale.status === 'active' ? 'Hoạt động' : 'Khóa'}
                                         </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                /* Grid view cards */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {filteredSales.map((sale) => (
-                        <div
-                            key={sale.id}
-                            onClick={() => router.push('/admin/sales/' + sale.id)}
-                            className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
-                        >
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
-                                    <div className="flex items-center gap-2">
-                                        <Users className="h-4.5 w-4.5 text-[#ff385c]" />
-                                        <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{sale.name}</h3>
                                     </div>
-                                    <span className={`inline-flex rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase border ${
-                                        sale.status === 'active' 
-                                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
-                                            : 'bg-slate-50 border-slate-200 text-slate-500'
-                                    }`}>
-                                        {sale.status === 'active' ? 'Hoạt động' : 'Khóa'}
-                                    </span>
+
+                                    <div className="space-y-2 text-[11px] text-[#8f6f64]">
+                                        <div className="flex items-center gap-1.5">
+                                            <Phone className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>{sale.phone}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Mail className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span className="truncate">{sale.email}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Calendar className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>CTV từ: {formatDate(sale.joinedDate)}</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2 text-[11px] text-[#8f6f64]">
-                                    <div className="flex items-center gap-1.5">
-                                        <Phone className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>{sale.phone}</span>
+                                <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 flex items-center justify-between">
+                                    <div className="text-[11px] font-semibold">
+                                        <p className="text-slate-500">Mã CTV: {sale.id}</p>
+                                        <p className="text-[#3f2d28]">HĐ mang về: <strong>{sale.totalContracts}</strong></p>
                                     </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Mail className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span className="truncate">{sale.email}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Calendar className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>CTV từ: {formatDate(sale.joinedDate)}</span>
+                                    <div className="text-right text-[11px]">
+                                        <p className="text-[#caa79a]">Tổng HH: {formatCurrency(sale.totalCommission)}</p>
+                                        <p className="text-red-600 font-extrabold">Còn nợ: {formatCurrency(sale.unpaidCommission)}</p>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 flex items-center justify-between">
-                                <div className="text-[11px] font-semibold">
-                                    <p className="text-slate-500">Mã CTV: {sale.id}</p>
-                                    <p className="text-[#3f2d28]">HĐ mang về: <strong>{sale.totalContracts}</strong></p>
-                                </div>
-                                <div className="text-right text-[11px]">
-                                    <p className="text-[#caa79a]">Tổng HH: {formatCurrency(sale.totalCommission)}</p>
-                                    <p className="text-red-600 font-extrabold">Còn nợ: {formatCurrency(sale.unpaidCommission)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <Pagination
+                        totalItems={filteredSales.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             )}
 

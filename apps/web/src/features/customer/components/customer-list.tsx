@@ -7,6 +7,7 @@ import {
     Plus, Search, Users, CheckCircle2, HelpCircle, 
     XCircle, ShieldAlert, Filter, X, Grid, List, Sparkles, Phone, Mail, FileCheck, Layers
 } from 'lucide-react';
+import { Pagination } from '@/components/ui/pagination';
 
 export function CustomerList() {
     const router = useRouter();
@@ -42,6 +43,18 @@ export function CustomerList() {
         const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
         return matchesSearch && matchesStatus;
     });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Reset pagination on search or filter change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter]);
+
+    // Paginated items
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedCustomers = filteredCustomers.slice(startIndex, startIndex + itemsPerPage);
 
     const formatCurrency = (val: number) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
@@ -174,125 +187,143 @@ export function CustomerList() {
                 </div>
             ) : viewMode === 'grid' ? (
                 /* Grid view: Premium customer cards */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {filteredCustomers.map((c) => (
-                        <div
-                            key={c.id}
-                            onClick={() => router.push('/admin/customers/' + c.id)}
-                            className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
-                        >
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fff8f6] border border-[#fcd5ce]/40 text-[#ff385c] font-black text-sm">
-                                            {c.name.charAt(0)}
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        {paginatedCustomers.map((c) => (
+                            <div
+                                key={c.id}
+                                onClick={() => router.push('/admin/customers/' + c.id)}
+                                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
+                            >
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fff8f6] border border-[#fcd5ce]/40 text-[#ff385c] font-black text-sm">
+                                                {c.name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors line-clamp-1">
+                                                    {c.name}
+                                                </h3>
+                                                <p className="text-[10px] text-[#caa79a]">Quốc tịch: {c.nationality}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors line-clamp-1">
-                                                {c.name}
-                                            </h3>
-                                            <p className="text-[10px] text-[#caa79a]">Quốc tịch: {c.nationality}</p>
+                                        <div className="shrink-0">
+                                            <CustomerStatusBadge status={c.status} />
                                         </div>
                                     </div>
-                                    <div className="shrink-0">
-                                        <CustomerStatusBadge status={c.status} />
+
+                                    <div className="space-y-2 text-[11px] text-[#8f6f64]">
+                                        <div className="flex items-center gap-1.5">
+                                            <Phone className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>SĐT: <strong className="text-[#5b463f]">{c.phone}</strong></span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Mail className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span className="truncate">Email: <strong className="text-[#5b463f]" title={c.email}>{c.email}</strong></span>
+                                        </div>
+                                        {c.status === 'active' && c.currentRoomNumber && (
+                                            <div className="flex items-center gap-1.5 pt-1.5 border-t border-[#fcd5ce]/10 text-emerald-700 font-semibold">
+                                                <Layers className="h-3.5 w-3.5 text-emerald-500" />
+                                                <span>Đang thuê: P.{c.currentRoomNumber} ({c.currentBuilding})</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
-                                <div className="space-y-2 text-[11px] text-[#8f6f64]">
-                                    <div className="flex items-center gap-1.5">
-                                        <Phone className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>SĐT: <strong className="text-[#5b463f]">{c.phone}</strong></span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Mail className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span className="truncate">Email: <strong className="text-[#5b463f]" title={c.email}>{c.email}</strong></span>
-                                    </div>
-                                    {c.status === 'active' && c.currentRoomNumber && (
-                                        <div className="flex items-center gap-1.5 pt-1.5 border-t border-[#fcd5ce]/10 text-emerald-700 font-semibold">
-                                            <Layers className="h-3.5 w-3.5 text-emerald-500" />
-                                            <span>Đang thuê: P.{c.currentRoomNumber} ({c.currentBuilding})</span>
-                                        </div>
+                                {/* Outstanding balance or papers info */}
+                                <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 flex items-center justify-between text-[11px]">
+                                    {c.totalUnpaid > 0 ? (
+                                        <span className="text-red-600 font-bold">
+                                            Còn nợ: {formatCurrency(c.totalUnpaid)}
+                                        </span>
+                                    ) : (
+                                        <span className="text-emerald-700 font-semibold flex items-center gap-0.5">
+                                            ✔ Không còn nợ
+                                        </span>
                                     )}
+                                    <span className="text-[#caa79a] hover:text-[#ff385c] font-bold">
+                                        Chi tiết →
+                                    </span>
                                 </div>
                             </div>
-
-                            {/* Outstanding balance or papers info */}
-                            <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 flex items-center justify-between text-[11px]">
-                                {c.totalUnpaid > 0 ? (
-                                    <span className="text-red-600 font-bold">
-                                        Còn nợ: {formatCurrency(c.totalUnpaid)}
-                                    </span>
-                                ) : (
-                                    <span className="text-emerald-700 font-semibold flex items-center gap-0.5">
-                                        ✔ Không còn nợ
-                                    </span>
-                                )}
-                                <span className="text-[#caa79a] hover:text-[#ff385c] font-bold">
-                                    Chi tiết →
-                                </span>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <Pagination
+                        totalItems={filteredCustomers.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             ) : (
                 /* List view: Detailed admin table (Google Drive style) */
-                <div className="w-full overflow-x-auto">
-                    <table className="w-full border-collapse text-left text-xs">
-                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                            <tr>
-                                <th className="px-6 py-4">Họ và tên</th>
-                                <th className="px-6 py-4">Quốc tịch</th>
-                                <th className="px-6 py-4">Số điện thoại</th>
-                                <th className="px-6 py-4">Email</th>
-                                <th className="px-6 py-4">Trạng thái</th>
-                                <th className="px-6 py-4">Căn hộ thuê</th>
-                                <th className="px-6 py-4">Nợ chưa thu</th>
-                                <th className="px-6 py-4">Tài liệu đính kèm</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-[#3f2d28]">
-                            {filteredCustomers.map((c) => (
-                                <tr
-                                    key={c.id}
-                                    onClick={() => router.push('/admin/customers/' + c.id)}
-                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
-                                >
-                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{c.name}</td>
-                                    <td className="px-6 py-4">{c.nationality}</td>
-                                    <td className="px-6 py-4 font-medium">{c.phone}</td>
-                                    <td className="px-6 py-4">{c.email}</td>
-                                    <td className="px-6 py-4">
-                                        <CustomerStatusBadge status={c.status} />
-                                    </td>
-                                    <td className="px-6 py-4 font-medium">
-                                        {c.status === 'active' && c.currentRoomNumber ? (
-                                            <span className="font-bold text-[#3f2d28]">P.{c.currentRoomNumber} ({c.currentBuilding})</span>
-                                        ) : (
-                                            <span className="text-[#caa79a] italic">--</span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 font-extrabold text-xs">
-                                        {c.totalUnpaid > 0 ? (
-                                            <span className="text-red-600">{formatCurrency(c.totalUnpaid)}</span>
-                                        ) : (
-                                            <span className="text-emerald-700">0 ₫</span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 text-[#8f6f64] font-medium">
-                                        {c.documents.length > 0 ? (
-                                            <span className="inline-flex items-center gap-1 rounded bg-[#fff8f6] px-2 py-0.5 border border-[#fcd5ce] text-[10px] font-bold text-[#ff385c]">
-                                                <FileCheck className="h-3 w-3" />
-                                                {c.documents.length} Giấy tờ
-                                            </span>
-                                        ) : (
-                                            <span className="text-[#caa79a] italic">Không có</span>
-                                        )}
-                                    </td>
+                <div className="space-y-4">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-xs">
+                            <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th className="px-6 py-4">Họ và tên</th>
+                                    <th className="px-6 py-4">Quốc tịch</th>
+                                    <th className="px-6 py-4">Số điện thoại</th>
+                                    <th className="px-6 py-4">Email</th>
+                                    <th className="px-6 py-4">Trạng thái</th>
+                                    <th className="px-6 py-4">Căn hộ thuê</th>
+                                    <th className="px-6 py-4">Nợ chưa thu</th>
+                                    <th className="px-6 py-4">Tài liệu đính kèm</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="text-[#3f2d28]">
+                                {paginatedCustomers.map((c) => (
+                                    <tr
+                                        key={c.id}
+                                        onClick={() => router.push('/admin/customers/' + c.id)}
+                                        className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                    >
+                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{c.name}</td>
+                                        <td className="px-6 py-4">{c.nationality}</td>
+                                        <td className="px-6 py-4 font-medium">{c.phone}</td>
+                                        <td className="px-6 py-4">{c.email}</td>
+                                        <td className="px-6 py-4">
+                                            <CustomerStatusBadge status={c.status} />
+                                        </td>
+                                        <td className="px-6 py-4 font-medium">
+                                            {c.status === 'active' && c.currentRoomNumber ? (
+                                                <span className="font-bold text-[#3f2d28]">P.{c.currentRoomNumber} ({c.currentBuilding})</span>
+                                            ) : (
+                                                <span className="text-[#caa79a] italic">--</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 font-extrabold text-xs">
+                                            {c.totalUnpaid > 0 ? (
+                                                <span className="text-red-600">{formatCurrency(c.totalUnpaid)}</span>
+                                            ) : (
+                                                <span className="text-emerald-700">0 ₫</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-[#8f6f64] font-medium">
+                                            {c.documents.length > 0 ? (
+                                                <span className="inline-flex items-center gap-1 rounded bg-[#fff8f6] px-2 py-0.5 border border-[#fcd5ce] text-[10px] font-bold text-[#ff385c]">
+                                                    <FileCheck className="h-3 w-3" />
+                                                    {c.documents.length} Giấy tờ
+                                                </span>
+                                            ) : (
+                                                <span className="text-[#caa79a] italic">Không có</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Pagination
+                        totalItems={filteredCustomers.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             )}
 

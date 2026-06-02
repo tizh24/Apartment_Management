@@ -6,6 +6,7 @@ import {
     Plus, Search, FileText, CheckCircle2, Clock, 
     XCircle, Ban, Filter, X, Grid, List, Calendar, Coins, User, Layers
 } from 'lucide-react';
+import { Pagination } from '@/components/ui/pagination';
 
 export function ContractList() {
     const router = useRouter();
@@ -45,6 +46,18 @@ export function ContractList() {
         const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
         return matchesSearch && matchesStatus;
     });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Reset pagination on search or filter change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter]);
+
+    // Paginated items
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedContracts = filteredContracts.slice(startIndex, startIndex + itemsPerPage);
 
     const formatCurrency = (val: number) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
@@ -201,85 +214,103 @@ export function ContractList() {
                 </div>
             ) : viewMode === 'list' ? (
                 /* Table list view (Google Drive style) */
-                <div className="w-full overflow-x-auto">
-                    <table className="w-full border-collapse text-left text-xs">
-                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                            <tr>
-                                <th className="px-6 py-4">Mã HĐ</th>
-                                <th className="px-6 py-4">Phòng</th>
-                                <th className="px-6 py-4">Khách hàng</th>
-                                <th className="px-6 py-4">Thời hạn thuê</th>
-                                <th className="px-6 py-4">Giá thuê</th>
-                                <th className="px-6 py-4">Tiền đặt cọc</th>
-                                <th className="px-6 py-4">Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-[#3f2d28]">
-                            {filteredContracts.map((c) => (
-                                <tr
-                                    key={c.id}
-                                    onClick={() => router.push('/admin/contracts/' + c.id)}
-                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
-                                >
-                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{c.id}</td>
-                                    <td className="px-6 py-4 font-bold">P.{c.roomNumber} <span className="text-[10px] font-normal text-[#8f6f64]">({c.buildingName})</span></td>
-                                    <td className="px-6 py-4 font-medium">{c.customerName}</td>
-                                    <td className="px-6 py-4">{formatDate(c.startDate)} - {formatDate(c.endDate)}</td>
-                                    <td className="px-6 py-4 font-extrabold text-sm">{formatCurrency(c.price)}</td>
-                                    <td className="px-6 py-4 font-semibold text-[#8f6f64]">{formatCurrency(c.deposit)}</td>
-                                    <td className="px-6 py-4">
-                                        {getStatusBadge(c.status)}
-                                    </td>
+                <div className="space-y-4">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-xs">
+                            <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th className="px-6 py-4">Mã HĐ</th>
+                                    <th className="px-6 py-4">Phòng</th>
+                                    <th className="px-6 py-4">Khách hàng</th>
+                                    <th className="px-6 py-4">Thời hạn thuê</th>
+                                    <th className="px-6 py-4">Giá thuê</th>
+                                    <th className="px-6 py-4">Tiền đặt cọc</th>
+                                    <th className="px-6 py-4">Trạng thái</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="text-[#3f2d28]">
+                                {paginatedContracts.map((c) => (
+                                    <tr
+                                        key={c.id}
+                                        onClick={() => router.push('/admin/contracts/' + c.id)}
+                                        className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                    >
+                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{c.id}</td>
+                                        <td className="px-6 py-4 font-bold">P.{c.roomNumber} <span className="text-[10px] font-normal text-[#8f6f64]">({c.buildingName})</span></td>
+                                        <td className="px-6 py-4 font-medium">{c.customerName}</td>
+                                        <td className="px-6 py-4">{formatDate(c.startDate)} - {formatDate(c.endDate)}</td>
+                                        <td className="px-6 py-4 font-extrabold text-sm">{formatCurrency(c.price)}</td>
+                                        <td className="px-6 py-4 font-semibold text-[#8f6f64]">{formatCurrency(c.deposit)}</td>
+                                        <td className="px-6 py-4">
+                                            {getStatusBadge(c.status)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Pagination
+                        totalItems={filteredContracts.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             ) : (
                 /* Grid view cards */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {filteredContracts.map((c) => (
-                        <div
-                            key={c.id}
-                            onClick={() => router.push('/admin/contracts/' + c.id)}
-                            className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
-                        >
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
-                                    <div className="flex items-center gap-2">
-                                        <FileText className="h-4.5 w-4.5 text-[#ff385c]" />
-                                        <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{c.id}</h3>
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        {paginatedContracts.map((c) => (
+                            <div
+                                key={c.id}
+                                onClick={() => router.push('/admin/contracts/' + c.id)}
+                                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
+                            >
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
+                                        <div className="flex items-center gap-2">
+                                            <FileText className="h-4.5 w-4.5 text-[#ff385c]" />
+                                            <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{c.id}</h3>
+                                        </div>
+                                        {getStatusBadge(c.status)}
                                     </div>
-                                    {getStatusBadge(c.status)}
+
+                                    <div className="space-y-2 text-[11px] text-[#8f6f64]">
+                                        <div className="flex items-center gap-1.5 text-[#3f2d28] font-bold">
+                                            <Layers className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Phòng: P.{c.roomNumber} ({c.buildingName})</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <User className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Khách: <strong className="text-[#5b463f]">{c.customerName}</strong></span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Calendar className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Thời gian: {formatDate(c.startDate)} - {formatDate(c.endDate)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Coins className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Giá thuê: <strong className="text-[#ff385c]">{formatCurrency(c.price)}</strong></span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2 text-[11px] text-[#8f6f64]">
-                                    <div className="flex items-center gap-1.5 text-[#3f2d28] font-bold">
-                                        <Layers className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Phòng: P.{c.roomNumber} ({c.buildingName})</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <User className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Khách: <strong className="text-[#5b463f]">{c.customerName}</strong></span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Calendar className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Thời gian: {formatDate(c.startDate)} - {formatDate(c.endDate)}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Coins className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Giá thuê: <strong className="text-[#ff385c]">{formatCurrency(c.price)}</strong></span>
-                                    </div>
+                                <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 text-right">
+                                    <span className="text-[11px] text-[#caa79a] font-bold group-hover:text-[#ff385c]">
+                                        Chi tiết hợp đồng →
+                                    </span>
                                 </div>
                             </div>
-
-                            <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 text-right">
-                                <span className="text-[11px] text-[#caa79a] font-bold group-hover:text-[#ff385c]">
-                                    Chi tiết hợp đồng →
-                                </span>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <Pagination
+                        totalItems={filteredContracts.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             )}
 

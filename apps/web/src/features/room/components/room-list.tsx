@@ -9,6 +9,7 @@ import {
     Plus, Search, DoorOpen, CheckCircle, Clock,
     Wrench, CalendarRange, Filter, X, Grid, List, Sparkles, Building
 } from 'lucide-react';
+import { Pagination } from '@/components/ui/pagination';
 
 export function RoomList() {
     const router = useRouter();
@@ -56,6 +57,18 @@ export function RoomList() {
 
         return matchesSearch && matchesStatus && matchesBuilding;
     });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Reset pagination on search or filter change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter, buildingFilter]);
+
+    // Paginated items
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedRooms = filteredRooms.slice(startIndex, startIndex + itemsPerPage);
 
     const selectedRoom = rooms.find((r) => r.id === selectedRoomId);
 
@@ -218,85 +231,103 @@ export function RoomList() {
                 </div>
             ) : viewMode === 'grid' ? (
                 /* Grid view: Premium Airbnb property card style */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {filteredRooms.map((room) => (
-                        <RoomCard
-                            key={room.id}
-                            room={room}
-                            onViewDetail={(id) => router.push('/admin/rooms/' + id)}
-                            onEdit={handleEditClick}
-                        />
-                    ))}
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        {paginatedRooms.map((room) => (
+                            <RoomCard
+                                key={room.id}
+                                room={room}
+                                onViewDetail={(id) => router.push('/admin/rooms/' + id)}
+                                onEdit={handleEditClick}
+                            />
+                        ))}
+                    </div>
+                    <Pagination
+                        totalItems={filteredRooms.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             ) : (
                 /* List view: Detailed administrative table (Google Drive style) */
-                <div className="w-full overflow-x-auto">
-                    <table className="w-full border-collapse text-left text-xs">
-                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                            <tr>
-                                <th className="px-6 py-4">Số phòng</th>
-                                <th className="px-6 py-4">Tòa nhà</th>
-                                <th className="px-6 py-4">Tầng số</th>
-                                <th className="px-6 py-4">Diện tích</th>
-                                <th className="px-6 py-4">Giá thuê / tháng</th>
-                                <th className="px-6 py-4">Trạng thái</th>
-                                <th className="px-6 py-4">Khách đang thuê</th>
-                                <th className="px-6 py-4 text-right">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-[#3f2d28]">
-                            {filteredRooms.map((room) => (
-                                <tr
-                                    key={room.id}
-                                    onClick={() => router.push('/admin/rooms/' + room.id)}
-                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
-                                >
-                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">P.{room.roomNumber}</td>
-                                    <td className="px-6 py-4 font-medium">{room.buildingName}</td>
-                                    <td className="px-6 py-4">{room.floor}</td>
-                                    <td className="px-6 py-4">{room.area} m²</td>
-                                    <td className="px-6 py-4 font-bold">{formatCurrency(room.price)}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${room.status === 'vacant' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                                                room.status === 'occupied' ? 'bg-red-50 text-[#ff385c] border-red-200' :
-                                                    room.status === 'reserved' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                        'bg-orange-50 text-orange-700 border-orange-200'
-                                            }`}>
-                                            {room.status === 'vacant' && 'Trống'}
-                                            {room.status === 'occupied' && 'Đang thuê'}
-                                            {room.status === 'reserved' && 'Giữ chỗ'}
-                                            {room.status === 'maintenance' && 'Bảo trì'}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 font-medium">
-                                        {room.status === 'occupied' && room.currentTenant ? (
-                                            <span className="font-bold text-[#3f2d28]">{room.currentTenant.name}</span>
-                                        ) : (
-                                            <span className="text-[#caa79a] italic">--</span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                                        <div className="flex justify-end gap-1.5">
-                                            <button
-                                                onClick={() => router.push('/admin/rooms/' + room.id)}
-                                                className="p-1.5 hover:text-[#ff385c] hover:bg-[#fff8f6] rounded-lg transition-colors border border-transparent hover:border-[#fcd5ce]"
-                                                title="Xem chi tiết"
-                                            >
-                                                <Search className="h-4 w-4" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleEditClick(room)}
-                                                className="p-1.5 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-200"
-                                                title="Sửa phòng"
-                                            >
-                                                <List className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </td>
+                <div className="space-y-4">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-xs">
+                            <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th className="px-6 py-4">Số phòng</th>
+                                    <th className="px-6 py-4">Tòa nhà</th>
+                                    <th className="px-6 py-4">Tầng số</th>
+                                    <th className="px-6 py-4">Diện tích</th>
+                                    <th className="px-6 py-4">Giá thuê / tháng</th>
+                                    <th className="px-6 py-4">Trạng thái</th>
+                                    <th className="px-6 py-4">Khách đang thuê</th>
+                                    <th className="px-6 py-4 text-right">Thao tác</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="text-[#3f2d28]">
+                                {paginatedRooms.map((room) => (
+                                    <tr
+                                        key={room.id}
+                                        onClick={() => router.push('/admin/rooms/' + room.id)}
+                                        className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                    >
+                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">P.{room.roomNumber}</td>
+                                        <td className="px-6 py-4 font-medium">{room.buildingName}</td>
+                                        <td className="px-6 py-4">{room.floor}</td>
+                                        <td className="px-6 py-4">{room.area} m²</td>
+                                        <td className="px-6 py-4 font-bold">{formatCurrency(room.price)}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${room.status === 'vacant' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                                    room.status === 'occupied' ? 'bg-red-50 text-[#ff385c] border-red-200' :
+                                                        room.status === 'reserved' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                            'bg-orange-50 text-orange-700 border-orange-200'
+                                                }`}>
+                                                {room.status === 'vacant' && 'Trống'}
+                                                {room.status === 'occupied' && 'Đang thuê'}
+                                                {room.status === 'reserved' && 'Giữ chỗ'}
+                                                {room.status === 'maintenance' && 'Bảo trì'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 font-medium">
+                                            {room.status === 'occupied' && room.currentTenant ? (
+                                                <span className="font-bold text-[#3f2d28]">{room.currentTenant.name}</span>
+                                            ) : (
+                                                <span className="text-[#caa79a] italic">--</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                                            <div className="flex justify-end gap-1.5">
+                                                <button
+                                                    onClick={() => router.push('/admin/rooms/' + room.id)}
+                                                    className="p-1.5 hover:text-[#ff385c] hover:bg-[#fff8f6] rounded-lg transition-colors border border-transparent hover:border-[#fcd5ce]"
+                                                    title="Xem chi tiết"
+                                                >
+                                                    <Search className="h-4 w-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleEditClick(room)}
+                                                    className="p-1.5 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-200"
+                                                    title="Sửa phòng"
+                                                >
+                                                    <List className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Pagination
+                        totalItems={filteredRooms.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             )}
 

@@ -7,6 +7,7 @@ import {
     Plus, Search, Coins, CheckCircle2, Clock, 
     AlertCircle, AlertTriangle, Filter, X, Grid, List, Building, Calendar, User, Layers
 } from 'lucide-react';
+import { Pagination } from '@/components/ui/pagination';
 
 export function InvoiceList() {
     const router = useRouter();
@@ -43,6 +44,18 @@ export function InvoiceList() {
         
         return matchesSearch && matchesStatus && matchesType;
     });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Reset pagination on search or filter change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter, typeFilter]);
+
+    // Paginated items
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedInvoices = filteredInvoices.slice(startIndex, startIndex + itemsPerPage);
 
     const formatCurrency = (val: number) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
@@ -222,95 +235,113 @@ export function InvoiceList() {
                 </div>
             ) : viewMode === 'list' ? (
                 /* Table list view (Google Drive style) */
-                <div className="w-full overflow-x-auto">
-                    <table className="w-full border-collapse text-left text-xs">
-                        <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
-                            <tr>
-                                <th className="px-6 py-4">Mã hóa đơn</th>
-                                <th className="px-6 py-4">Loại thu</th>
-                                <th className="px-6 py-4">Phòng</th>
-                                <th className="px-6 py-4">Khách hàng</th>
-                                <th className="px-6 py-4">Ngày hết hạn</th>
-                                <th className="px-6 py-4">Tổng tiền</th>
-                                <th className="px-6 py-4">Đã thu</th>
-                                <th className="px-6 py-4">Còn nợ</th>
-                                <th className="px-6 py-4">Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-[#3f2d28]">
-                            {filteredInvoices.map((inv) => (
-                                <tr
-                                    key={inv.id}
-                                    onClick={() => router.push('/admin/revenue/' + inv.id)}
-                                    className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
-                                >
-                                    <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{inv.invoiceNumber}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex rounded-lg px-2 py-0.5 border text-[10px] font-bold uppercase ${getInvoiceTypeColor(inv.type)}`}>
-                                            {getInvoiceTypeLabel(inv.type)}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 font-bold">P.{inv.roomNumber} <span className="text-[10px] font-normal text-[#8f6f64]">({inv.buildingName})</span></td>
-                                    <td className="px-6 py-4 font-medium">{inv.customerName}</td>
-                                    <td className="px-6 py-4 font-medium text-red-600">{formatDate(inv.dueDate)}</td>
-                                    <td className="px-6 py-4 font-bold">{formatCurrency(inv.amount)}</td>
-                                    <td className="px-6 py-4 text-emerald-700 font-semibold">{formatCurrency(inv.paidAmount)}</td>
-                                    <td className="px-6 py-4 text-red-600 font-extrabold">{formatCurrency(inv.unpaidAmount)}</td>
-                                    <td className="px-6 py-4">
-                                        <PaymentStatusBadge status={inv.status} />
-                                    </td>
+                <div className="space-y-4">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-xs">
+                            <thead className="text-[#8f6f64] border-b border-[#fcd5ce] font-bold uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th className="px-6 py-4">Mã hóa đơn</th>
+                                    <th className="px-6 py-4">Loại thu</th>
+                                    <th className="px-6 py-4">Phòng</th>
+                                    <th className="px-6 py-4">Khách hàng</th>
+                                    <th className="px-6 py-4">Ngày hết hạn</th>
+                                    <th className="px-6 py-4">Tổng tiền</th>
+                                    <th className="px-6 py-4">Đã thu</th>
+                                    <th className="px-6 py-4">Còn nợ</th>
+                                    <th className="px-6 py-4">Trạng thái</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="text-[#3f2d28]">
+                                {paginatedInvoices.map((inv) => (
+                                    <tr
+                                        key={inv.id}
+                                        onClick={() => router.push('/admin/revenue/' + inv.id)}
+                                        className="hover:bg-[#fff8f6]/70 border-b border-[#fcd5ce]/30 cursor-pointer transition-all duration-200"
+                                    >
+                                        <td className="px-6 py-4 font-bold text-sm text-[#ff385c]">{inv.invoiceNumber}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex rounded-lg px-2 py-0.5 border text-[10px] font-bold uppercase ${getInvoiceTypeColor(inv.type)}`}>
+                                                {getInvoiceTypeLabel(inv.type)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 font-bold">P.{inv.roomNumber} <span className="text-[10px] font-normal text-[#8f6f64]">({inv.buildingName})</span></td>
+                                        <td className="px-6 py-4 font-medium">{inv.customerName}</td>
+                                        <td className="px-6 py-4 font-medium text-red-600">{formatDate(inv.dueDate)}</td>
+                                        <td className="px-6 py-4 font-bold">{formatCurrency(inv.amount)}</td>
+                                        <td className="px-6 py-4 text-emerald-700 font-semibold">{formatCurrency(inv.paidAmount)}</td>
+                                        <td className="px-6 py-4 text-red-600 font-extrabold">{formatCurrency(inv.unpaidAmount)}</td>
+                                        <td className="px-6 py-4">
+                                            <PaymentStatusBadge status={inv.status} />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Pagination
+                        totalItems={filteredInvoices.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             ) : (
                 /* Grid view cards */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {filteredInvoices.map((inv) => (
-                        <div
-                            key={inv.id}
-                            onClick={() => router.push('/admin/revenue/' + inv.id)}
-                            className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
-                        >
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
-                                    <div className="flex items-center gap-2">
-                                        <Coins className="h-4.5 w-4.5 text-[#ff385c]" />
-                                        <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{inv.invoiceNumber}</h3>
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        {paginatedInvoices.map((inv) => (
+                            <div
+                                key={inv.id}
+                                onClick={() => router.push('/admin/revenue/' + inv.id)}
+                                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#fcd5ce] bg-white p-5 shadow-sm hover:shadow-lg transition-all hover:border-[#ffb5a7] duration-300 cursor-pointer"
+                            >
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between pb-3 border-b border-[#fcd5ce]/20">
+                                        <div className="flex items-center gap-2">
+                                            <Coins className="h-4.5 w-4.5 text-[#ff385c]" />
+                                            <h3 className="text-sm font-bold text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{inv.invoiceNumber}</h3>
+                                        </div>
+                                        <span className={`inline-flex rounded-lg px-2 py-0.5 border text-[10px] font-bold uppercase ${getInvoiceTypeColor(inv.type)}`}>
+                                            {getInvoiceTypeLabel(inv.type)}
+                                        </span>
                                     </div>
-                                    <span className={`inline-flex rounded-lg px-2 py-0.5 border text-[10px] font-bold uppercase ${getInvoiceTypeColor(inv.type)}`}>
-                                        {getInvoiceTypeLabel(inv.type)}
-                                    </span>
+
+                                    <div className="space-y-2 text-[11px] text-[#8f6f64]">
+                                        <div className="flex items-center gap-1.5 text-[#3f2d28] font-bold">
+                                            <Layers className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Phòng: P.{inv.roomNumber} ({inv.buildingName})</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <User className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Khách: <strong className="text-[#5b463f]">{inv.customerName}</strong></span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Calendar className="h-3.5 w-3.5 text-[#caa79a]" />
+                                            <span>Hạn nộp: <strong className="text-red-500">{formatDate(inv.dueDate)}</strong></span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2 text-[11px] text-[#8f6f64]">
-                                    <div className="flex items-center gap-1.5 text-[#3f2d28] font-bold">
-                                        <Layers className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Phòng: P.{inv.roomNumber} ({inv.buildingName})</span>
+                                <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 flex items-center justify-between">
+                                    <div className="text-[11px] font-semibold">
+                                        <p className="text-[#caa79a]">Tổng: {formatCurrency(inv.amount)}</p>
+                                        <p className="text-red-600 font-extrabold">Còn nợ: {formatCurrency(inv.unpaidAmount)}</p>
                                     </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <User className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Khách: <strong className="text-[#5b463f]">{inv.customerName}</strong></span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Calendar className="h-3.5 w-3.5 text-[#caa79a]" />
-                                        <span>Hạn nộp: <strong className="text-red-500">{formatDate(inv.dueDate)}</strong></span>
+                                    <div className="shrink-0 pt-1">
+                                        <PaymentStatusBadge status={inv.status} />
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="mt-4 pt-3 border-t border-[#fcd5ce]/20 flex items-center justify-between">
-                                <div className="text-[11px] font-semibold">
-                                    <p className="text-[#caa79a]">Tổng: {formatCurrency(inv.amount)}</p>
-                                    <p className="text-red-600 font-extrabold">Còn nợ: {formatCurrency(inv.unpaidAmount)}</p>
-                                </div>
-                                <div className="shrink-0 pt-1">
-                                    <PaymentStatusBadge status={inv.status} />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <Pagination
+                        totalItems={filteredInvoices.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
                 </div>
             )}
 
