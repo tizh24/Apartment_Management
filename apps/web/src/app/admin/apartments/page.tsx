@@ -13,48 +13,10 @@ import {
 import Link from 'next/link';
 import { Building2, Plus, MapPin, Layers, DoorOpen, Trash2, ShieldAlert, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 
-interface Apartment {
-    id: string;
-    name: string;
-    address: string;
-    floors: number;
-    roomsCount: number;
-    status: 'active' | 'maintenance';
-    description: string;
-}
-
-const INITIAL_APARTMENTS: Apartment[] = [
-    {
-        id: 'apt-1',
-        name: 'Tòa nhà Harmony',
-        address: '128 Trần Hưng Đạo, Phường Nguyễn Cư Trinh, Quận 1, TP. HCM',
-        floors: 6,
-        roomsCount: 48,
-        status: 'active',
-        description: 'Khu căn hộ studio dịch vụ cao cấp, an ninh 24/7, hầm để xe rộng rãi.',
-    },
-    {
-        id: 'apt-2',
-        name: 'Khu căn hộ Sunrise',
-        address: '79 Nguyễn Thị Thập, Phường Tân Hưng, Quận 7, TP. HCM',
-        floors: 5,
-        roomsCount: 50,
-        status: 'active',
-        description: 'Vị trí đắc địa đối diện Lotte Mart, đầy đủ tiện ích xung quanh, camera an ninh.',
-    },
-    {
-        id: 'apt-3',
-        name: 'Building Moonlight',
-        address: '202 Võ Thị Sáu, Phường Võ Thị Sáu, Quận 3, TP. HCM',
-        floors: 4,
-        roomsCount: 30,
-        status: 'maintenance',
-        description: 'Đang tiến hành sơn sửa lại mặt tiền và nâng cấp thang máy tòa nhà.',
-    },
-];
+import { useApartmentStore } from '@/features/apartment/store/apartment-store';
 
 export default function AdminApartmentsPage() {
-    const [apartments, setApartments] = useState<Apartment[]>(INITIAL_APARTMENTS);
+    const { apartments, addApartment, deleteApartment } = useApartmentStore();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -78,17 +40,15 @@ export default function AdminApartmentsPage() {
             return;
         }
 
-        const newApt: Apartment = {
-            id: `apt-${Date.now()}`,
+        addApartment({
             name,
             address,
             floors: Number(floors),
             roomsCount: Number(roomsCount),
             status,
             description,
-        };
-
-        setApartments([newApt, ...apartments]);
+        });
+        
         setIsCreateOpen(false);
         triggerToast(`Đã thêm thành công tòa nhà "${name}" vào hệ thống.`);
         
@@ -103,7 +63,7 @@ export default function AdminApartmentsPage() {
 
     const handleDeleteApartment = (id: string, aptName: string) => {
         if (confirm(`Bạn có chắc chắn muốn xóa tòa nhà "${aptName}" khỏi hệ thống?`)) {
-            setApartments(apartments.filter((a) => a.id !== id));
+            deleteApartment(id);
             triggerToast(`Đã xóa tòa nhà "${aptName}".`);
         }
     };
@@ -174,7 +134,9 @@ export default function AdminApartmentsPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <h3 className="text-base font-black text-[#3f2d28] group-hover:text-[#ff385c] transition-colors">{apt.name}</h3>
+                                    <Link href={`/admin/apartments/${apt.id}`}>
+                                        <h3 className="text-base font-black text-[#3f2d28] group-hover:text-[#ff385c] transition-colors hover:underline cursor-pointer">{apt.name}</h3>
+                                    </Link>
                                     <div className="flex items-start gap-1 text-xs text-[#8f6f64]">
                                         <MapPin className="h-3.5 w-3.5 shrink-0 text-[#ff385c] mt-0.5" />
                                         <span className="leading-tight">{apt.address}</span>
@@ -204,12 +166,20 @@ export default function AdminApartmentsPage() {
                             </div>
 
                             <div className="flex justify-between items-center mt-5 pt-3 border-t border-[#fcd5ce]/30">
-                                <Link 
-                                    href={`/admin/rooms?building=${encodeURIComponent(apt.name)}`}
-                                    className="text-xs font-black text-[#ff385c] hover:underline"
-                                >
-                                    Xem danh sách phòng &rarr;
-                                </Link>
+                                <div className="flex items-center gap-4">
+                                    <Link 
+                                        href={`/admin/apartments/${apt.id}`}
+                                        className="text-xs font-black text-[#ff385c] hover:underline"
+                                    >
+                                        Chi tiết &rarr;
+                                    </Link>
+                                    <Link 
+                                        href={`/admin/rooms?building=${encodeURIComponent(apt.name)}`}
+                                        className="text-xs font-bold text-[#8f6f64] hover:text-[#ff385c] hover:underline"
+                                    >
+                                        Xem phòng
+                                    </Link>
+                                </div>
 
                                 <button
                                     onClick={() => handleDeleteApartment(apt.id, apt.name)}
