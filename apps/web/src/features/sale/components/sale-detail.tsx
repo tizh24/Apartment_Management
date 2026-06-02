@@ -111,15 +111,7 @@ export function SaleDetail({
                         </button>
                     )}
 
-                    {sale.unpaidCommission > 0 && (
-                        <button
-                            onClick={handlePayAll}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-white bg-[#ff385c] hover:bg-[#e00b41] px-3 py-1.5 rounded-xl hover:shadow-sm transition-all cursor-pointer"
-                        >
-                            <CreditCard className="h-3.5 w-3.5" />
-                            Quyết toán toàn bộ ({formatCurrency(sale.unpaidCommission)})
-                        </button>
-                    )}
+                    {/* Settle all button removed per request */}
                 </div>
             </div>
 
