@@ -23,6 +23,7 @@ import {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
+    useSidebar,
 } from '@/components/ui/sidebar';
 
 interface DashboardLayoutProps {
@@ -30,35 +31,6 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-    const pathname = usePathname();
-    const role = useUserRole() || UserRole.ADMIN;
-    const user = useUser();
-    const config = getSidebarConfig(role);
-
-    const isItemActive = (href: string) => {
-        return pathname === href || pathname.startsWith(`${href}/`);
-    };
-
-    const allItems = [...config.main, ...config.bottom];
-    const currentItem = allItems.find((item) => isItemActive(item.href));
-    const currentPageLabel = currentItem?.label || 'Dashboard';
-
-    const renderMenuItems = (items: SidebarItem[]) => {
-        return items.map((item) => {
-            const Icon = item.icon;
-            return (
-                <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton asChild isActive={isItemActive(item.href)} tooltip={item.label}>
-                        <Link href={item.href}>
-                            <Icon />
-                            <span>{item.label}</span>
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            );
-        });
-    };
-
     return (
         <SidebarProvider
             style={
@@ -74,93 +46,167 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 } as React.CSSProperties
             }
         >
-            <Sidebar variant="sidebar" collapsible="icon" className="border-r border-[#fcd5ce]">
-                <SidebarHeader className="border-b border-[#fcd5ce] px-3 py-4">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffb5a7] text-[#3f2d28]">
-                            <Building2 className="h-4 w-4" />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="truncate text-xs font-semibold uppercase tracking-wide text-[#7d5f55]">Apartment Management</p>
-                            <p className="truncate text-sm font-semibold text-[#3f2d28]">{ROLE_LABELS[role]}</p>
-                        </div>
+            <DashboardLayoutInner>{children}</DashboardLayoutInner>
+        </SidebarProvider>
+    );
+}
+
+function DashboardLayoutInner({ children }: DashboardLayoutProps) {
+    const { state, isMobile } = useSidebar();
+    const pathname = usePathname();
+    const role = useUserRole() || UserRole.ADMIN;
+    const user = useUser();
+    const config = getSidebarConfig(role);
+
+    const isItemActive = (href: string) => {
+        return pathname === href || pathname.startsWith(`${href}/`);
+    };
+
+    const allItems = [...config.main, ...config.bottom];
+    const currentItem = allItems.find((item) => isItemActive(item.href));
+    const currentPageLabel = currentItem?.label || 'Dashboard';
+
+    // Renders custom styled Sidebar Items (Google Drive style)
+    const renderMenuItems = (items: SidebarItem[]) => {
+        return items.map((item) => {
+            const Icon = item.icon;
+            const active = isItemActive(item.href);
+            return (
+                <SidebarMenuItem key={item.id} className="px-1.5 py-0.5">
+                    <SidebarMenuButton 
+                        asChild 
+                        isActive={active} 
+                        tooltip={item.label}
+                        className={`rounded-full transition-all duration-200 px-4 py-2 flex items-center gap-3 ${
+                            active
+                                ? '!bg-[#ffb5a7] !text-[#ff385c] font-black shadow-sm'
+                                : 'text-[#5b463f] hover:!bg-[#fcd5ce]/40 hover:!text-[#ff385c]'
+                        }`}
+                    >
+                        <Link href={item.href}>
+                            <Icon className={active ? 'text-[#ff385c]' : 'text-[#7d5f55]'} />
+                            <span>{item.label}</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            );
+        });
+    };
+
+    const bottomMenuItems = config.bottom.filter((item) => item.id !== 'profile');
+    const profileItem = config.bottom.find((item) => item.id === 'profile');
+
+    return (
+        <>
+            <Sidebar variant="sidebar" collapsible="icon" className="border-r border-[#fcd5ce] bg-[#f9dcc4]">
+                
+                {/* Brand Header & Notification Button */}
+                <SidebarHeader className="border-none px-3 py-4">
+                    <div className="flex items-center justify-between gap-2 w-full">
+                        {state === 'expanded' ? (
+                            <>
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffb5a7] text-[#3f2d28] shrink-0 shadow-inner">
+                                        <Building2 className="h-4.5 w-4.5 text-[#ff385c]" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="truncate text-[10px] font-bold uppercase tracking-wider text-[#7d5f55]">Apartment Management</p>
+                                        <p className="truncate text-xs font-black text-[#3f2d28]">{ROLE_LABELS[role]}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex items-center gap-1 shrink-0">
+                                    {/* Notification Button: Borderless, Shadow hover, next to Brand */}
+                                    <button
+                                        type="button"
+                                        title="Thông báo"
+                                        className="relative flex h-8 w-8 items-center justify-center rounded-full bg-transparent border-none text-[#7d5f55] hover:text-[#ff385c] hover:bg-white/40 hover:shadow-md transition-all duration-200 cursor-pointer"
+                                    >
+                                        <Bell className="h-4 w-4" />
+                                        <span className="absolute -right-0.5 -top-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[#ff385c] px-1 text-[8px] font-black text-white">
+                                            3
+                                        </span>
+                                    </button>
+                                    
+                                    {/* Sidebar Trigger */}
+                                    <SidebarTrigger className="h-8 w-8 border border-[#fcd5ce] bg-white text-[#7d5f55] hover:bg-[#f8edeb] hover:text-[#ff385c] rounded-full shrink-0 cursor-pointer" />
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex flex-col items-center gap-2 w-full">
+                                {/* Centered trigger to expand when collapsed */}
+                                <SidebarTrigger className="h-8 w-8 border border-[#fcd5ce] bg-[#ffb5a7] text-[#3f2d28] hover:bg-[#ffb5a7]/80 hover:text-[#ff385c] rounded-full shrink-0 cursor-pointer shadow-sm" />
+                            </div>
+                        )}
                     </div>
                 </SidebarHeader>
 
-                <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupLabel className="text-[#7d5f55]">Menu</SidebarGroupLabel>
-                        <SidebarGroupContent>
-                            <SidebarMenu>{renderMenuItems(config.main)}</SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
+                {/* Main Navigation Links */}
+                <SidebarContent className="py-2 px-2">
+                    <SidebarMenu>{renderMenuItems(config.main)}</SidebarMenu>
                 </SidebarContent>
 
-                <SidebarSeparator className="bg-[#fcd5ce]" />
-
-                <SidebarFooter>
-                    <SidebarMenu>{renderMenuItems(config.bottom)}</SidebarMenu>
+                {/* Bottom Navigation Links & Collapsible Profile Card */}
+                <SidebarFooter className="py-2">
+                    <SidebarMenu>
+                        {renderMenuItems(bottomMenuItems)}
+                        
+                        {/* Custom Personal Profile Link (Flat, borderless, no card wrapper) */}
+                        {profileItem && (
+                            state === 'expanded' ? (
+                                <SidebarMenuItem className="mt-2 px-1.5">
+                                    <Link 
+                                        href={profileItem.href}
+                                        className="flex items-center gap-2.5 rounded-full px-3 py-2 text-[#5b463f] hover:bg-[#fcd5ce]/40 hover:text-[#ff385c] transition-all duration-200 cursor-pointer min-w-0"
+                                    >
+                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#fec89a] text-[11px] font-black text-[#ff385c] border border-[#fcd5ce]">
+                                            {user?.name?.charAt(0) || 'U'}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[11px] font-black truncate leading-tight">{user?.name || 'Người dùng'}</p>
+                                            <p className="text-[9px] text-[#9d786d] truncate leading-none mt-0.5">{ROLE_LABELS[role]}</p>
+                                        </div>
+                                    </Link>
+                                </SidebarMenuItem>
+                            ) : (
+                                <SidebarMenuItem className="flex justify-center mt-2">
+                                    <Link 
+                                        href={profileItem.href}
+                                        title="Hồ sơ cá nhân"
+                                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fec89a] text-xs font-black text-[#ff385c] border border-[#fcd5ce] hover:shadow-md hover:scale-105 transition-all cursor-pointer"
+                                    >
+                                        {user?.name?.charAt(0) || 'U'}
+                                    </Link>
+                                </SidebarMenuItem>
+                            )
+                        )}
+                    </SidebarMenu>
                 </SidebarFooter>
 
                 <SidebarRail />
             </Sidebar>
 
-            <SidebarInset className="bg-gradient-to-br from-[#f8edeb] via-[#fff8f6] to-[#f9dcc4]/40">
-                <header className="sticky top-0 z-20 border-b border-[#fcd5ce] bg-[#fff8f6]/95 backdrop-blur">
-                    <div className="flex flex-col gap-3 px-4 py-3 sm:px-6 md:flex-row md:items-center md:justify-between">
-                        <div className="flex items-center gap-3">
-                            <SidebarTrigger className="border border-[#fcd5ce] bg-white text-[#7d5f55] hover:bg-[#f8edeb]" />
-                            <div>
-                                <div className="inline-flex items-center gap-1 rounded-full border border-[#fcd5ce] bg-[#fff8f6] px-2 py-0.5 text-[11px] font-semibold text-[#8f6f64]">
-                                    <CalendarDays className="h-3 w-3" />
-                                    Hôm nay
-                                </div>
-                            </div>
-                        </div>
-
+            <SidebarInset className="bg-gradient-to-br from-[#f8edeb] via-[#fff8f6] to-[#f9dcc4]/40 flex flex-col min-h-screen">
+                
+                {/* Mobile Header Bar (Only visible on mobile views) */}
+                {isMobile && (
+                    <header className="sticky top-0 z-20 border-b border-[#fcd5ce] bg-[#fff8f6] px-4 py-3 flex items-center justify-between md:hidden">
                         <div className="flex items-center gap-2">
-                            <div className="hidden w-[280px] items-center gap-2 rounded-2xl border border-[#fcd5ce] bg-white px-3 py-2 shadow-sm lg:flex">
-                                <Search className="h-4 w-4 text-[#a98579]" />
-                                <input
-                                    type="text"
-                                    placeholder="Tìm phòng, khách hàng, hợp đồng..."
-                                    className="w-full bg-transparent text-sm text-[#5b463f] outline-none placeholder:text-[#b89184]"
-                                />
-                            </div>
-
-                            <button
-                                type="button"
-                                className="hidden h-9 items-center gap-1 rounded-full border border-[#fcd5ce] bg-white px-3 text-xs font-semibold text-[#7d5f55] shadow-sm hover:bg-[#f8edeb] sm:inline-flex"
-                            >
-                                <Sparkles className="h-3.5 w-3.5" />
-                                AI
-                            </button>
-
-                            <button
-                                type="button"
-                                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#fcd5ce] bg-white text-[#7d5f55] shadow-sm hover:bg-[#f8edeb]"
-                            >
-                                <Bell className="h-4 w-4" />
-                                <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ffb5a7] px-1 text-[10px] font-semibold text-[#3f2d28]">
-                                    3
-                                </span>
-                            </button>
-
-                            <div className="flex items-center gap-2 rounded-full border border-[#fcd5ce] bg-white px-2.5 py-1.5 shadow-sm">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fec89a] text-xs font-semibold text-[#3f2d28]">
-                                    {user?.name?.charAt(0) || 'U'}
-                                </div>
-                                <div className="hidden sm:block">
-                                    <p className="text-xs font-semibold text-[#5b463f]">{user?.name || 'Người dùng'}</p>
-                                    <p className="text-[11px] text-[#9d786d]">{ROLE_LABELS[role]}</p>
-                                </div>
-                            </div>
+                            <SidebarTrigger className="border border-[#fcd5ce] bg-white text-[#7d5f55] h-8 w-8 flex items-center justify-center rounded-lg" />
+                            <span className="text-xs font-bold text-[#3f2d28] truncate">{currentPageLabel}</span>
                         </div>
-                    </div>
-                </header>
+                        <Link 
+                            href={profileItem?.href || '#'}
+                            className="w-8 h-8 rounded-full bg-[#fec89a] border border-[#fcd5ce] flex items-center justify-center text-xs font-black text-[#ff385c]"
+                        >
+                            {user?.name?.charAt(0) || 'U'}
+                        </Link>
+                    </header>
+                )}
 
-                <main className="flex-1 overflow-auto">{children}</main>
+                {/* Main Content Area (Full-bleed without any surrounding wrapper card) */}
+                <main className="flex-1 overflow-auto focus:outline-none">{children}</main>
             </SidebarInset>
-        </SidebarProvider>
+        </>
     );
 }
