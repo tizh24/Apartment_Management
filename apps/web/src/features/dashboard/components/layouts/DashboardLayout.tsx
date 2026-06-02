@@ -59,7 +59,13 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
     const config = getSidebarConfig(role);
 
     const isItemActive = (href: string) => {
-        return pathname === href || pathname.startsWith(`${href}/`);
+        const normPath = pathname.replace(/\/$/, '');
+        const normHref = href.replace(/\/$/, '');
+        const isRootDashboard = ['/admin', '/staff', '/accountant', '/sale', '/guest-portal'].includes(normHref);
+        if (isRootDashboard) {
+            return normPath === normHref;
+        }
+        return normPath === normHref || normPath.startsWith(`${normHref}/`);
     };
 
     const allItems = [...config.main, ...config.bottom];
@@ -72,20 +78,20 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
             const Icon = item.icon;
             const active = isItemActive(item.href);
             return (
-                <SidebarMenuItem key={item.id} className="px-1.5 py-0.5">
+                <SidebarMenuItem key={item.id} className="px-1.5 py-0.5 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
                     <SidebarMenuButton 
                         asChild 
                         isActive={active} 
                         tooltip={item.label}
-                        className={`rounded-full transition-all duration-200 px-4 !h-10 flex items-center gap-3 ${
+                        className={`rounded-full transition-all duration-200 px-4 !h-10 flex items-center gap-3 !border-none hover:!border-none active:!border-none !shadow-none hover:!shadow-none active:!shadow-none group-data-[collapsible=icon]:!px-0 group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:!gap-0 ${
                             active
-                                ? '!bg-[#ffb5a7] !text-[#ff385c] font-black shadow-sm'
-                                : 'text-[#5b463f] hover:!bg-[#fcd5ce]/40 hover:!text-[#ff385c] hover:shadow-sm'
+                                ? '!bg-[#ffb5a7] !text-[#ff385c] font-black'
+                                : 'text-[#5b463f] hover:!bg-[#fcd5ce]/40 hover:!text-[#ff385c]'
                         }`}
                     >
-                        <Link href={item.href}>
-                            <Icon className={active ? 'text-[#ff385c]' : 'text-[#7d5f55]'} />
-                            <span>{item.label}</span>
+                        <Link href={item.href} className="flex items-center w-full h-full gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
+                            <Icon className={`${active ? 'text-[#ff385c]' : 'text-[#7d5f55]'} shrink-0`} />
+                            <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -98,21 +104,21 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
 
     return (
         <>
-            <Sidebar variant="sidebar" collapsible="icon" className="border-r border-[#fcd5ce] bg-[#f9dcc4]">
+            <Sidebar variant="sidebar" collapsible="icon" className="border-none bg-[#f9dcc4]">
                 
                 {/* Brand Header & Notification Button */}
-                <SidebarHeader className="border-none px-3 py-4">
-                    <div className="flex items-center justify-between gap-2 w-full">
-                        {state === 'expanded' ? (
+                <SidebarHeader className="border-none px-3 py-4 relative">
+                    <div className="flex items-center gap-2.5 w-full min-w-0">
+                        {/* Always show the Logo icon */}
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffb5a7] text-[#3f2d28] shrink-0 shadow-inner group-data-[collapsible=icon]:mx-auto transition-all duration-300">
+                            <Building2 className="h-4.5 w-4.5 text-[#ff385c]" />
+                        </div>
+
+                        {state === 'expanded' && (
                             <>
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ffb5a7] text-[#3f2d28] shrink-0 shadow-inner">
-                                        <Building2 className="h-4.5 w-4.5 text-[#ff385c]" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="truncate text-[10px] font-bold uppercase tracking-wider text-[#7d5f55]">Apartment Management</p>
-                                        <p className="truncate text-xs font-black text-[#3f2d28]">{ROLE_LABELS[role]}</p>
-                                    </div>
+                                <div className="min-w-0 flex-1">
+                                    <p className="truncate text-[10px] font-bold uppercase tracking-wider text-[#7d5f55]">Apartment Management</p>
+                                    <p className="truncate text-xs font-black text-[#3f2d28]">{ROLE_LABELS[role]}</p>
                                 </div>
                                 
                                 <div className="flex items-center gap-1 shrink-0">
@@ -127,27 +133,24 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                                             3
                                         </span>
                                     </button>
-                                    
-                                    {/* Sidebar Trigger */}
-                                    <SidebarTrigger className="h-8 w-8 border border-[#fcd5ce] bg-white text-[#7d5f55] hover:bg-[#f8edeb] hover:text-[#ff385c] rounded-full shrink-0 cursor-pointer" />
                                 </div>
                             </>
-                        ) : (
-                            <div className="flex flex-col items-center gap-2 w-full">
-                                {/* Centered trigger to expand when collapsed */}
-                                <SidebarTrigger className="h-8 w-8 border border-[#fcd5ce] bg-[#ffb5a7] text-[#3f2d28] hover:bg-[#ffb5a7]/80 hover:text-[#ff385c] rounded-full shrink-0 cursor-pointer shadow-sm" />
-                            </div>
                         )}
+                    </div>
+
+                    {/* Edge-positioned Sidebar Trigger: Floating half-inside, half-outside */}
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-50">
+                        <SidebarTrigger className="!h-7 !w-7 !p-0 !border-none !bg-transparent hover:!bg-transparent text-[#7d5f55] hover:text-[#ff385c] !rounded-full shrink-0 cursor-pointer !shadow-none hover:!shadow-none flex items-center justify-center transition-all duration-200 hover:scale-110" />
                     </div>
                 </SidebarHeader>
 
                 {/* Main Navigation Links */}
-                <SidebarContent className="py-2 px-2">
+                <SidebarContent className="py-2 px-2 group-data-[collapsible=icon]:px-0">
                     <SidebarMenu>{renderMenuItems(config.main)}</SidebarMenu>
                 </SidebarContent>
 
                 {/* Bottom Navigation Links & Collapsible Profile Card */}
-                <SidebarFooter className="py-2">
+                <SidebarFooter className="py-2 px-2 group-data-[collapsible=icon]:px-0">
                     <SidebarMenu>
                         {renderMenuItems(bottomMenuItems)}
                         
