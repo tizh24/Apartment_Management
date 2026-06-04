@@ -1,8 +1,10 @@
 node_modules
 .turbo
 .pnpm-store
+.vercel
 apps/api/dist
 apps/api/coverage
 apps/api/.env
+apps/api/swagger-ui
 apps/web/.next
 *.tsbuildinfo

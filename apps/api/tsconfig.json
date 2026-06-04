@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
-    "incremental": true
+    "incremental": false
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"]
 }

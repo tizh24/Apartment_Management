@@ -1,4 +1,4 @@
-# Cấu trúc dự án — Hệ thống quản lý Apartment
+# Cấu trúc dự án — Nền tảng quản lý Multi-Apartment
 
 > **Stack giả định:** Next.js 14 (App Router) · TypeScript · Tailwind · Zustand · React Query · Prisma
 
@@ -153,7 +153,7 @@ features/auth/
       └── auth.type.ts          # Role, Permission, Session
 ```
 
-### `features/dashboard/`
+### `features/dashboard/` [REQ: DASH-01 -> DASH-08]
 
 > Aggregate data từ nhiều domain — không thuộc room hay revenue.
 
@@ -173,7 +173,7 @@ features/dashboard/
       └── dashboard.type.ts     # DashboardStats, OccupancyData
 ```
 
-### `features/room/`
+### `features/room/` [REQ: ROOM-01 -> ROOM-10]
 
 ```
 features/room/
@@ -198,7 +198,7 @@ features/room/
       └── room.type.ts          # Room, RoomStatus, UtilityReading
 ```
 
-### `features/customer/`
+### `features/customer/` [REQ: CUS-01 -> CUS-08]
 
 ```
 features/customer/
@@ -222,7 +222,7 @@ features/customer/
       └── customer.type.ts      # Customer, CustomerStatus, Document
 ```
 
-### `features/contract/`
+### `features/contract/` [REQ: CON-01 -> CON-09]
 
 > Nghiệp vụ phức tạp nhất — sau khi tạo HĐ, trigger cập nhật room + customer + sale.
 
@@ -249,7 +249,7 @@ features/contract/
       └── contract.type.ts      # Contract, ContractStatus, ContractChange
 ```
 
-### `features/payment/`
+### `features/payment/` [REQ: GUEST-09 -> GUEST-13; SALE-06 -> SALE-07]
 
 > Core payment engine — dùng bởi `revenue/`, `guest-portal/`, và `sale/`.
 
@@ -269,7 +269,7 @@ features/payment/
       └── payment.type.ts       # QRPayload, PaymentStatus, Transaction
 ```
 
-### `features/revenue/`
+### `features/revenue/` [REQ: REV-01 -> REV-09]
 
 > Invoice + công nợ. Dùng `features/payment/` để xác nhận thanh toán.
 
@@ -296,7 +296,7 @@ features/revenue/
       └── revenue.type.ts       # Invoice, InvoiceStatus, RevenueReport
 ```
 
-### `features/sale/`
+### `features/sale/` [REQ: SALE-01 -> SALE-09]
 
 > Quản lý sale và hoa hồng. Dùng `features/payment/` để thanh toán hoa hồng.
 
@@ -321,7 +321,7 @@ features/sale/
       └── sale.type.ts          # Sale, Commission, CommissionStatus
 ```
 
-### `features/guest-portal/`
+### `features/guest-portal/` [REQ: GUEST-01 -> GUEST-16]
 
 > Micro-app cho khách thuê — audience khác, flow login riêng, mobile-first.
 
@@ -347,7 +347,7 @@ features/guest-portal/
       └── guest.type.ts        # GuestSession, GuestInvoice, Complaint
 ```
 
-### `features/ai-assistant/`
+### `features/ai-assistant/` [REQ: AI-01 -> AI-06]
 
 > Priority thấp — tách riêng để bật/tắt mà không ảnh hưởng core.
 
@@ -415,13 +415,15 @@ providers/
 ```
 constants/
  ├── routes.ts                   # Route paths (type-safe)
- ├── roles.ts                    # ADMIN | STAFF | ACCOUNTANT | SALE | GUEST
+ ├── roles.ts                    # ADMIN | STAFF | SALE | GUEST
  ├── permissions.ts              # Permission map theo role
  ├── room-status.ts              # VACANT | OCCUPIED | RESERVED | MAINTENANCE
  ├── invoice-status.ts           # UNPAID | PARTIAL | PAID | OVERDUE | CANCELLED
  ├── contract-status.ts          # ACTIVE | EXPIRED | CANCELLED | EXTENDED
  └── qr.ts                       # QR_EXPIRY_SECONDS = 300
 ```
+
+`STAFF` is the full operational role for the MVP core flow: rooms, customers, contracts, receivables, payments, and reports. `ADMIN` keeps the same operational scope plus platform/system configuration.
 
 ---
 
@@ -485,4 +487,4 @@ hooks/         → lib/, types/
 
 ---
 
-*Tài liệu này dựa trên Requirement_Manage_Apartment.docx*
+*Tài liệu này dựa trên Requirement_Manage_Multi_Apartment.docx*
