@@ -33,6 +33,19 @@ enum CommissionStatus {
   CANCELED
 }
 
+enum CustomerStatus {
+  RENTING
+  ENDED
+  CANCELED
+}
+
+enum CustomerDocumentType {
+  PASSPORT
+  ID_CARD
+  VISA
+  OTHER
+}
+
 model User {
   id                              String                  @id @default(uuid())
   username                        String                  @unique
@@ -62,6 +75,7 @@ model Apartment {
   timezone      String         @default("Asia/Bangkok")
   rooms         Room[]
   users         User[]
+  customers     Customer[]
   saleContracts SaleContract[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -83,10 +97,57 @@ model Room {
   apartment     Apartment      @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
   meterReadings MeterReading[]
   saleContracts SaleContract[]
+  currentCustomers Customer[]   @relation("CustomerCurrentRoom")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
   @@unique([apartmentId, code])
+}
+
+model Customer {
+  id             String             @id @default(uuid())
+  apartmentId    String
+  currentRoomId  String?
+  fullName       String
+  dateOfBirth    DateTime?
+  phoneNumber    String
+  email          String?
+  nationality    String?
+  identityNumber String?
+  passportNumber String?
+  visaNumber     String?
+  status         CustomerStatus     @default(ENDED)
+  note           String?
+  apartment      Apartment          @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
+  currentRoom    Room?              @relation("CustomerCurrentRoom", fields: [currentRoomId], references: [id], onDelete: SetNull)
+  documents      CustomerDocument[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([apartmentId])
+  @@index([currentRoomId])
+  @@index([fullName])
+  @@index([phoneNumber])
+  @@index([identityNumber])
+  @@index([passportNumber])
+  @@index([status])
+}
+
+model CustomerDocument {
+  id         String               @id @default(uuid())
+  customerId String
+  type       CustomerDocumentType
+  fileName   String?
+  fileUrl    String
+  mimeType   String?
+  size       Int?
+  note       String?
+  customer   Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+
+  @@index([customerId])
+  @@index([type])
 }
 
 model MeterReading {

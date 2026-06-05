@@ -8,6 +8,7 @@ import { validateEnv } from "./config/env.validation";
 import { AppController } from "./app.controller";
 import { ApartmentsModule } from "./modules/apartments/apartments.module";
 import { AuthModule } from "./modules/auth/auth.module";
+import { CustomersModule } from "./modules/customers/customers.module";
 import { HealthModule } from "./modules/health/health.module";
 import { RoomsModule } from "./modules/rooms/rooms.module";
 import { SalesModule } from "./modules/sales/sales.module";
@@ -29,6 +30,7 @@ import { DatabaseModule } from "./shared/database/database.module";
     AuthModule,
     ApartmentsModule,
     RoomsModule,
+    CustomersModule,
     SalesModule,
     HealthModule,
   ],

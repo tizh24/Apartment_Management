@@ -1,7 +1,3 @@
--- Add the new room states introduced after the initial baseline.
-ALTER TYPE "RoomStatus" ADD VALUE 'RESERVED';
-ALTER TYPE "RoomStatus" ADD VALUE 'CHECKOUT_SOON';
-
 -- Expand room details for operations and listing data.
 ALTER TABLE "Room"
 ADD COLUMN "amenities" TEXT[] DEFAULT ARRAY[]::TEXT[],

@@ -1,5 +1,7 @@
 import {
   CommissionStatus,
+  CustomerDocumentType,
+  CustomerStatus,
   PrismaClient,
   RoomStatus,
   SaleContractStatus,
@@ -206,6 +208,91 @@ async function main(): Promise<void> {
       totalAmount: 505000,
       recordedById: admin.id,
       note: "Sample meter reading for May 2026.",
+    },
+  });
+
+  const rentingCustomer = await prisma.customer.upsert({
+    where: { id: "seed-customer-001" },
+    update: {
+      apartmentId: apartment.id,
+      currentRoomId: room101.id,
+      fullName: "Sample Customer One",
+      dateOfBirth: new Date("1995-06-15"),
+      phoneNumber: "0900000001",
+      email: "customer.one@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079095000001",
+      passportNumber: "B1234567",
+      visaNumber: null,
+      status: CustomerStatus.RENTING,
+      note: "Seed renting customer for customer management testing.",
+    },
+    create: {
+      id: "seed-customer-001",
+      apartmentId: apartment.id,
+      currentRoomId: room101.id,
+      fullName: "Sample Customer One",
+      dateOfBirth: new Date("1995-06-15"),
+      phoneNumber: "0900000001",
+      email: "customer.one@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079095000001",
+      passportNumber: "B1234567",
+      status: CustomerStatus.RENTING,
+      note: "Seed renting customer for customer management testing.",
+    },
+  });
+
+  await prisma.customer.upsert({
+    where: { id: "seed-customer-002" },
+    update: {
+      apartmentId: apartment.id,
+      currentRoomId: null,
+      fullName: "Sample Customer Ended",
+      dateOfBirth: new Date("1990-02-20"),
+      phoneNumber: "0900000002",
+      email: "customer.ended@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079090000002",
+      passportNumber: null,
+      visaNumber: null,
+      status: CustomerStatus.ENDED,
+      note: "Seed ended customer for filtering tests.",
+    },
+    create: {
+      id: "seed-customer-002",
+      apartmentId: apartment.id,
+      fullName: "Sample Customer Ended",
+      dateOfBirth: new Date("1990-02-20"),
+      phoneNumber: "0900000002",
+      email: "customer.ended@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079090000002",
+      status: CustomerStatus.ENDED,
+      note: "Seed ended customer for filtering tests.",
+    },
+  });
+
+  await prisma.customerDocument.upsert({
+    where: { id: "seed-customer-document-001" },
+    update: {
+      customerId: rentingCustomer.id,
+      type: CustomerDocumentType.ID_CARD,
+      fileName: "sample-id-card.pdf",
+      fileUrl: "https://storage.example.com/customers/sample-id-card.pdf",
+      mimeType: "application/pdf",
+      size: 128000,
+      note: "Seed document metadata.",
+    },
+    create: {
+      id: "seed-customer-document-001",
+      customerId: rentingCustomer.id,
+      type: CustomerDocumentType.ID_CARD,
+      fileName: "sample-id-card.pdf",
+      fileUrl: "https://storage.example.com/customers/sample-id-card.pdf",
+      mimeType: "application/pdf",
+      size: 128000,
+      note: "Seed document metadata.",
     },
   });
 
