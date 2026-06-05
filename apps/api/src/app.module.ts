@@ -12,7 +12,7 @@ import { HealthModule } from "./modules/health/health.module";
 import { RoomsModule } from "./modules/rooms/rooms.module";
 import { UsersModule } from "./modules/users/users.module";
 import { DatabaseModule } from "./shared/database/database.module";
-
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 @Module({
   controllers: [AppController],
   imports: [
@@ -29,6 +29,7 @@ import { DatabaseModule } from "./shared/database/database.module";
     ApartmentsModule,
     RoomsModule,
     HealthModule,
+    DashboardModule,
   ],
 })
 export class AppModule { }
