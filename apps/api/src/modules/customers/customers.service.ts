@@ -143,14 +143,49 @@ export class CustomersService {
 
   async findContracts(customerId: string) {
     await this.ensureCustomerExists(customerId);
+    const items = await this.prismaService.leaseContract.findMany({
+      where: { customerId },
+      orderBy: [{ startDate: "desc" }],
+      include: {
+        apartment: {
+          select: {
+            id: true,
+            shortId: true,
+            name: true,
+          },
+        },
+        room: {
+          select: {
+            id: true,
+            shortId: true,
+            code: true,
+            floor: true,
+            status: true,
+          },
+        },
+        saleProfile: {
+          select: {
+            id: true,
+            fullName: true,
+            phoneNumber: true,
+          },
+        },
+        _count: {
+          select: {
+            files: true,
+            changeLogs: true,
+          },
+        },
+      },
+    });
 
     return {
-      items: [],
+      items,
       meta: {
         page: 1,
-        limit: 20,
-        total: 0,
-        totalPages: 0,
+        limit: items.length,
+        total: items.length,
+        totalPages: items.length > 0 ? 1 : 0,
       },
     };
   }

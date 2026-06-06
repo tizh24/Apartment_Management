@@ -79,7 +79,7 @@ export class CustomersController {
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @ApiOperation({
-    summary: "List customer lease contract history placeholder (ADMIN, STAFF)",
+    summary: "List customer lease contract history (ADMIN, STAFF)",
   })
   @Get(":id/contracts")
   findContracts(@Param("id") id: string) {

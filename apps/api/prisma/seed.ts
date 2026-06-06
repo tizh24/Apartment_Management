@@ -2,6 +2,8 @@ import {
   CommissionStatus,
   CustomerDocumentType,
   CustomerStatus,
+  LeaseContractChangeAction,
+  LeaseContractStatus,
   PrismaClient,
   RoomStatus,
   SaleContractStatus,
@@ -315,6 +317,80 @@ async function main(): Promise<void> {
       bankName: "Vietcombank",
       bankCode: "VCB",
       note: "Seed sale profile for commission testing.",
+    },
+  });
+
+  const leaseContract = await prisma.leaseContract.upsert({
+    where: { contractCode: "LEASE-SEED-001" },
+    update: {
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      saleProfileId: saleProfile.id,
+      startDate: new Date("2026-06-01"),
+      endDate: new Date("2027-06-01"),
+      rentDurationMonths: 12,
+      monthlyRent: 12000000,
+      depositAmount: 12000000,
+      terms: "Seed lease contract terms.",
+      commissionAmount: 1200000,
+      status: LeaseContractStatus.ACTIVE,
+      note: "Seed lease contract for contract management testing.",
+    },
+    create: {
+      contractCode: "LEASE-SEED-001",
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      saleProfileId: saleProfile.id,
+      startDate: new Date("2026-06-01"),
+      endDate: new Date("2027-06-01"),
+      rentDurationMonths: 12,
+      monthlyRent: 12000000,
+      depositAmount: 12000000,
+      terms: "Seed lease contract terms.",
+      commissionAmount: 1200000,
+      status: LeaseContractStatus.ACTIVE,
+      note: "Seed lease contract for contract management testing.",
+    },
+  });
+
+  await prisma.leaseContractFile.upsert({
+    where: { id: "seed-lease-contract-file-001" },
+    update: {
+      leaseContractId: leaseContract.id,
+      fileName: "lease-seed-001.pdf",
+      fileUrl: "https://storage.example.com/contracts/lease-seed-001.pdf",
+      mimeType: "application/pdf",
+      size: 256000,
+      note: "Seed lease contract file metadata.",
+    },
+    create: {
+      id: "seed-lease-contract-file-001",
+      leaseContractId: leaseContract.id,
+      fileName: "lease-seed-001.pdf",
+      fileUrl: "https://storage.example.com/contracts/lease-seed-001.pdf",
+      mimeType: "application/pdf",
+      size: 256000,
+      note: "Seed lease contract file metadata.",
+    },
+  });
+
+  await prisma.leaseContractChangeLog.upsert({
+    where: { id: "seed-lease-contract-log-001" },
+    update: {
+      leaseContractId: leaseContract.id,
+      changedById: admin.id,
+      action: LeaseContractChangeAction.CREATED,
+      note: "Seed creation audit log.",
+    },
+    create: {
+      id: "seed-lease-contract-log-001",
+      leaseContractId: leaseContract.id,
+      changedById: admin.id,
+      action: LeaseContractChangeAction.CREATED,
+      afterData: { contractCode: leaseContract.contractCode },
+      note: "Seed creation audit log.",
     },
   });
 

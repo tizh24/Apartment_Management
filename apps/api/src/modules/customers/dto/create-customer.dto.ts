@@ -6,18 +6,19 @@ import {
   IsEnum,
   IsOptional,
   IsString,
-  IsUUID,
   MaxLength,
 } from "class-validator";
 
 export class CreateCustomerDto {
   @ApiProperty()
-  @IsUUID()
+  @IsString()
+  @MaxLength(100)
   apartmentId!: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUUID()
+  @IsString()
+  @MaxLength(100)
   currentRoomId?: string;
 
   @ApiProperty({ example: "Nguyen Van A" })

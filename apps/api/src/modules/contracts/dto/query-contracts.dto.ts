@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { CustomerStatus } from "@prisma/client";
+import { LeaseContractStatus } from "@prisma/client";
 import { Type } from "class-transformer";
 import {
+  IsDateString,
   IsEnum,
   IsInt,
   IsOptional,
@@ -11,10 +12,9 @@ import {
   Min,
 } from "class-validator";
 
-export class QueryCustomersDto {
+export class QueryContractsDto {
   @ApiPropertyOptional({
-    description:
-      "Search by name, phone, email, nationality, identity/passport/visa number, or current room code.",
+    description: "Search by contract code, customer name/phone, or room code.",
   })
   @IsOptional()
   @IsString()
@@ -30,17 +30,34 @@ export class QueryCustomersDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  currentRoomId?: string;
+  roomId?: string;
 
-  @ApiPropertyOptional({ example: "101" })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  currentRoomCode?: string;
+  @MaxLength(100)
+  customerId?: string;
 
-  @ApiPropertyOptional({ enum: CustomerStatus })
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsEnum(CustomerStatus)
-  status?: CustomerStatus;
+  @IsString()
+  @MaxLength(100)
+  saleProfileId?: string;
+
+  @ApiPropertyOptional({ enum: LeaseContractStatus })
+  @IsOptional()
+  @IsEnum(LeaseContractStatus)
+  status?: LeaseContractStatus;
+
+  @ApiPropertyOptional({ example: "2026-01-01" })
+  @IsOptional()
+  @IsDateString()
+  from?: string;
+
+  @ApiPropertyOptional({ example: "2026-12-31" })
+  @IsOptional()
+  @IsDateString()
+  to?: string;
 
   @ApiPropertyOptional({ default: 1, minimum: 1 })
   @IsOptional()
