@@ -46,6 +46,22 @@ enum CustomerDocumentType {
   OTHER
 }
 
+enum LeaseContractStatus {
+  RESERVED
+  ACTIVE
+  ENDED
+  CANCELED
+}
+
+enum LeaseContractChangeAction {
+  CREATED
+  UPDATED
+  EXTENDED
+  ENDED_EARLY
+  CANCELED
+  FILE_ADDED
+}
+
 model User {
   id                              String                  @id @default(uuid())
   username                        String                  @unique
@@ -62,6 +78,7 @@ model User {
   meterReadings                   MeterReading[]
   saleProfile                     SaleProfile?
   confirmedSaleCommissionPayments SaleCommissionPayment[] @relation("SaleCommissionPaymentConfirmedBy")
+  leaseContractChangeLogs         LeaseContractChangeLog[] @relation("LeaseContractChangeChangedBy")
 
   @@index([apartmentId])
 }
@@ -76,6 +93,7 @@ model Apartment {
   rooms         Room[]
   users         User[]
   customers     Customer[]
+  leaseContracts LeaseContract[]
   saleContracts SaleContract[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -96,6 +114,7 @@ model Room {
   note          String?
   apartment     Apartment      @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
   meterReadings MeterReading[]
+  leaseContracts LeaseContract[]
   saleContracts SaleContract[]
   currentCustomers Customer[]   @relation("CustomerCurrentRoom")
   createdAt     DateTime       @default(now())
@@ -121,6 +140,7 @@ model Customer {
   apartment      Apartment          @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
   currentRoom    Room?              @relation("CustomerCurrentRoom", fields: [currentRoomId], references: [id], onDelete: SetNull)
   documents      CustomerDocument[]
+  leaseContracts LeaseContract[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
@@ -188,6 +208,7 @@ model SaleProfile {
   isActive           Boolean                 @default(true)
   user               User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
   contracts          SaleContract[]
+  leaseContracts     LeaseContract[]
   commissionPayments SaleCommissionPayment[]
   createdAt          DateTime                @default(now())
   updatedAt          DateTime                @updatedAt
@@ -256,4 +277,71 @@ model SaleCommissionPaymentItem {
 
   @@id([paymentId, saleContractId])
   @@unique([saleContractId])
+}
+
+model LeaseContract {
+  id                String                      @id @default(uuid())
+  contractCode      String                      @unique
+  apartmentId       String
+  roomId            String
+  customerId        String
+  saleProfileId     String?
+  startDate         DateTime
+  endDate           DateTime
+  rentDurationMonths Int?
+  monthlyRent       Decimal                     @db.Decimal(12, 2)
+  depositAmount     Decimal                     @default(0) @db.Decimal(12, 2)
+  terms             String?
+  commissionAmount  Decimal?                    @db.Decimal(12, 2)
+  status            LeaseContractStatus         @default(RESERVED)
+  note              String?
+  apartment         Apartment                   @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
+  room              Room                        @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  customer          Customer                    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  saleProfile       SaleProfile?                @relation(fields: [saleProfileId], references: [id], onDelete: SetNull)
+  files             LeaseContractFile[]
+  changeLogs        LeaseContractChangeLog[]
+  createdAt         DateTime                    @default(now())
+  updatedAt         DateTime                    @updatedAt
+
+  @@index([apartmentId])
+  @@index([roomId])
+  @@index([customerId])
+  @@index([saleProfileId])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([status])
+}
+
+model LeaseContractFile {
+  id              String        @id @default(uuid())
+  leaseContractId String
+  fileName        String?
+  fileUrl         String
+  mimeType        String?
+  size            Int?
+  note            String?
+  leaseContract   LeaseContract @relation(fields: [leaseContractId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([leaseContractId])
+}
+
+model LeaseContractChangeLog {
+  id              String                    @id @default(uuid())
+  leaseContractId String
+  changedById     String?
+  action          LeaseContractChangeAction
+  beforeData      Json?
+  afterData       Json?
+  note            String?
+  leaseContract   LeaseContract             @relation(fields: [leaseContractId], references: [id], onDelete: Cascade)
+  changedBy       User?                     @relation("LeaseContractChangeChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+  createdAt       DateTime                  @default(now())
+
+  @@index([leaseContractId])
+  @@index([changedById])
+  @@index([action])
+  @@index([createdAt])
 }
