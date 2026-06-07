@@ -5,6 +5,10 @@ import {
   LeaseContractChangeAction,
   LeaseContractStatus,
   PrismaClient,
+  RevenueChangeAction,
+  RevenuePaymentMethod,
+  RevenueReceivableStatus,
+  RevenueReceivableType,
   RoomStatus,
   SaleContractStatus,
   UserRole,
@@ -186,7 +190,7 @@ async function main(): Promise<void> {
     },
   });
 
-  await prisma.meterReading.upsert({
+  const meterReading = await prisma.meterReading.upsert({
     where: {
       roomId_periodStart_periodEnd: {
         roomId: room101.id,
@@ -391,6 +395,127 @@ async function main(): Promise<void> {
       action: LeaseContractChangeAction.CREATED,
       afterData: { contractCode: leaseContract.contractCode },
       note: "Seed creation audit log.",
+    },
+  });
+
+  const rentReceivable = await prisma.revenueReceivable.upsert({
+    where: { receivableCode: "REV-SEED-RENT-001" },
+    update: {
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      leaseContractId: leaseContract.id,
+      type: RevenueReceivableType.RENT,
+      description: "Seed room rent June 2026.",
+      periodStart: new Date("2026-06-01"),
+      periodEnd: new Date("2026-06-30"),
+      dueDate: new Date("2026-06-05"),
+      amount: 12000000,
+      paidAmount: 5000000,
+      remainingAmount: 7000000,
+      status: RevenueReceivableStatus.PARTIALLY_PAID,
+      note: "Seed partially paid rent receivable.",
+    },
+    create: {
+      receivableCode: "REV-SEED-RENT-001",
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      leaseContractId: leaseContract.id,
+      type: RevenueReceivableType.RENT,
+      description: "Seed room rent June 2026.",
+      periodStart: new Date("2026-06-01"),
+      periodEnd: new Date("2026-06-30"),
+      dueDate: new Date("2026-06-05"),
+      amount: 12000000,
+      paidAmount: 5000000,
+      remainingAmount: 7000000,
+      status: RevenueReceivableStatus.PARTIALLY_PAID,
+      note: "Seed partially paid rent receivable.",
+    },
+  });
+
+  await prisma.revenuePayment.upsert({
+    where: { id: "seed-revenue-payment-001" },
+    update: {
+      receivableId: rentReceivable.id,
+      amount: 5000000,
+      method: RevenuePaymentMethod.BANK_TRANSFER,
+      paidAt: new Date("2026-06-05"),
+      transactionCode: "SEED-TXN-001",
+      evidenceUrl: "https://storage.example.com/revenue/seed-payment-001.jpg",
+      evidenceNote: "Seed bank transfer screenshot.",
+      verifiedById: admin.id,
+      note: "Seed partial payment.",
+    },
+    create: {
+      id: "seed-revenue-payment-001",
+      receivableId: rentReceivable.id,
+      amount: 5000000,
+      method: RevenuePaymentMethod.BANK_TRANSFER,
+      paidAt: new Date("2026-06-05"),
+      transactionCode: "SEED-TXN-001",
+      evidenceUrl: "https://storage.example.com/revenue/seed-payment-001.jpg",
+      evidenceNote: "Seed bank transfer screenshot.",
+      verifiedById: admin.id,
+      note: "Seed partial payment.",
+    },
+  });
+
+  await prisma.revenueChangeLog.upsert({
+    where: { id: "seed-revenue-log-001" },
+    update: {
+      receivableId: rentReceivable.id,
+      changedById: admin.id,
+      action: RevenueChangeAction.PAYMENT_RECORDED,
+      note: "Seed revenue payment audit log.",
+    },
+    create: {
+      id: "seed-revenue-log-001",
+      receivableId: rentReceivable.id,
+      changedById: admin.id,
+      action: RevenueChangeAction.PAYMENT_RECORDED,
+      afterData: { receivableCode: rentReceivable.receivableCode, paidAmount: 5000000 },
+      note: "Seed revenue payment audit log.",
+    },
+  });
+
+  await prisma.revenueReceivable.upsert({
+    where: { receivableCode: "REV-SEED-UTILITY-001" },
+    update: {
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      leaseContractId: leaseContract.id,
+      meterReadingId: meterReading.id,
+      type: RevenueReceivableType.ELECTRICITY,
+      description: "Seed electricity May 2026.",
+      periodStart: new Date("2026-05-01"),
+      periodEnd: new Date("2026-05-31"),
+      dueDate: new Date("2026-06-05"),
+      amount: 280000,
+      paidAmount: 0,
+      remainingAmount: 280000,
+      status: RevenueReceivableStatus.UNPAID,
+      note: "Seed unpaid electricity receivable.",
+    },
+    create: {
+      receivableCode: "REV-SEED-UTILITY-001",
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      leaseContractId: leaseContract.id,
+      meterReadingId: meterReading.id,
+      type: RevenueReceivableType.ELECTRICITY,
+      description: "Seed electricity May 2026.",
+      periodStart: new Date("2026-05-01"),
+      periodEnd: new Date("2026-05-31"),
+      dueDate: new Date("2026-06-05"),
+      amount: 280000,
+      paidAmount: 0,
+      remainingAmount: 280000,
+      status: RevenueReceivableStatus.UNPAID,
+      note: "Seed unpaid electricity receivable.",
     },
   });
 

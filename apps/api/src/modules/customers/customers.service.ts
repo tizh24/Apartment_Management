@@ -192,14 +192,48 @@ export class CustomersService {
 
   async findReceivables(customerId: string) {
     await this.ensureCustomerExists(customerId);
+    const items = await this.prismaService.revenueReceivable.findMany({
+      where: { customerId },
+      orderBy: [{ dueDate: "desc" }, { createdAt: "desc" }],
+      include: {
+        apartment: {
+          select: {
+            id: true,
+            shortId: true,
+            name: true,
+          },
+        },
+        room: {
+          select: {
+            id: true,
+            shortId: true,
+            code: true,
+            floor: true,
+          },
+        },
+        leaseContract: {
+          select: {
+            id: true,
+            contractCode: true,
+            startDate: true,
+            endDate: true,
+          },
+        },
+        _count: {
+          select: {
+            payments: true,
+          },
+        },
+      },
+    });
 
     return {
-      items: [],
+      items,
       meta: {
         page: 1,
-        limit: 20,
-        total: 0,
-        totalPages: 0,
+        limit: items.length,
+        total: items.length,
+        totalPages: items.length > 0 ? 1 : 0,
       },
     };
   }

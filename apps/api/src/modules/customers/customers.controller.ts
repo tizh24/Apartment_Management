@@ -88,7 +88,7 @@ export class CustomersController {
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @ApiOperation({
-    summary: "List customer receivables placeholder (ADMIN, STAFF)",
+    summary: "List customer receivables (ADMIN, STAFF)",
   })
   @Get(":id/receivables")
   findReceivables(@Param("id") id: string) {
