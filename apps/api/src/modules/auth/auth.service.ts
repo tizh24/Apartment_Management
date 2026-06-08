@@ -3,7 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 import type { User } from "@prisma/client";
 import argon2 from "argon2";
 
-import { UsersService } from "../users/users.service";
+import { UsersCommandService } from "../users/commands/users-command.service";
+import { UsersQueryService } from "../users/queries/users-query.service";
 import type { JwtPayload } from "./auth.types";
 import type { LoginDto } from "./dto/login.dto";
 
@@ -20,7 +21,8 @@ type LoginResponse = {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersCommandService: UsersCommandService,
+    private readonly usersQueryService: UsersQueryService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -34,7 +36,7 @@ export class AuthService {
       apartmentId: user.apartmentId,
     };
 
-    await this.usersService.updateLastLoginAt(user.id);
+    await this.usersCommandService.updateLastLoginAt(user.id);
 
     return {
       accessToken: await this.jwtService.signAsync(payload),
@@ -51,7 +53,7 @@ export class AuthService {
   }
 
   async getCurrentUser(id: string): Promise<AuthenticatedUser> {
-    const user = await this.usersService.findById(id);
+    const user = await this.usersQueryService.findById(id);
 
     if (!user || !user.isActive) {
       throw new UnauthorizedException("Invalid access token");
@@ -61,7 +63,7 @@ export class AuthService {
   }
 
   private async validateUser(username: string, password: string): Promise<User> {
-    const user = await this.usersService.findByUsername(username);
+    const user = await this.usersQueryService.findByUsername(username);
 
     if (!user || !user.isActive) {
       throw new UnauthorizedException("Invalid username or password");
