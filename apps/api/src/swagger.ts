@@ -1,6 +1,7 @@
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import type { NestExpressApplication } from "@nestjs/platform-express";
+import type { Request as ExpressRequest, Response as ExpressResponse } from "express";
 
 export function setupSwagger(app: NestExpressApplication): void {
   const configService = app.get(ConfigService);
@@ -31,12 +32,11 @@ export function setupSwagger(app: NestExpressApplication): void {
     ui: false,
   });
 
-  const httpAdapter = app.getHttpAdapter();
   const appName = configService.get<string>("app.name") ?? "Apartment Management API";
   const swaggerHtml = buildSwaggerHtml(appName);
 
   for (const path of ["/docs", "/docs/"]) {
-    httpAdapter.get(path, (_request: unknown, response: any) => {
+    app.use(path, (_request: ExpressRequest, response: ExpressResponse) => {
       response.type("text/html").send(swaggerHtml);
     });
   }

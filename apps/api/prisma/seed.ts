@@ -1,4 +1,14 @@
-import { PrismaClient, RoomStatus, UserRole } from "@prisma/client";
+import {
+  CommissionStatus,
+  CustomerDocumentType,
+  CustomerStatus,
+  LeaseContractChangeAction,
+  LeaseContractStatus,
+  PrismaClient,
+  RoomStatus,
+  SaleContractStatus,
+  UserRole,
+} from "@prisma/client";
 import argon2 from "argon2";
 
 const prisma = new PrismaClient();
@@ -62,7 +72,7 @@ async function main(): Promise<void> {
     },
   });
 
-  await prisma.user.upsert({
+  const saleUser = await prisma.user.upsert({
     where: { username: "sale" },
     update: {
       email: "sale@example.com",
@@ -200,6 +210,277 @@ async function main(): Promise<void> {
       totalAmount: 505000,
       recordedById: admin.id,
       note: "Sample meter reading for May 2026.",
+    },
+  });
+
+  const rentingCustomer = await prisma.customer.upsert({
+    where: { id: "seed-customer-001" },
+    update: {
+      apartmentId: apartment.id,
+      currentRoomId: room101.id,
+      fullName: "Sample Customer One",
+      dateOfBirth: new Date("1995-06-15"),
+      phoneNumber: "0900000001",
+      email: "customer.one@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079095000001",
+      passportNumber: "B1234567",
+      visaNumber: null,
+      status: CustomerStatus.RENTING,
+      note: "Seed renting customer for customer management testing.",
+    },
+    create: {
+      id: "seed-customer-001",
+      apartmentId: apartment.id,
+      currentRoomId: room101.id,
+      fullName: "Sample Customer One",
+      dateOfBirth: new Date("1995-06-15"),
+      phoneNumber: "0900000001",
+      email: "customer.one@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079095000001",
+      passportNumber: "B1234567",
+      status: CustomerStatus.RENTING,
+      note: "Seed renting customer for customer management testing.",
+    },
+  });
+
+  await prisma.customer.upsert({
+    where: { id: "seed-customer-002" },
+    update: {
+      apartmentId: apartment.id,
+      currentRoomId: null,
+      fullName: "Sample Customer Ended",
+      dateOfBirth: new Date("1990-02-20"),
+      phoneNumber: "0900000002",
+      email: "customer.ended@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079090000002",
+      passportNumber: null,
+      visaNumber: null,
+      status: CustomerStatus.ENDED,
+      note: "Seed ended customer for filtering tests.",
+    },
+    create: {
+      id: "seed-customer-002",
+      apartmentId: apartment.id,
+      fullName: "Sample Customer Ended",
+      dateOfBirth: new Date("1990-02-20"),
+      phoneNumber: "0900000002",
+      email: "customer.ended@example.com",
+      nationality: "Vietnam",
+      identityNumber: "079090000002",
+      status: CustomerStatus.ENDED,
+      note: "Seed ended customer for filtering tests.",
+    },
+  });
+
+  await prisma.customerDocument.upsert({
+    where: { id: "seed-customer-document-001" },
+    update: {
+      customerId: rentingCustomer.id,
+      type: CustomerDocumentType.ID_CARD,
+      fileName: "sample-id-card.pdf",
+      fileUrl: "https://storage.example.com/customers/sample-id-card.pdf",
+      mimeType: "application/pdf",
+      size: 128000,
+      note: "Seed document metadata.",
+    },
+    create: {
+      id: "seed-customer-document-001",
+      customerId: rentingCustomer.id,
+      type: CustomerDocumentType.ID_CARD,
+      fileName: "sample-id-card.pdf",
+      fileUrl: "https://storage.example.com/customers/sample-id-card.pdf",
+      mimeType: "application/pdf",
+      size: 128000,
+      note: "Seed document metadata.",
+    },
+  });
+
+  const saleProfile = await prisma.saleProfile.upsert({
+    where: { userId: saleUser.id },
+    update: {
+      fullName: "Sale User",
+      phoneNumber: "0901234567",
+      bankAccountNumber: "1234567890",
+      bankName: "Vietcombank",
+      bankCode: "VCB",
+      note: "Seed sale profile for commission testing.",
+      isActive: true,
+    },
+    create: {
+      userId: saleUser.id,
+      fullName: "Sale User",
+      phoneNumber: "0901234567",
+      bankAccountNumber: "1234567890",
+      bankName: "Vietcombank",
+      bankCode: "VCB",
+      note: "Seed sale profile for commission testing.",
+    },
+  });
+
+  const leaseContract = await prisma.leaseContract.upsert({
+    where: { contractCode: "LEASE-SEED-001" },
+    update: {
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      saleProfileId: saleProfile.id,
+      startDate: new Date("2026-06-01"),
+      endDate: new Date("2027-06-01"),
+      rentDurationMonths: 12,
+      monthlyRent: 12000000,
+      depositAmount: 12000000,
+      terms: "Seed lease contract terms.",
+      commissionAmount: 1200000,
+      status: LeaseContractStatus.ACTIVE,
+      note: "Seed lease contract for contract management testing.",
+    },
+    create: {
+      contractCode: "LEASE-SEED-001",
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerId: rentingCustomer.id,
+      saleProfileId: saleProfile.id,
+      startDate: new Date("2026-06-01"),
+      endDate: new Date("2027-06-01"),
+      rentDurationMonths: 12,
+      monthlyRent: 12000000,
+      depositAmount: 12000000,
+      terms: "Seed lease contract terms.",
+      commissionAmount: 1200000,
+      status: LeaseContractStatus.ACTIVE,
+      note: "Seed lease contract for contract management testing.",
+    },
+  });
+
+  await prisma.leaseContractFile.upsert({
+    where: { id: "seed-lease-contract-file-001" },
+    update: {
+      leaseContractId: leaseContract.id,
+      fileName: "lease-seed-001.pdf",
+      fileUrl: "https://storage.example.com/contracts/lease-seed-001.pdf",
+      mimeType: "application/pdf",
+      size: 256000,
+      note: "Seed lease contract file metadata.",
+    },
+    create: {
+      id: "seed-lease-contract-file-001",
+      leaseContractId: leaseContract.id,
+      fileName: "lease-seed-001.pdf",
+      fileUrl: "https://storage.example.com/contracts/lease-seed-001.pdf",
+      mimeType: "application/pdf",
+      size: 256000,
+      note: "Seed lease contract file metadata.",
+    },
+  });
+
+  await prisma.leaseContractChangeLog.upsert({
+    where: { id: "seed-lease-contract-log-001" },
+    update: {
+      leaseContractId: leaseContract.id,
+      changedById: admin.id,
+      action: LeaseContractChangeAction.CREATED,
+      note: "Seed creation audit log.",
+    },
+    create: {
+      id: "seed-lease-contract-log-001",
+      leaseContractId: leaseContract.id,
+      changedById: admin.id,
+      action: LeaseContractChangeAction.CREATED,
+      afterData: { contractCode: leaseContract.contractCode },
+      note: "Seed creation audit log.",
+    },
+  });
+
+  await prisma.saleContract.upsert({
+    where: { contractCode: "SALE-CON-001" },
+    update: {
+      saleId: saleProfile.id,
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerName: "Sample Customer One",
+      customerPhone: "0900000001",
+      startDate: new Date("2026-06-01"),
+      endDate: new Date("2027-06-01"),
+      contractValue: 12000000,
+      commissionAmount: 1200000,
+      contractStatus: SaleContractStatus.ACTIVE,
+      commissionStatus: CommissionStatus.UNPAID,
+      note: "Seed unpaid commission contract.",
+    },
+    create: {
+      contractCode: "SALE-CON-001",
+      saleId: saleProfile.id,
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerName: "Sample Customer One",
+      customerPhone: "0900000001",
+      startDate: new Date("2026-06-01"),
+      endDate: new Date("2027-06-01"),
+      contractValue: 12000000,
+      commissionAmount: 1200000,
+      contractStatus: SaleContractStatus.ACTIVE,
+      commissionStatus: CommissionStatus.UNPAID,
+      note: "Seed unpaid commission contract.",
+    },
+  });
+
+  const paidSaleContract = await prisma.saleContract.upsert({
+    where: { contractCode: "SALE-CON-000" },
+    update: {
+      saleId: saleProfile.id,
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerName: "Sample Customer Paid",
+      customerPhone: "0900000000",
+      startDate: new Date("2026-05-01"),
+      endDate: new Date("2027-05-01"),
+      contractValue: 8000000,
+      commissionAmount: 800000,
+      contractStatus: SaleContractStatus.COMPLETED,
+      commissionStatus: CommissionStatus.PAID,
+      commissionPaidAt: new Date("2026-05-22"),
+      note: "Seed paid commission contract.",
+    },
+    create: {
+      contractCode: "SALE-CON-000",
+      saleId: saleProfile.id,
+      apartmentId: apartment.id,
+      roomId: room101.id,
+      customerName: "Sample Customer Paid",
+      customerPhone: "0900000000",
+      startDate: new Date("2026-05-01"),
+      endDate: new Date("2027-05-01"),
+      contractValue: 8000000,
+      commissionAmount: 800000,
+      contractStatus: SaleContractStatus.COMPLETED,
+      commissionStatus: CommissionStatus.PAID,
+      commissionPaidAt: new Date("2026-05-22"),
+      note: "Seed paid commission contract.",
+    },
+  });
+
+  await prisma.saleCommissionPayment.upsert({
+    where: { id: "seed-sale-payment-001" },
+    update: {},
+    create: {
+      id: "seed-sale-payment-001",
+      saleId: saleProfile.id,
+      totalAmount: 800000,
+      paymentContent: "PAY SALE Sale User SALE-CON-000",
+      paymentQrUrl:
+        "https://img.vietqr.io/image/VCB-1234567890-compact2.png?amount=800000&addInfo=PAY%20SALE%20Sale%20User%20SALE-CON-000",
+      confirmedById: admin.id,
+      paidAt: new Date("2026-05-22"),
+      note: "Seed paid commission payment.",
+      items: {
+        create: {
+          saleContractId: paidSaleContract.id,
+          amount: 800000,
+        },
+      },
     },
   });
 }
