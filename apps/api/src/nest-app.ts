@@ -9,25 +9,25 @@ import { AppModule } from "./app.module";
 import { setupSwagger } from "./swagger";
 
 export async function createConfiguredNestApp(): Promise<NestExpressApplication> {
-    const app = await NestFactory.create(AppModule) as NestExpressApplication;
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     app.use(cors({
-        origin: true,
-        credentials: true,
+      origin: true,
+      credentials: true,
     }));
 
     app.setGlobalPrefix("api");
     app.enableVersioning({
-        type: VersioningType.URI,
-        defaultVersion: "1",
+      type: VersioningType.URI,
+      defaultVersion: "1",
     });
 
     app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            transform: true,
-            forbidNonWhitelisted: true,
-        }),
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
     );
 
     setupSwagger(app);
