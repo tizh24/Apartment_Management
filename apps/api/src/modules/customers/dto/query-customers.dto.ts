@@ -6,8 +6,8 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUUID,
   Max,
+  MaxLength,
   Min,
 } from "class-validator";
 
@@ -22,12 +22,14 @@ export class QueryCustomersDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUUID()
+  @IsString()
+  @MaxLength(100)
   apartmentId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUUID()
+  @IsString()
+  @MaxLength(100)
   currentRoomId?: string;
 
   @ApiPropertyOptional({ example: "101" })
