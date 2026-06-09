@@ -20,41 +20,43 @@ import {
   CommissionPaymentDto,
   CreateCommissionPaymentDto,
 } from "./dto/commission-payment.dto";
-import { CreateSaleContractDto } from "./dto/create-sale-contract.dto";
 import { CreateSaleProfileDto } from "./dto/create-sale-profile.dto";
 import { QueryCommissionPaymentsDto } from "./dto/query-commission-payments.dto";
 import { QuerySaleContractsDto } from "./dto/query-sale-contracts.dto";
 import { QuerySaleProfilesDto } from "./dto/query-sale-profiles.dto";
-import { UpdateSaleContractDto } from "./dto/update-sale-contract.dto";
 import { UpdateSaleProfileDto } from "./dto/update-sale-profile.dto";
-import { SalesService } from "./sales.service";
+import { SalesCommandService } from "./commands/sales-command.service";
+import { SalesQueryService } from "./queries/sales-query.service";
 
 @ApiTags("sales")
-@ApiBearerAuth("access-token")
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller({
   path: "sales",
   version: "1",
 })
 export class SalesController {
-  constructor(private readonly salesService: SalesService) {}
+  constructor(
+    private readonly salesCommandService: SalesCommandService,
+    private readonly salesQueryService: SalesQueryService,
+  ) {}
 
   @Roles(UserRole.SALE)
   @Get("me/summary")
   mySummary(@CurrentUser() user: AuthenticatedRequestUser) {
-    return this.salesService.getMySummary(user);
+    return this.salesQueryService.getMySummary(user);
   }
 
   @Roles(UserRole.ADMIN)
   @Post("profiles")
   createProfile(@Body() dto: CreateSaleProfileDto) {
-    return this.salesService.createProfile(dto);
+    return this.salesCommandService.createProfile(dto);
   }
 
   @Roles(UserRole.ADMIN)
   @Get("profiles")
   findProfiles(@Query() query: QuerySaleProfilesDto) {
-    return this.salesService.findProfiles(query);
+    return this.salesQueryService.findProfiles(query);
   }
 
   @Roles(UserRole.ADMIN, UserRole.SALE)
@@ -63,19 +65,13 @@ export class SalesController {
     @Param("id") id: string,
     @CurrentUser() user: AuthenticatedRequestUser,
   ) {
-    return this.salesService.findProfile(id, user);
+    return this.salesQueryService.findProfile(id, user);
   }
 
   @Roles(UserRole.ADMIN)
   @Patch("profiles/:id")
   updateProfile(@Param("id") id: string, @Body() dto: UpdateSaleProfileDto) {
-    return this.salesService.updateProfile(id, dto);
-  }
-
-  @Roles(UserRole.ADMIN)
-  @Post("contracts")
-  createContract(@Body() dto: CreateSaleContractDto) {
-    return this.salesService.createContract(dto);
+    return this.salesCommandService.updateProfile(id, dto);
   }
 
   @Roles(UserRole.ADMIN, UserRole.SALE)
@@ -84,7 +80,7 @@ export class SalesController {
     @Query() query: QuerySaleContractsDto,
     @CurrentUser() user: AuthenticatedRequestUser,
   ) {
-    return this.salesService.findContracts(query, user);
+    return this.salesQueryService.findContracts(query, user);
   }
 
   @Roles(UserRole.ADMIN, UserRole.SALE)
@@ -93,19 +89,13 @@ export class SalesController {
     @Param("id") id: string,
     @CurrentUser() user: AuthenticatedRequestUser,
   ) {
-    return this.salesService.findContract(id, user);
-  }
-
-  @Roles(UserRole.ADMIN)
-  @Patch("contracts/:id")
-  updateContract(@Param("id") id: string, @Body() dto: UpdateSaleContractDto) {
-    return this.salesService.updateContract(id, dto);
+    return this.salesQueryService.findContract(id, user);
   }
 
   @Roles(UserRole.ADMIN)
   @Post("commission-payments/preview")
   previewCommissionPayment(@Body() dto: CommissionPaymentDto) {
-    return this.salesService.getCommissionPreview(dto);
+    return this.salesQueryService.getCommissionPreview(dto);
   }
 
   @Roles(UserRole.ADMIN)
@@ -114,7 +104,7 @@ export class SalesController {
     @Body() dto: CreateCommissionPaymentDto,
     @CurrentUser() user: AuthenticatedRequestUser,
   ) {
-    return this.salesService.createCommissionPayment(dto, user);
+    return this.salesCommandService.createCommissionPayment(dto, user);
   }
 
   @Roles(UserRole.ADMIN, UserRole.SALE)
@@ -123,6 +113,6 @@ export class SalesController {
     @Query() query: QueryCommissionPaymentsDto,
     @CurrentUser() user: AuthenticatedRequestUser,
   ) {
-    return this.salesService.findCommissionPayments(query, user);
+    return this.salesQueryService.findCommissionPayments(query, user);
   }
 }
