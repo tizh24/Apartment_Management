@@ -8,90 +8,80 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserRole } from "@prisma/client";
 
 import { Roles } from "../auth/decorators/roles.decorator";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
+import { CustomersCommandService } from "./commands/customers-command.service";
 import { CreateCustomerDto } from "./dto/create-customer.dto";
 import { CreateCustomerDocumentDto } from "./dto/create-customer-document.dto";
 import { QueryCustomersDto } from "./dto/query-customers.dto";
 import { UpdateCustomerDto } from "./dto/update-customer.dto";
-import { CustomersService } from "./customers.service";
+import { CustomersQueryService } from "./queries/customers-query.service";
 
 @ApiTags("customers")
-@ApiBearerAuth("bearer")
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller({
   path: "customers",
   version: "1",
 })
 export class CustomersController {
-  constructor(private readonly customersService: CustomersService) {}
+  constructor(
+    private readonly customersCommandService: CustomersCommandService,
+    private readonly customersQueryService: CustomersQueryService,
+  ) {}
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({ summary: "Create customer profile (ADMIN, STAFF)" })
   @Post()
   create(@Body() dto: CreateCustomerDto) {
-    return this.customersService.create(dto);
+    return this.customersCommandService.create(dto);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({
-    summary: "List customers with search, filters, and pagination (ADMIN, STAFF)",
-  })
   @Get()
   findAll(@Query() query: QueryCustomersDto) {
-    return this.customersService.findAll(query);
+    return this.customersQueryService.findAll(query);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({ summary: "Get customer detail (ADMIN, STAFF)" })
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.customersService.findOne(id);
+    return this.customersQueryService.findOne(id);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({ summary: "Update customer profile (ADMIN, STAFF)" })
   @Patch(":id")
   update(@Param("id") id: string, @Body() dto: UpdateCustomerDto) {
-    return this.customersService.update(id, dto);
+    return this.customersCommandService.update(id, dto);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({ summary: "Add customer document metadata (ADMIN, STAFF)" })
   @Post(":id/documents")
   createDocument(
     @Param("id") id: string,
     @Body() dto: CreateCustomerDocumentDto,
   ) {
-    return this.customersService.createDocument(id, dto);
+    return this.customersCommandService.createDocument(id, dto);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({ summary: "List customer documents (ADMIN, STAFF)" })
   @Get(":id/documents")
   findDocuments(@Param("id") id: string) {
-    return this.customersService.findDocuments(id);
+    return this.customersQueryService.findDocuments(id);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({
-    summary: "List customer lease contract history (ADMIN, STAFF)",
-  })
   @Get(":id/contracts")
   findContracts(@Param("id") id: string) {
-    return this.customersService.findContracts(id);
+    return this.customersQueryService.findContracts(id);
   }
 
   @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @ApiOperation({
-    summary: "List customer receivables placeholder (ADMIN, STAFF)",
-  })
   @Get(":id/receivables")
   findReceivables(@Param("id") id: string) {
-    return this.customersService.findReceivables(id);
+    return this.customersQueryService.findReceivables(id);
   }
 }
