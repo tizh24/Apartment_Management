@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
 
 import { AuthModule } from "../auth/auth.module";
+import { RoomsCommandService } from "./commands/rooms-command.service";
+import { RoomsQueryService } from "./queries/rooms-query.service";
+import { RoomsRepository } from "./repositories/rooms.repository";
 import { RoomsController } from "./rooms.controller";
-import { RoomsService } from "./rooms.service";
 
 @Module({
   imports: [AuthModule],
   controllers: [RoomsController],
-  providers: [RoomsService],
+  providers: [RoomsRepository, RoomsCommandService, RoomsQueryService],
 })
 export class RoomsModule {}
