@@ -33,6 +33,7 @@ enum CommissionStatus {
   CANCELED
 }
 
+
 enum CustomerStatus {
   RENTING
   ENDED
@@ -61,6 +62,35 @@ enum LeaseContractChangeAction {
   CANCELED
   FILE_ADDED
 }
+enum RevenueReceivableType {
+  RENT
+  ELECTRICITY
+  WATER
+  SERVICE
+  DEPOSIT
+  OTHER
+}
+
+enum RevenueReceivableStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  CANCELED
+}
+
+enum RevenuePaymentMethod {
+  CASH
+  BANK_TRANSFER
+  QR_TRANSFER
+  OTHER
+}
+
+enum RevenueChangeAction {
+  CREATED
+  UPDATED
+  PAYMENT_RECORDED
+  CANCELED
+}
 
 model User {
   id                              String                  @id @default(uuid())
@@ -76,6 +106,8 @@ model User {
   createdAt                       DateTime                @default(now())
   updatedAt                       DateTime                @updatedAt
   meterReadings                   MeterReading[]
+  verifiedRevenuePayments         RevenuePayment[]        @relation("RevenuePaymentVerifiedBy")
+  revenueChangeLogs               RevenueChangeLog[]      @relation("RevenueChangeLogChangedBy")
   saleProfile                     SaleProfile?
   confirmedSaleCommissionPayments SaleCommissionPayment[] @relation("SaleCommissionPaymentConfirmedBy")
   leaseContractChangeLogs         LeaseContractChangeLog[] @relation("LeaseContractChangeChangedBy")
@@ -95,6 +127,7 @@ model Apartment {
   customers     Customer[]
   leaseContracts LeaseContract[]
   saleContracts SaleContract[]
+  revenueReceivables RevenueReceivable[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -116,6 +149,7 @@ model Room {
   meterReadings MeterReading[]
   leaseContracts LeaseContract[]
   saleContracts SaleContract[]
+  revenueReceivables RevenueReceivable[]
   currentCustomers Customer[]   @relation("CustomerCurrentRoom")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -141,6 +175,7 @@ model Customer {
   currentRoom    Room?              @relation("CustomerCurrentRoom", fields: [currentRoomId], references: [id], onDelete: SetNull)
   documents      CustomerDocument[]
   leaseContracts LeaseContract[]
+  revenueReceivables RevenueReceivable[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
@@ -188,6 +223,7 @@ model MeterReading {
   note                 String?
   room                 Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   recordedBy           User?    @relation(fields: [recordedById], references: [id], onDelete: SetNull)
+  revenueReceivables   RevenueReceivable[]
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
@@ -301,6 +337,7 @@ model LeaseContract {
   saleProfile       SaleProfile?                @relation(fields: [saleProfileId], references: [id], onDelete: SetNull)
   files             LeaseContractFile[]
   changeLogs        LeaseContractChangeLog[]
+  revenueReceivables RevenueReceivable[]
   createdAt         DateTime                    @default(now())
   updatedAt         DateTime                    @updatedAt
 
@@ -341,6 +378,85 @@ model LeaseContractChangeLog {
   createdAt       DateTime                  @default(now())
 
   @@index([leaseContractId])
+  @@index([changedById])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model RevenueReceivable {
+  id              String                  @id @default(uuid())
+  receivableCode  String                  @unique
+  apartmentId     String
+  roomId          String
+  customerId      String
+  leaseContractId String
+  meterReadingId  String?
+  type            RevenueReceivableType
+  description     String
+  periodStart     DateTime
+  periodEnd       DateTime
+  dueDate         DateTime
+  amount          Decimal                 @db.Decimal(12, 2)
+  paidAmount      Decimal                 @default(0) @db.Decimal(12, 2)
+  remainingAmount Decimal                 @db.Decimal(12, 2)
+  status          RevenueReceivableStatus @default(UNPAID)
+  note            String?
+  apartment       Apartment               @relation(fields: [apartmentId], references: [id], onDelete: Restrict)
+  room            Room                    @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  customer        Customer                @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  leaseContract   LeaseContract           @relation(fields: [leaseContractId], references: [id], onDelete: Restrict)
+  meterReading    MeterReading?           @relation(fields: [meterReadingId], references: [id], onDelete: SetNull)
+  payments        RevenuePayment[]
+  changeLogs      RevenueChangeLog[]
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  @@index([apartmentId])
+  @@index([roomId])
+  @@index([customerId])
+  @@index([leaseContractId])
+  @@index([meterReadingId])
+  @@index([type])
+  @@index([status])
+  @@index([periodStart])
+  @@index([dueDate])
+}
+
+model RevenuePayment {
+  id              String               @id @default(uuid())
+  receivableId    String
+  amount          Decimal              @db.Decimal(12, 2)
+  method          RevenuePaymentMethod @default(BANK_TRANSFER)
+  paidAt          DateTime             @default(now())
+  transactionCode String?
+  evidenceUrl     String?
+  evidenceNote    String?
+  verifiedById    String?
+  note            String?
+  receivable      RevenueReceivable    @relation(fields: [receivableId], references: [id], onDelete: Cascade)
+  verifiedBy      User?                @relation("RevenuePaymentVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([receivableId])
+  @@index([verifiedById])
+  @@index([paidAt])
+  @@index([transactionCode])
+}
+
+model RevenueChangeLog {
+  id           String              @id @default(uuid())
+  receivableId String
+  changedById  String?
+  action       RevenueChangeAction
+  beforeData   Json?
+  afterData    Json?
+  note         String?
+  receivable   RevenueReceivable   @relation(fields: [receivableId], references: [id], onDelete: Cascade)
+  changedBy    User?               @relation("RevenueChangeLogChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime            @default(now())
+
+  @@index([receivableId])
   @@index([changedById])
   @@index([action])
   @@index([createdAt])

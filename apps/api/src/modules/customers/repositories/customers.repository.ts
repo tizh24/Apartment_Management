@@ -125,6 +125,41 @@ export class CustomersRepository {
     });
   }
 
+  findReceivablesByCustomerId(customerId: string) {
+    return this.prismaService.revenueReceivable.findMany({
+      where: { customerId },
+      orderBy: [{ dueDate: "desc" }, { createdAt: "desc" }],
+      include: {
+        apartment: {
+          select: {
+            id: true,
+            shortId: true,
+            name: true,
+          },
+        },
+        room: {
+          select: {
+            id: true,
+            shortId: true,
+            code: true,
+          },
+        },
+        leaseContract: {
+          select: {
+            id: true,
+            contractCode: true,
+            status: true,
+          },
+        },
+        _count: {
+          select: {
+            payments: true,
+          },
+        },
+      },
+    });
+  }
+
   private readonly customerInclude = {
     apartment: {
       select: {

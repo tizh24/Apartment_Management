@@ -10,7 +10,9 @@ import { ApartmentsModule } from "./modules/apartments/apartments.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { ContractsModule } from "./modules/contracts/contracts.module";
 import { CustomersModule } from "./modules/customers/customers.module";
+import { DashboardModule } from "./modules/dashboard/dashboard.module";
 import { HealthModule } from "./modules/health/health.module";
+import { RevenueModule } from "./modules/revenue/revenue.module";
 import { RoomsModule } from "./modules/rooms/rooms.module";
 import { SalesModule } from "./modules/sales/sales.module";
 import { UsersModule } from "./modules/users/users.module";
@@ -33,6 +35,8 @@ import { DatabaseModule } from "./shared/database/database.module";
     RoomsModule,
     CustomersModule,
     ContractsModule,
+    DashboardModule,
+    RevenueModule,
     SalesModule,
     HealthModule,
   ],

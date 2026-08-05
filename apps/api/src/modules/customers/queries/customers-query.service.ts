@@ -63,14 +63,15 @@ export class CustomersQueryService {
 
   async findReceivables(customerId: string) {
     await this.ensureCustomerExists(customerId);
+    const items = await this.customersRepository.findReceivablesByCustomerId(customerId);
 
     return {
-      items: [],
+      items,
       meta: {
         page: 1,
-        limit: 20,
-        total: 0,
-        totalPages: 0,
+        limit: items.length,
+        total: items.length,
+        totalPages: items.length > 0 ? 1 : 0,
       },
     };
   }
